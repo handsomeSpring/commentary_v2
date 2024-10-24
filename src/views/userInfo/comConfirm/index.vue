@@ -103,7 +103,7 @@ const initData = async () => {
         if(error instanceof Error){
             return message.error(error.message);
         }
-        message.error(error.response?.data?.message ?? '服务端异常，请联系网站管理员');
+        message.error(error.response?.data?.message ?? '服务端异常，请联系网站管理员!');
     } finally {
         skeleLoading.value = false;
     }
