@@ -13,7 +13,7 @@
                     <n-skeleton text style="width: 50%" />
                 </template>
                 <template v-else>
-                    <n-empty v-if="tableData.length === 0" description="暂无赛季信息，请联系赛事主办方。">
+                    <n-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
                     </n-empty>
                     <n-infinite-scroll v-else style="height: 100dvh" :distance="10" @load="handleLoad">
                         <n-timeline>
