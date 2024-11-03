@@ -77,9 +77,9 @@
 
   <!-- 弹窗部分 -->
   <!-- 挂在在body的弹窗部分 -->
-  <n-modal v-model:show="showModal" :mask-closable="false" preset="dialog" title="确认" positive-text="确认"
+  <n-modal v-model:show="showModal" :mask-closable="false" preset="dialog" title="取消该班次的原因" positive-text="提交"
     negative-text="算了" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
-    {{ cancelMsg }}
+    <n-input v-model:value="cancelReason" type="textarea" placeholder="请输入取消该场次的原因" maxlength="50" show-count></n-input>
   </n-modal>
 </template>
 
@@ -91,7 +91,7 @@ import { isJSON } from "@/utils";
 
 
 const showModal = ref(false);
-const cancelMsg = ref('');
+const cancelReason = ref('');
 const cancelId = ref(0);
 const uMessage = useMessage();
 const loading = ref(false);
@@ -134,18 +134,19 @@ const computedCommentary = (value: string) => {
 // 取消选班
 const handleCancel = (item) => {
   showModal.value = true;
-  cancelMsg.value = `您确定要取消${item.team1_name}对战${item.team2_name}的比赛吗？注意：取消班次会扣除一定的积分，若积分不足则无法取消。`;
   cancelId.value = item.id;
 }
 
 const onNegativeClick = () => {
   showModal.value = false;
+  cancelReason.value = '';
 }
 
 const onPositiveClick = async () => {
   try {
     showModal.value = false;
-    const result = await cancelCommentary(cancelId.value);
+    const { status } = await cancelCommentary(cancelId.value,cancelReason.value);
+    if(status !== 200) throw new Error('服务端异常，请联系网站管理员');
     uMessage.success('取消成功，请及时通知主办方');
     initMyCommentary();
   } catch (error) {

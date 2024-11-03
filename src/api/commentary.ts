@@ -19,12 +19,13 @@ export function getMyCommentary(){
 }
 
 // 取消选班
-export function cancelCommentary(gameid:number){
+export function cancelCommentary(gameid:number,Cancellation_Reason:string){
   return request({
     url:"/api/v1/com",
     method:"DELETE",
     params:{
-      gameid
+      gameid,
+      Cancellation_Reason
     }
   })
 }

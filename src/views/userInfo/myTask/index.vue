@@ -157,7 +157,7 @@ const computedUserStep = (status: Status) => {
 const computedText = (status: Status) => {
     const textMap = {
         '0': '任务进行中',
-        '1': '待超级管理员审核',
+        '1': '待任务下发人审核',
         '2': '已完成任务',
         '3': '任务不通过-驳回'
     }
