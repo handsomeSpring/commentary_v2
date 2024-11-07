@@ -112,9 +112,9 @@ const handleRegister = () => {
 const register = async () => {
        loading.value = true;
        try {
-              const { status, message } = await registerApi(registerForm.value);
+              const { status } = await registerApi(registerForm.value);
               if (status !== 200) {
-                     return nMessage.error(message);
+                     return nMessage.error('服务端异常，请联系网站管理员！');
               }
               nMessage.success("注册成功");
               router.push({path:'/login'})

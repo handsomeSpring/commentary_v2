@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
     if(to.path === '/'){
         next({path:'/login'});
     }
-    if(!getToken() && !['/login','/'].includes(to.path)){
+    if(!getToken() && !['/login','/','/getnumber'].includes(to.path)){
         next('/login');
     }
     if(to.matched.length === 0) next('/404');

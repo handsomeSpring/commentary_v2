@@ -32,7 +32,8 @@
                     </n-form-item>
                     <p class="mark-tip">
                         <a @click="routerToEnroll">成为解说</a>
-                        <a @click="routerToRegister">没有账号？立即注册</a>
+                        <a @click="routerToRegister('/getnumber')">注册v2</a>
+                        <a @click="routerToRegister('/register')">没有账号？立即注册</a>
                     </p>
                     <n-button type="primary" block @click="handleLogin">
                         <span style="margin-right:12px;color:#fff;font-weight: bold">登录</span><n-spin v-show="loading"
@@ -77,11 +78,10 @@ const handleLogin = () => {
 const login = async () => {
     loading.value = true;
     try {
-        const { data, status, message } = await loginByName(loginForm.value);
-        if (status !== 200) nMessage.error(message);
+        const { data, status } = await loginByName(loginForm.value);
+        if (status !== 200) nMessage.error('服务端异常！');
         setToken(data);
         const { data: info } = await getUserInfo();
-        console.log("info", info);
         userStore.setAllUserInfos(info)
         nMessage.success("登录成功！");
         router.push({ path: '/home' })
@@ -132,10 +132,10 @@ const routerToEnroll = () => {
         nMessage.warning("请先登录后再报名解说。");
     }
 }
-const routerToRegister = () => {
+const routerToRegister = (path:string) => {
     // window.open("https://idvasg.cn/", "_blank");
     router.push({
-        path:'/register'
+        path,
     })
 }
 </script>
