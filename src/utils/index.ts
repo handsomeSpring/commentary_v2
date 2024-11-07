@@ -1,4 +1,4 @@
-
+//判断是否能够转JSON
 export function isJSON(str?:string):boolean {
     if (typeof str == 'string') {
         try {
@@ -16,21 +16,15 @@ export function isJSON(str?:string):boolean {
     return false;
 }
 
-let roleArray = [];
-getByCode("roleList").then(res => {
- 
-  })
-// 职位转换
-export const roleMap = {
-    'Administration':'言论法官',
-    'Anchor':'导播',
-    'Arranger':'排班',
-    'Commentator':'解说',
-    'emcee':'主持人',
-    'normal':'参赛用户',
-    'Recruiter':'招募人',
-    'Secretary':'秘书',
-    'BackEnd':'后端',
-    'BOSS':'主办方',
-    'FrontEnd':'前端'
-}
+// 生成uuid
+export function uuid<string>() {
+    const s:string[] = [];
+    const hexDigits:string = '0123456789abcdef';
+    for (let i = 0; i < 32; i++) {
+      s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[12] = '4';
+    s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);
+    const uuid = s.join('');
+    return uuid;
+  }
