@@ -57,10 +57,11 @@ export function updateQQ(qqnumber: string) {
 }
 
 // 新版注册-获取人机校验码
-export function makeCaptcha() {
+export function makeCaptcha(uid:string) {
   return request({
     url: '/api/v2/makeCaptcha',
     method: 'GET',
+    data:uid
   })
 }
 
@@ -69,7 +70,8 @@ interface EnrollV2 {
   userName: string,
   password: string,
   chinaname: string,
-  captcha: string
+  captcha: string,
+  uid:string
 }
 export function enrollV2(data:EnrollV2) {
   return request({

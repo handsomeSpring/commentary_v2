@@ -30,10 +30,15 @@
 
 <script setup lang='ts'>
 import { useMessage } from 'naive-ui';
-
+import { uuid } from '@/utils';
 const canvas = ref('');
 const message = useMessage();
 const router = useRouter();
+const identity = ref('');
+onMounted(()=>{
+  identity.value = uuid();
+  console.log(identity.value,'===');
+})
 const form = ref({
   userName: '',
   password: '',
@@ -57,7 +62,7 @@ const setRollDonw = () => {
 }
 const getCode = async () => {
   try {
-    const { data, status } = await makeCaptcha();
+    const { data, status } = await makeCaptcha(identity.value);
     if (status !== 200) throw new Error('服务单异常！');
     canvas.value = 'data:image/png;base64,' + data.captchaImage;
     capStatus.value = 'code';
@@ -79,7 +84,11 @@ const handleEnroll = async ()=> {
     if(!form.value.captcha) return message.warning('请填写验证码！');
     loading.value = true;
     const { rePassword,...remain } = form.value;
-    const { status } = await enrollV2(remain);
+    const enrollReq = {
+      ...remain,
+      uid:identity.value
+    }
+    const { status } = await enrollV2(enrollReq);
     if(status !== 200) throw new Error('服务端异常，注册失败！');
     message.success('注册成功！');
     router.push({path:'/login'})
