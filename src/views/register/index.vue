@@ -23,22 +23,21 @@
                             clearable>
                      </n-input>
               </n-form-item>
-                     <n-alert v-if="!registerForm.token" title="人机生成中..." type="warning">
-                            等待人机校验中，请不要退出
-                     </n-alert>
               <n-form-item>
-                     <vue-turnstile v-model="registerForm.token" site-key="0x4AAAAAAAfglgZKAlbqw_YO" language="zh-cn"
+                     <vue-turnstile v-model="registerForm.token"  language="zh-cn"
                      @error="handleError" />
               </n-form-item>
-              <n-button v-show="!!registerForm.token" type="primary" block @click="handleRegister">
+              <n-button  type="primary" block @click="handleRegister">
                      <span style="margin-right:12px;color:#fff;font-weight: bold">注册</span><n-spin v-show="loading"
                             stroke="#fff" :size="14" />
               </n-button>
        </n-form>
+       <VaptchaComponent />
 </template>
 
 <script setup lang='ts'>
 import { useMessage, FormItemRule, FormRules } from 'naive-ui';
+import VaptchaComponent from '@/components/VaptchaComponent.vue';
 import VueTurnstile from 'vue-turnstile';
 const router = useRouter();
 const nMessage = useMessage();
@@ -109,28 +108,7 @@ const handleRegister = () => {
               }
        })
 }
-const register = async () => {
-       loading.value = true;
-       try {
-              const { status } = await registerApi(registerForm.value);
-              if (status !== 200) {
-                     return nMessage.error('服务端异常，请联系网站管理员！');
-              }
-              nMessage.success("注册成功");
-              router.push({path:'/login'})
-       } catch (error) {
-              if(error.response.data.code === 400){
-                    return nMessage.error(error.response.data.message);
-              }
-              nMessage.error(error.message);
-       } finally {
-              loading.value = false;
-       }
 
-}
-const handleError = () => {
-       nMessage.error("人机验证异常，请重试！");
-}
 </script>
 <style lang="scss" scoped>
 .header-container {
