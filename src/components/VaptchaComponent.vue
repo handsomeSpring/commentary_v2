@@ -5,8 +5,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
-const token = ref('');
-
+const token = ref({});
+const emit = defineEmits(['change']);
 const loadV3Script = () => {
   return new Promise<void>((resolve) => {
     if (typeof window.vaptcha === 'function') {
@@ -42,10 +42,10 @@ onMounted(() => {
     window.vaptcha(config).then((obj) => {
       window.vaptchaObj = obj;
       obj.listen('pass', () => {
-        token.value = obj.getToken();
+        getToken();
       });
       obj.listen('close', () => {
-        obj.reset();
+        reset();
       });
       obj.render();
     });
@@ -55,6 +55,7 @@ onMounted(() => {
 const getToken = () => {
   const serverToken = window.vaptchaObj.getServerToken();
   token.value = serverToken;
+  emit('change',serverToken);
 };
 
 const reset = () => {
@@ -62,7 +63,8 @@ const reset = () => {
 };
 
 watch(token, (serverToken) => {
-  console.log('server :', serverToken);
+  console.log(serverToken,'serverToken');
+  emit('change',serverToken);
 });
 </script>
 

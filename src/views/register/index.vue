@@ -19,26 +19,30 @@
                      </n-input>
               </n-form-item>
               <n-form-item label="中文名" path="chinaname">
-                     <n-input v-model:value="registerForm.chinaname"  maxlength="8" show-count placeholder="请输入中文名"
+                     <n-input v-model:value="registerForm.chinaname" maxlength="8" show-count placeholder="请输入中文名"
+                            clearable>
+                     </n-input>
+              </n-form-item>
+              <n-form-item label="qq号" path="qqNumber">
+                     <n-input v-model:value="registerForm.qqNumber" placeholder="请输入qq号"
                             clearable>
                      </n-input>
               </n-form-item>
               <n-form-item>
-                     <vue-turnstile v-model="registerForm.token"  language="zh-cn"
-                     @error="handleError" />
+                     <VaptchaComponent @change="handleGetToken" />
               </n-form-item>
-              <n-button  type="primary" block @click="handleRegister">
+              <n-button type="primary" block @click="handleRegister" :disabled="!tokenObj.token">
                      <span style="margin-right:12px;color:#fff;font-weight: bold">注册</span><n-spin v-show="loading"
                             stroke="#fff" :size="14" />
               </n-button>
        </n-form>
-       <VaptchaComponent />
+
 </template>
 
 <script setup lang='ts'>
 import { useMessage, FormItemRule, FormRules } from 'naive-ui';
 import VaptchaComponent from '@/components/VaptchaComponent.vue';
-import VueTurnstile from 'vue-turnstile';
+import { getMathIpv } from '@/utils/index';
 const router = useRouter();
 const nMessage = useMessage();
 const registerForm = ref({
@@ -46,19 +50,20 @@ const registerForm = ref({
        password: "",
        rePassword: "",
        chinaname: "",
-       token: ""
+       qqNumber: "",
 })
 const rules: FormRules = {
        userName: [
               {
-                     required: true,
-                     validator(rule: FormItemRule, value: string) {
-                            if (!value) {
-                                   return new Error('请输入用户名')
-                            }
-                     },
-                     trigger: ['input', 'blur']
-              }
+                     'message': '请输入账号',
+                     'required': true,
+                     'trigger': 'blur',
+              },
+              {
+                     'message': '账号必须由数字、字母、下划线和 @ 4种字符的其中一种或多种部分组成',
+                     'pattern': /^[\w@]+$/u,
+                     'trigger': 'blur',
+              },
        ],
        password: [
               {
@@ -95,6 +100,18 @@ const rules: FormRules = {
                      },
                      trigger: ['input', 'blur']
               }
+       ],
+       qqNumber: [
+              {
+
+                     required: true,
+                     validator(rule: FormItemRule, value: string) {
+                            if (!value) {
+                                   return new Error('请输入qq号')
+                            }
+                     },
+                     trigger: ['input', 'blur']
+              }
        ]
 }
 const formRef = ref(null);
@@ -108,11 +125,38 @@ const handleRegister = () => {
               }
        })
 }
-
+interface Server{
+       server:string
+       token:string
+}
+const tokenObj = ref<Server>({
+       server: '',
+       token: ''
+})
+const handleGetToken = (event:Server) => {
+       tokenObj.value = event;
+}
+const register = async () => {
+       try {
+          const req = {
+              ...registerForm.value,
+              ...tokenObj.value,
+              ip:getMathIpv()
+          }
+          Reflect.deleteProperty(req, 'rePassword');
+          const { data, status } = await registerApi(req);
+          if(status !== 200) throw new Error('服务端异常，请联系网站管理员！'); 
+          if(data.code && data.code !== 200) throw new Error(data?.message ?? '位置错误！');   
+          nMessage.success('注册成功！');
+          router.push('/login');
+       } catch (error) {
+          nMessage.error(error.message);
+       }
+}
 </script>
 <style lang="scss" scoped>
 .header-container {
-       height: 20vh;
+       height: 10vh;
        width: 100vw;
        display: flex;
        justify-content: center;

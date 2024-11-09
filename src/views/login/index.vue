@@ -32,7 +32,7 @@
                     </n-form-item>
                     <p class="mark-tip">
                         <a @click="routerToEnroll">成为解说</a>
-                        <a @click="routerToRegister('/getnumber')">注册v2</a>
+                        <!-- <a @click="routerToRegister('/getnumber')">注册v2</a> -->
                         <a @click="routerToRegister('/register')">没有账号？立即注册</a>
                     </p>
                     <n-button type="primary" block @click="handleLogin">
