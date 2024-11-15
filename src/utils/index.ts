@@ -33,5 +33,4 @@ function getRandomInt(min:number, max:number) {
 }
 export function getMathIpv() {
     return `${getRandomInt(0, 255)}.${getRandomInt(0, 255)}.${getRandomInt(0, 255)}.${getRandomInt(0, 255)}`;
-
 }

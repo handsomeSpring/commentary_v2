@@ -217,7 +217,8 @@ $duration: 400s;
 .background-content {
   background: linear-gradient(to bottom, #000, #444, rgb(44, 51, 54));
   width: 100vw;
-  height: 100dvh;
+  padding:24px 0;
+  min-height: 100vh;
   $count: 1000;
   overflow: hidden;
   @for $i from 1 through 5 {
@@ -251,10 +252,10 @@ $duration: 400s;
   padding: 24px 0;
   width: 90%;
   left:5%;
-  top:10vh;
-  position: fixed;
+  top:120px;
+  position: sticky;
   z-index: 2;
-//   backdrop-filter: blur(1px);
+  backdrop-filter: blur(30px);
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.4) 3%,
