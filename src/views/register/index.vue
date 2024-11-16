@@ -252,7 +252,7 @@ $duration: 400s;
   padding: 24px 0;
   width: 90%;
   left:5%;
-  top:120px;
+  top:80px;
   position: sticky;
   z-index: 2;
   backdrop-filter: blur(30px);
@@ -263,6 +263,7 @@ $duration: 400s;
   );
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.7);
+  box-sizing: border-box;
 }
 @keyframes moveUp {
   to {
