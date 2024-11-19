@@ -1,5 +1,5 @@
 <template>
-  <nav-back title="用户注册" />
+  <nav-back title="返回登录" />
   <div class="background-content">
     <div class="layer1"></div>
     <div class="layer2"></div>
@@ -7,6 +7,9 @@
     <div class="layer4"></div>
     <div class="layer5"></div>
     <div class="form_warp">
+      <div class="register_title">
+        <p>用户注册</p>
+      </div>
       <n-form
         class="form__container"
         ref="formRef"
@@ -14,7 +17,7 @@
         :rules="rules"
         label-placement="top"
       >
-        <n-form-item label="用户名" path="userName">
+        <n-form-item path="userName">
           <n-input
             type="primary"
             v-model:value="registerForm.userName"
@@ -22,7 +25,7 @@
             clearable
           ></n-input>
         </n-form-item>
-        <n-form-item label="密码" path="password">
+        <n-form-item path="password">
           <n-input
             v-model:value="registerForm.password"
             type="password"
@@ -32,7 +35,7 @@
           >
           </n-input>
         </n-form-item>
-        <n-form-item label="再次输入密码" path="rePassword">
+        <n-form-item path="rePassword">
           <n-input
             v-model:value="registerForm.rePassword"
             type="password"
@@ -42,7 +45,7 @@
           >
           </n-input>
         </n-form-item>
-        <n-form-item label="中文名" path="chinaname">
+        <n-form-item path="chinaname">
           <n-input
             v-model:value="registerForm.chinaname"
             maxlength="8"
@@ -52,7 +55,7 @@
           >
           </n-input>
         </n-form-item>
-        <n-form-item label="qq号" path="qqNumber">
+        <n-form-item path="qqNumber">
           <n-input
             v-model:value="registerForm.qqNumber"
             placeholder="请输入qq号"
@@ -195,8 +198,8 @@ const register = async () => {
 };
 </script>
 <style lang="scss" scoped>
-::v-deep.n-form-item .n-form-item-label {
-  color: #9cc9e5 !important;
+::v-deep.n-form-item{
+  display: block !important;
 }
 .form__container {
   padding: 12px;
@@ -217,8 +220,7 @@ $duration: 400s;
 .background-content {
   background: linear-gradient(to bottom, #000, #444, rgb(44, 51, 54));
   width: 100vw;
-  padding:24px 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   $count: 1000;
   overflow: hidden;
   @for $i from 1 through 5 {
@@ -252,18 +254,24 @@ $duration: 400s;
   padding: 24px 0;
   width: 90%;
   left:5%;
-  top:80px;
+  top:45px;
   position: sticky;
   z-index: 2;
-  backdrop-filter: blur(30px);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.4) 3%,
-    rgba(255, 255, 255, 0) 99%
-  );
+  background: rgba(240,240,240,0.95);
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-sizing: border-box;
+  .register_title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:12px;
+    p{
+      font-size: 24px;
+      font-weight: bold;
+      color:#9cc9e5;
+    }
+  }
 }
 @keyframes moveUp {
   to {
