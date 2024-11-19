@@ -10,6 +10,12 @@
                 </template>
                 <n-form ref="formRef" :model="model" :rules="rules" size="small" label-placement="top">
                     <n-grid :cols="24">
+                        <n-form-item-gi :span="24" label="申请业务" path="historyRank">
+                            <n-select v-model:value="model.bizType" disabled :options="bizTypeOptions"
+                                placeholder="请选择申请业务" />
+                        </n-form-item-gi>
+                    </n-grid>
+                    <n-grid :cols="24">
                         <n-form-item-gi :span="24" label="圈名" path="chinaname">
                             <n-input v-model:value="chinaname" readonly placeholder="圈名" />
                         </n-form-item-gi>
@@ -23,7 +29,7 @@
                     <n-grid :cols="24">
                         <n-form-item-gi :span="24" label="历史段位" path="historyRank">
                             <n-select v-model:value="model.historyRank" :disabled="waitAuth" :options="options"
-                                placeholder="请选择赛季" clearable />
+                                placeholder="请选择历史段位" clearable />
                         </n-form-item-gi>
                     </n-grid>
                     <n-grid :cols="24">
@@ -76,6 +82,7 @@
 <script setup lang='ts'>
 import { useUserStore } from '@/store/user';
 import { FormInst, useMessage } from 'naive-ui';
+import { getByCode } from '@/api/common'
 const message = useMessage();
 const userStore = useUserStore();
 const formRef = ref<FormInst | null>(null)
@@ -85,6 +92,7 @@ const model = ref({
     gameId: '',
     introduction: '',
     contactNumber: '',
+    bizType:'comAuth',
     historyRank: '0',
 });
 type ComStatus = '0' | '1' | '2' | '3';
@@ -114,7 +122,16 @@ const waitAuth = computed(() => {
     return ['1', '2'].includes(comStatus.value);
 })
 const { officium, chinaname, id: userId } = userStore.userInfo;
+const bizTypeOptions = ref([]);
 const getInfo = () => {
+    getByCode('ruleConfig').then(res => {
+        bizTypeOptions.value = (res?.data ?? []).map(item => {
+            return {
+                label:item.label,
+                value:item.bizType
+            }
+        });
+    });
     getMyEnrollHis(userId).then(({ data }) => {
         if (data.code !== 200) throw new Error('服务端异常，请联系网站管理员');
         if (Array.isArray(data.data) && data.data.length > 0) {
@@ -127,7 +144,8 @@ const getInfo = () => {
                 historyRank: row.history_rank,
                 introduction: row.introduction,
                 sex: row.sex.toString(),
-                status: row.status
+                status: row.status,
+                bizType:'comAuth'
             });
             comStatus.value = row.status;
         }
