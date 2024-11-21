@@ -17,7 +17,8 @@ const app = createApp(App);
 app.component('nor-footer',NorFooter);
 app.component('nor-header',NorHeader);
 app.component('nav-back',navBack);
+app.use(pinia)
 app.use(router)
 app.use(naive)
-app.use(pinia)
+
 app.mount('#app')

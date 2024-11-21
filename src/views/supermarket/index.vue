@@ -195,8 +195,8 @@ const myChooseGoodsList = computed(() => {
 const initGoodsList = async () => {
   try {
     goodsList.value = [];
-    const { status, message, data } = await getStore();
-    if (status !== 200) throw new Error(message);
+    const { status, data } = await getStore();
+    if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
     for (const item of data) {
       const goods = new Goods(item);
       goodsList.value.push(goods);
@@ -300,8 +300,8 @@ const handleBuy = async () => {
     if (Number(userStore.userInfo.money) < car.totalPrice)
       return nMessage.error("兑换失败，积分不足");
     const goodsId = car.getGoodsIds();
-    const { status, message } = await buyGoods(goodsId);
-    if (status !== 200) throw new Error(message);
+    const { status } = await buyGoods(goodsId);
+    if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
     clearCart(); // 清空购物车
     nMessage.success("购买成功！");
   } catch (error) {

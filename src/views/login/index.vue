@@ -32,7 +32,6 @@
                     </n-form-item>
                     <p class="mark-tip">
                         <a @click="routerToEnroll">成为解说</a>
-                        <!-- <a @click="routerToRegister('/getnumber')">注册v2</a> -->
                         <a @click="routerToRegister('/register')">没有账号？立即注册</a>
                     </p>
                     <n-button type="primary" block @click="handleLogin">
@@ -54,7 +53,6 @@ import { Glasses, GlassesOutline } from '@vicons/ionicons5'
 import Bubble from "@/components/common/Bubble.vue"
 import { useUserStore } from "@/store/user"
 import { useMessage, FormItemRule, FormRules } from 'naive-ui';
-
 const nMessage = useMessage();
 const router = useRouter();
 const userStore = useUserStore();
@@ -143,7 +141,7 @@ const routerToRegister = (path:string) => {
 .login-container {
     background: radial-gradient(#cae5d3, #9cc9e5, #ebedf3);
     height: 100dvh;
-    width: 100vw;
+    width: 100%;
     overflow: auto;
 
     .login-header {
