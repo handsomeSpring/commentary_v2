@@ -39,11 +39,7 @@ router.beforeEach(async (to, from, next) => {
   if (getToken()) {
     if(to.path === '/'){
       const { data: info, status } = await getUserInfo();
-      if(status !== 200) {
-        next({ path: "/login" });
-        eventEmitter.emit('API:UN_AUTH');
-        return;
-      }
+      if(status !== 200) return;
       userStore.setAllUserInfos(info);
       next({
         path:'/home'
@@ -60,12 +56,11 @@ router.afterEach(() => {
   NProgress.done(); // finish progress bar
 });
 
-router.onError((error) => {
-  console.log(error, "路由异常..............");
-  location.reload();
-});
+// router.onError((error) => {
+//   console.log(error, "路由异常..............");
+//   location.reload();
+// });
 eventEmitter.on("API:UN_AUTH", () => {
-  console.log("接受到了");
   removeToken();
   router.push("/login");
 });

@@ -53,6 +53,7 @@ import { Glasses, GlassesOutline } from '@vicons/ionicons5'
 import Bubble from "@/components/common/Bubble.vue"
 import { useUserStore } from "@/store/user"
 import { useMessage, FormItemRule, FormRules } from 'naive-ui';
+import eventEmitter from "@/utils/eventEmitter";
 const nMessage = useMessage();
 const router = useRouter();
 const userStore = useUserStore();
@@ -136,6 +137,9 @@ const routerToRegister = (path:string) => {
         path,
     })
 }
+eventEmitter.on('API:UN_AUTH',()=>{
+    nMessage.error('鉴权过期，请重新登录',{ duration: 5000 });
+})
 </script>
 <style lang="scss" scoped>
 .login-container {

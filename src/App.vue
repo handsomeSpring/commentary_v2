@@ -13,14 +13,7 @@
 </template>
 <script setup lang="ts">
 import eventEmitter from "@/utils/eventEmitter";
-import {
-  type GlobalThemeOverrides,
-  dateZhCN,
-  zhCN,
-} from "naive-ui";
-eventEmitter.on("API:UN_AUTH", () => {
-  alert("登录过期！");
-});
+import { type GlobalThemeOverrides, dateZhCN, zhCN } from "naive-ui";
 const themeOverrides: GlobalThemeOverrides = {
   common: {
     primaryColor: "#9CC9E5",
