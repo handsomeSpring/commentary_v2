@@ -135,8 +135,6 @@
               <ChevronForward />
             </n-icon>
           </li>
-        </div>
-        <div class="last-container">
           <li class="grid-li-container" @click="routerTo('/userInfo/version')">
             <p>
               <n-icon size="18" color="#d7d7d7">
@@ -269,11 +267,11 @@ const routerTo = (path:string,query={},outline = false) =>{
       display: grid;
       background: #fff;
       width: calc(100% - 24px);
-      border-radius: 5px;
+      border-radius: 8px;
       grid-template-columns: repeat(4, 1fr);
       padding: 12px;
       margin-bottom: 12px;
-
+      border:1px solid #CAE5D3;
       .grid-item {
         display: flex;
         flex-direction: column;
@@ -295,9 +293,10 @@ const routerTo = (path:string,query={},outline = false) =>{
     .last-container {
       background: #fff;
       width: calc(100% - 24px);
-      border-radius: 5px;
+      border-radius: 8px;
       padding: 0 12px;
-      margin: 12px 0;
+      margin: 12px 0 26px;
+      border:1px solid #CAE5D3;
 
       .grid-li-container {
         padding: 6px 0;
