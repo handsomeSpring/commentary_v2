@@ -208,6 +208,10 @@ const routerTo = (path:string,query={},outline = false) =>{
 </script>
 <style scoped lang='scss'>
 .user-container {
+  height:100%;
+  background: #f3f3f3;
+  background:url('../../assets/images/listBg.png');
+  background-size: 100% 100%;
   .user-header {
     display: grid;
     grid-template-columns: 100px auto 100px;
@@ -253,16 +257,14 @@ const routerTo = (path:string,query={},outline = false) =>{
     padding: 6px 24px;
     display: flex;
     align-items: center;
-    color: rgb(236, 109, 80);
-
+    color: #F78235;
+    font-size: 0.9rem;
+    background:linear-gradient( 173deg, #B3D4FF 0%, rgba(255,255,255,0) 93%);
   }
 
   .main-container {
     padding: 12px;
-    background: #e7e7e7;
     width: calc(100% - 24px);
-    min-height: 80vh;
-
     .quick-part {
       display: grid;
       background: #fff;

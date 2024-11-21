@@ -229,7 +229,7 @@ $primaryColor: #4090EF;
 .card__box {
     margin: 16px auto;
     width: 95%;
-
+    height:100%;
     .header__text {
         display: flex;
         align-items: center;
@@ -252,7 +252,7 @@ $primaryColor: #4090EF;
 }
 
 .result__box {
-    height: calc(80dvh - 50px);
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;

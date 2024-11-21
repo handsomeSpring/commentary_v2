@@ -15,7 +15,7 @@
                 <template v-else>
                     <n-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
                     </n-empty>
-                    <n-infinite-scroll v-else style="height: 100dvh" :distance="10" @load="handleLoad">
+                    <n-infinite-scroll v-else style="height: 100%" :distance="10" @load="handleLoad">
                         <n-timeline>
                             <n-timeline-item v-for="(item, index) in tableData" :key="index"
                                 :type="computedType(item.opentime, item.winteam)">
@@ -370,15 +370,25 @@ const handleInvite = async (person: number[]) => {
 </script>
 <style scoped lang='scss'>
 .header-search-container {
-    padding: 12px 0;
-    width: 95%;
-    margin: 0 auto;
+    height:58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top:52px;
+    width:calc(100% - 24px);
+    z-index:2;
+    padding:0 12px;
+    background:#e8e8f3;
 }
 
 .listTable {
-    width: 95%;
-    margin: 6px auto;
-    min-height: 100dvh;
+    padding:84px 12px 12px;
+    min-height: calc(100% - 96px);
+    background:url('../../assets/images/listBg.png');
+    background-size: cover;
+    position: relative;
+    z-index:1;
 }
 
 
@@ -428,6 +438,7 @@ const handleInvite = async (person: number[]) => {
 
 .main-body {
     background: #f0f4f8;
+    height:100%;
 }
 
 .n-card {
