@@ -1,113 +1,65 @@
 <template>
     <nor-header title="解说报名" activeMenu="3">
-        <div v-if="pageType === 'enroll'" class="card__box">
-            <n-alert style="margin-bottom:12px" v-if="comStatus !== '0' && pageType === 'enroll'" title="提示" :type="computedComType(comStatus)">
-                {{ computedStatus(comStatus) }}
-            </n-alert>
-            <n-card>
-                <template #header>
-                    <p class="header__text" style="--text:'成为ASG解说'"></p>
+        <div class="full-screen" v-if="list.length === 0">
+            <n-result status="404" title="未找到申请记录" description="竟然还没有申请我们ASG赛事？快点申请吧！">
+                <template #footer>
+                    <n-button @click="toDetails('add', {})">点击申请</n-button>
                 </template>
-                <n-form ref="formRef" :model="model" :rules="rules" size="small" label-placement="top">
-                    <n-grid :cols="24">
-                        <n-form-item-gi :span="24" label="申请业务" path="historyRank">
-                            <n-select v-model:value="model.bizType" disabled :options="bizTypeOptions"
-                                placeholder="请选择申请业务" />
-                        </n-form-item-gi>
-                    </n-grid>
-                    <n-grid :cols="24">
-                        <n-form-item-gi :span="24" label="圈名" path="chinaname">
-                            <n-input v-model:value="chinaname" readonly placeholder="圈名" />
-                        </n-form-item-gi>
-                    </n-grid>
-                    <n-grid :cols="24">
-                        <n-form-item-gi :span="24" label="第五人格Id" path="gameId">
-                            <n-input v-model:value="model.gameId" :readonly="waitAuth" placeholder="请输入第五人格Id"
-                                clearable />
-                        </n-form-item-gi>
-                    </n-grid>
-                    <n-grid :cols="24">
-                        <n-form-item-gi :span="24" label="历史段位" path="historyRank">
-                            <n-select v-model:value="model.historyRank" :disabled="waitAuth" :options="options"
-                                placeholder="请选择历史段位" clearable />
-                        </n-form-item-gi>
-                    </n-grid>
-                    <n-grid :cols="24">
-                        <n-form-item-gi :span="24" label="自我介绍" path="introduction">
-                            <n-input v-model:value="model.introduction" :readonly="waitAuth" placeholder="请输入自我介绍"
-                                type="textarea" :autosize="{
-                                    minRows: 3,
-                                    maxRows: 5,
-                                }" maxlength="100" show-count />
-                        </n-form-item-gi>
-                    </n-grid>
-                    <n-grid :cols="24">
-                        <n-form-item-gi :span="24" label="请输入联系方式" path="contactNumber">
-                            <n-input v-model:value="model.contactNumber" :readonly="waitAuth" placeholder="请输入联系方式" />
-                        </n-form-item-gi>
-                    </n-grid>
-                    <n-grid :cols="24">
-                        <n-form-item-gi :span="24" label="性别" path="sex">
-                            <n-radio-group v-model:value="model.sex" :disabled="waitAuth">
-                                <n-radio-button value="1">
-                                    男
-                                </n-radio-button>
-                                <n-radio-button value="2">
-                                    女
-                                </n-radio-button>
-                            </n-radio-group>
-                        </n-form-item-gi>
-                    </n-grid>
-                    <n-grid :cols="24" v-if="!waitAuth">
-                        <n-form-item-gi :span="24">
-                            <n-spin :show="diabledShow">
-                                <n-button block type="info" @click="handleSubmit">{{ ['3','4'].includes(comStatus) ? '再次申请' : '提 交'  }}</n-button>
-                            </n-spin>
-                        </n-form-item-gi>
-                    </n-grid>
-                </n-form>
-            </n-card>
-        </div>
-        <div v-if="pageType === 'success'" class="result__box">
-            <n-result status="success" title="报名成功" description="请等待管理者审核">
             </n-result>
         </div>
-        <div v-if="pageType === 'roles'" class="result__box">
-            <n-result status="404" title="你在干什么？" description="您已经是解说了呀？笨蛋">
-            </n-result>
+        <div class="asg-content">
+            <div class="item-row" v-for="item in list" :key="item.id">
+                <header>
+                    <p>{{ item.bizTypeName }}</p>
+                    <p v-if="['2', '1'].includes(item.status)" class="btn_text" @click="toDetails('view', item)">查询</p>
+                    <p v-else-if="['3', '4'].includes(item.status)" class="btn_text" @click="toDetails('edit', item)">
+                        再次申请
+                    </p>
+                </header>
+                <main>
+                    <p>申请时间：{{ item.createTime }}</p>
+                    <p>
+                        <n-gradient-text :type="computedType(item.status)">
+                            {{ computedStatus(item.status) }}
+                        </n-gradient-text>
+                    </p>
+                </main>
+            </div>
         </div>
     </nor-header>
 </template>
 
 <script setup lang='ts'>
 import { useUserStore } from '@/store/user';
-import { FormInst, useMessage } from 'naive-ui';
+import { useMessage } from 'naive-ui';
 import { getByCode } from '@/api/common'
 const message = useMessage();
 const userStore = useUserStore();
-const formRef = ref<FormInst | null>(null)
-const model = ref({
-    id: null,
-    sex: '1',
-    gameId: '',
-    introduction: '',
-    contactNumber: '',
-    bizType:'comAuth',
-    historyRank: '0',
-});
+const router = useRouter();
+interface Info {
+    id?: number,
+    sex?: '1' | '2',
+    gameId?: string,
+    introduction?: string,
+    contactNumber?: string,
+    bizType?: string,
+    historyRank?: string,
+    bizTypeName?: string,
+    createTime?: string
+    status?: ComStatus
+};
 type ComStatus = '0' | '1' | '2' | '3';
-const comStatus = ref<ComStatus>('0');
 const computedStatus = (comStatus: ComStatus) => {
     const mapList = {
         '0': '待提交',
-        '1': '解说招募人审批中，请稍等结果公示',
-        '2': '申请成功，恭喜您成为ASG赛事解说',
-        '3': '很遗憾，您没有达到ASG的解说申请要求。若有疑问请联系ASG解说管理员：235593230（qq）',
-        '4': '管理员已辞退了您的解说工作，请重新申请或者联系ASG赛事组管理员'
+        '1': '待审核',
+        '2': '审核通过',
+        '3': '申请驳回',
+        '4': '已辞退'
     };
     return mapList[comStatus];
 }
-const computedComType = (comStatus: ComStatus) => {
+const computedType = (comStatus: ComStatus) => {
     const mapList = {
         '0': 'info',
         '1': 'warning',
@@ -117,148 +69,88 @@ const computedComType = (comStatus: ComStatus) => {
     };
     return mapList[comStatus];
 }
-
-const waitAuth = computed(() => {
-    return ['1', '2'].includes(comStatus.value);
-})
-const { officium, chinaname, id: userId } = userStore.userInfo;
 const bizTypeOptions = ref([]);
+const list = ref<Info[]>([]);
 const getInfo = () => {
     getByCode('ruleConfig').then(res => {
         bizTypeOptions.value = (res?.data ?? []).map(item => {
             return {
-                label:item.label,
-                value:item.bizType
+                label: item.label,
+                value: item.bizType
             }
         });
+        getMyEnrollHis(userStore.userInfo.id).then(({ data }) => {
+            if (data.code !== 200) message.error('服务端异常，请联系网站管理员');
+            if (Array.isArray(data.data) && data.data.length > 0) {
+                list.value = data.data.map(row => {
+                    return {
+                        id: row.id,
+                        chinaname: row.chinaname,
+                        contactNumber: row.contact_number,
+                        gameId: row.game_id,
+                        historyRank: row.history_rank,
+                        introduction: row.introduction,
+                        sex: row.sex ? row.sex.toString() : null,
+                        status: row.status,
+                        bizType: row.biz_type,
+                        createTime: row.create_time ? row.create_time.slice(0, 10) : '',
+                        bizTypeName: bizTypeOptions.value.find(item => item.value === row.biz_type)?.label ?? '未知业务'
+                    }
+                });
+            }
+        })
     });
-    getMyEnrollHis(userId).then(({ data }) => {
-        if (data.code !== 200) throw new Error('服务端异常，请联系网站管理员');
-        if (Array.isArray(data.data) && data.data.length > 0) {
-            const row = data.data[0];
-            Object.assign(model.value, {
-                id: row.id,
-                chinaname: row.chinaname,
-                contactNumber: row.contact_number,
-                gameId: row.game_id,
-                historyRank: row.history_rank,
-                introduction: row.introduction,
-                sex: row.sex.toString(),
-                status: row.status,
-                bizType:'comAuth'
-            });
-            comStatus.value = row.status;
-        }
-    })
 }
 getInfo();
-type PageType = 'enroll' | 'success' | 'roles';
-const pageType = ref<PageType>('enroll');
-const initPage = () => {
-    pageType.value = officium === 'Commentator' ? 'roles' : 'enroll';
-}
-initPage();
-const options = ref([]);
-const getOptions = () => {
-    getByCode('historyRank').then(res => {
-        options.value = res.data;
-    })
-}
-getOptions();
-const rules = {
-    sex: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: '请选择性别'
-    },
-    gameId: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: '请输入游戏账号ID'
-    },
-    introduction: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: '请输入自我介绍'
-    },
-    historyRank: {
-        required: true,
-        trigger: ['change'],
-        message: '请选择历史段位'
-    },
-    contactNumber: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: '请输入联系方式'
-    }
-}
-const diabledShow = ref(false);
-const handleSubmit = () => {
-    formRef.value?.validate(async (errors) => {
-        if (errors) {
-            message.error(errors[0][0].message);
-            return;
+const toDetails = (type: string, info: Info) => {
+    router.push({
+        path: '/enroll/details', query: {
+            ...info,
+            type,
         }
-        try {
-            diabledShow.value = true;
-            const requestBody = {
-                ...model.value,
-                chinaname,
-                userId,
-                sex: Number(model.value.sex),
-                status: '1'
-            }
-            const { data } = await beComingCommentary(requestBody);
-            if (data.code !== 200) return message.error(data.message || '服务端异常，请联系网站管理员');
-            message.success('报名成功，请等待管理员审核。');
-            pageType.value = 'success';
-        } catch (error) {
-            message.error(error.response?.data?.message ?? '未知错误，联系网站管理员');
-        } finally {
-            diabledShow.value = false;
-        }
-
     })
 }
 </script>
 <style scoped lang='scss'>
-$lightenColor: #d2e0f1;
-$lightenPrimaryColor: #83aee2;
-$primaryColor: #4090EF;
-
-.card__box {
-    margin: 16px auto;
-    width: 95%;
-    height:100%;
-    .header__text {
-        display: flex;
-        align-items: center;
-
-        &::before {
-            content: '';
-            width: 8px;
-            height: 1.1rem;
-            background-image: linear-gradient(to bottom, $lightenColor, $lightenPrimaryColor, $primaryColor);
-            margin-right: 0.5rem;
-            border-radius: 6px;
-        }
-
-        &::after {
-            content: var(--text);
-            font-size: 1.1rem;
-
-        }
-    }
-}
-
-.result__box {
+.full-screen {
+    width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
 
-::v-deep.n-spin-container {
-    width: 100%;
+.asg-content {
+    width: 95%;
+    margin: 12px auto;
+
+    .item-row {
+        margin: 24px 0;
+
+        header {
+            background: linear-gradient(172deg, #B3D4FF 0%, rgba(255, 255, 255, 0) 93%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px;
+            border-radius: 10px 0 0 0;
+
+            .btn_text {
+                font-size: 1em;
+                font-weight: 500;
+                color: #4090EF;
+            }
+        }
+
+        main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 6px;
+            color: #696969;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    }
 }
 </style>

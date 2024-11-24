@@ -5,14 +5,19 @@
         <n-card class="card-item" title="解说身份认证">
             <n-gradient-text type="info">
                 您的身份是:{{ identify ? '解说' : '普通人员' }}
-                <span :style="{ color: model.status === '1' ? '#f0a020' : (model.status === '2' ? '#67c23a' : '#f40') }" v-show="!identify">
-                    （{{ model.status === '1' ? '申请待审批' : (model.status === '2' ? '申请成功' : (model.status === '3' ? '申请被拒绝': '您被劝退')) }}）</span>
+                <span :style="{ color: model.status === '1' ? '#f0a020' : (model.status === '2' ? '#67c23a' : '#f40') }"
+                    v-show="!identify">
+                    （{{ model.status === '0' ? '未申请' : (model.status === '1' ? '申请待审批' : (model.status === '2' ? '申请成功' : (model.status === '3' ?
+                    '申请被拒绝': '您被劝退'))) }}）</span>
             </n-gradient-text>
-            <p v-show="userStore.userInfo.officium !== 'Commentator' && model.status === '2'"  style="color:orange;margin: 6px 0;">
+            <p v-show="userStore.userInfo.officium !== 'Commentator' && model.status === '2'"
+                style="color:orange;margin: 6px 0;">
                 职位在后台完成更新，请尝试重新登录
             </p>
-            <n-button v-if="!identify && model.status === '3'" style="margin-top: 10px;" type="info" size="small" @click="handleJump">前往修改申请</n-button>
-            <n-button v-if="!identify && model.status === '4'" style="margin-top: 10px;" type="info" size="small" @click="handleJump">再次申请解说</n-button>
+            <n-button v-if="!identify && model.status === '3'" style="margin-top: 10px;" type="info" size="small"
+                @click="handleJump">前往修改申请</n-button>
+            <n-button v-if="!identify && model.status === '4'" style="margin-top: 10px;" type="info" size="small"
+                @click="handleJump">再次申请解说</n-button>
         </n-card>
         <n-card class="card-item" title="解说申请记录">
             <n-form v-if="hasConfirmHis" :model="model" label-placement="left" label-width="auto">
@@ -50,7 +55,7 @@
 import { useUserStore } from '@/store/user';
 import { useMessage } from 'naive-ui/es/message';
 const userStore = useUserStore();
-console.log(userStore.userInfo.officium,'userStore.userInfo.officium');
+console.log(userStore.userInfo.officium, 'userStore.userInfo.officium');
 const message = useMessage();
 const identify = ref(false);
 const hasConfirmHis = ref(false);
@@ -71,36 +76,40 @@ type Option = {
     value: string
     label: string
 }
-const model = ref<ComForm>({});
+const model = ref<ComForm>({
+    status:'0'
+});
 const initData = async () => {
     try {
         const { officium, id: userId } = userStore.userInfo;
         skeleLoading.value = true;
         const { data } = await getMyEnrollHis(userId);
-        if(data.code !== 200) throw new Error(data.message);
+        if (data.code !== 200) throw new Error(data.message);
         if (Array.isArray(data.data) && data.data.length > 0) {
-            const row = data.data[0];
-            Object.assign(model.value, {
-                id: row.id,
-                chinaname: row.chinaname,
-                contactNumber: row.contact_number,
-                gameId: row.game_id,
-                historyRank: row.history_rank,
-                introduction: row.introduction,
-                sex: row.sex,
-                status:row.status
-            });
-            hasConfirmHis.value = true;
-            const result = await getByCode('historyRank');
-            if (result.data && Array.isArray(result.data)) {
-                model.value.historyRank = result.data.find((option: Option) => option.value === model.value.historyRank)?.label ?? '未知段位';
+            const row = data.data.find(item => item.biz_type === 'comAuth') ?? {};
+            if (Object.keys.length !== 0) {
+                Object.assign(model.value, {
+                    id: row.id,
+                    chinaname: row.chinaname,
+                    contactNumber: row.contact_number,
+                    gameId: row.game_id,
+                    historyRank: row.history_rank,
+                    introduction: row.introduction,
+                    sex: row.sex,
+                    status: row.status
+                });
+                hasConfirmHis.value = true;
+                const result = await getByCode('historyRank');
+                if (result.data && Array.isArray(result.data)) {
+                    model.value.historyRank = result.data.find((option: Option) => option.value === model.value.historyRank)?.label ?? '未知段位';
+                }
             }
         } else {
             hasConfirmHis.value = false;
         }
         identify.value = officium === 'Commentator';
     } catch (error) {
-        if(error instanceof Error){
+        if (error instanceof Error) {
             return message.error(error.message);
         }
         message.error(error.response?.data?.message ?? '服务端异常，请联系网站管理员!');
@@ -110,8 +119,8 @@ const initData = async () => {
 
 }
 initData();
-const handleJump = ()=>{
-    router.push({ path:'/enroll' })
+const handleJump = () => {
+    router.push({ path: '/enroll' })
 }
 </script>
 <style scoped lang='scss'>
