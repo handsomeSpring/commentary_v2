@@ -15,6 +15,14 @@
           </n-form-item-gi>
         </n-grid>
         <n-grid :cols="24">
+          <n-form-item-gi :span="24" label="申请职位" path="reqRole">
+            <n-select 
+            v-model:value="model.reqRole" 
+            :disabled="model.bizType !== 'adminAuth' || waitAuth"
+            :options="roleOptions" placeholder="请选择申请业务" />
+          </n-form-item-gi>
+        </n-grid>
+        <n-grid :cols="24">
           <n-form-item-gi :span="24" label="圈名" path="chinaname">
             <n-input v-model:value="chinaname" readonly placeholder="圈名" />
           </n-form-item-gi>
@@ -104,6 +112,7 @@ const model = ref({
   contactNumber: '',
   bizType: 'comAuth',
   historyRank: '0',
+  reqRole:'Commentator'
 });
 type ComStatus = '0' | '1' | '2' | '3';
 const comStatus = ref<ComStatus>('0');
@@ -133,6 +142,7 @@ const waitAuth = computed(() => {
 })
 const { officium, chinaname, id: userId } = userStore.userInfo;
 const bizTypeOptions = ref([]);
+const roleOptions = ref([]);
 const getInfo = () => {
   getByCode('ruleConfig').then(res => {
     bizTypeOptions.value = (res?.data ?? []).map(item => {
@@ -142,7 +152,9 @@ const getInfo = () => {
       }
     });
   });
-  console.log(route.query, 'route');
+  getByCode('roleList').then(res => {
+    roleOptions.value = (res?.data ?? []).filter(item => !!item.value);
+  });
   if (route.query.type !== 'add') {
     comStatus.value = route?.query?.status ?? '0';
     Object.assign(model.value, {
@@ -152,7 +164,8 @@ const getInfo = () => {
       historyRank: route?.query?.historyRank ?? '',
       contactNumber: route?.query?.contactNumber ?? '',
       id: Number(route?.query?.id) ?? 0,
-      bizType: route?.query?.bizType ?? ''
+      bizType: route?.query?.bizType ?? '',
+      reqRole: route?.query?.reqRole ?? ''
     })
   }
 
@@ -196,6 +209,11 @@ const rules = {
     required: true,
     trigger: ['blur', 'input'],
     message: '请输入联系方式'
+  },
+  reqRole: {
+    required: true,
+    trigger: ['change'],
+    message: '请选择职位'
   }
 }
 const diabledShow = ref(false);
