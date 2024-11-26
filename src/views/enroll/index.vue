@@ -1,5 +1,5 @@
 <template>
-    <nor-header title="解说报名" activeMenu="3">
+    <nor-header title="职位申请记录" activeMenu="3">
         <div class="full-screen" v-if="list.length === 0">
             <n-result status="404" title="未找到申请记录" description="竟然还没有申请我们ASG赛事？快点申请吧！">
                 <template #footer>
@@ -11,7 +11,7 @@
             <div class="item-row" v-for="item in list" :key="item.id">
                 <header>
                     <p>{{ item.bizTypeName }}</p>
-                    <p v-if="['2', '1'].includes(item.status)" class="btn_text" @click="toDetails('view', item)">查询</p>
+                    <p v-if="['2', '1', '5'].includes(item.status)" class="btn_text" @click="toDetails('view', item)">查询</p>
                     <p v-else-if="['3', '4'].includes(item.status)" class="btn_text" @click="toDetails('edit', item)">
                         再次申请
                     </p>
@@ -48,14 +48,15 @@ interface Info {
     createTime?: string
     status?: ComStatus
 };
-type ComStatus = '0' | '1' | '2' | '3';
+type ComStatus = '0' | '1' | '2' | '3' | '4' | '5';
 const computedStatus = (comStatus: ComStatus) => {
     const mapList = {
         '0': '待提交',
         '1': '待审核',
         '2': '审核通过',
         '3': '申请驳回',
-        '4': '已辞退'
+        '4': '已辞退',
+        '5': '流程审批中'
     };
     return mapList[comStatus];
 }
@@ -65,7 +66,8 @@ const computedType = (comStatus: ComStatus) => {
         '1': 'warning',
         '2': 'success',
         '3': 'error',
-        '4': 'error'
+        '4': 'error',
+        '5': 'warning'
     };
     return mapList[comStatus];
 }

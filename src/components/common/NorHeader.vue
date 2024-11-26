@@ -90,7 +90,7 @@
             p-id="4634"
           ></path>
         </svg>
-        <p :class="props.activeMenu === '3' ? 'activeTitle' : ''">申请解说</p>
+        <p :class="props.activeMenu === '3' ? 'activeTitle' : ''">申请加入</p>
       </div>
       <div class="menu-item" @click="hanleRouter('/userInfo')">
         <svg

@@ -1,5 +1,5 @@
 <template>
-  <nav-back title="返回登录" />
+  <nav-back-fix title="返回登录" />
   <div class="background-content">
     <div class="layer1"></div>
     <div class="layer2"></div>
@@ -254,7 +254,7 @@ $duration: 400s;
   padding: 24px 0;
   width: 90%;
   left:5%;
-  top:45px;
+  top:90px;
   position: sticky;
   z-index: 2;
   background: rgba(240,240,240,0.95);

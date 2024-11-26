@@ -6,7 +6,7 @@
     </n-alert>
     <n-card>
       <template #header>
-        <p class="header__text" style="--text:'成为ASG解说'"></p>
+        <p class="header__text" style="--text:'成为ASG的一份子'"></p>
       </template>
       <n-form ref="formRef" :model="model" :rules="rules" size="small" label-placement="top">
         <n-grid :cols="24">
@@ -119,10 +119,11 @@ const comStatus = ref<ComStatus>('0');
 const computedStatus = (comStatus: ComStatus) => {
   const mapList = {
     '0': '待提交',
-    '1': '解说招募人审批中，请稍等结果公示',
-    '2': '申请成功，恭喜您成为ASG赛事解说',
-    '3': '很遗憾，您没有达到ASG的解说申请要求。若有疑问请联系ASG解说管理员：235593230（qq）',
-    '4': '管理员已辞退了您的解说工作，请重新申请或者联系ASG赛事组管理员'
+    '1': '解说招募人审批中，请稍等结果公示。',
+    '2': '申请成功，恭喜您成为ASG赛事解说。',
+    '3': '很遗憾，您没有达到ASG赛事的申请要求。若有疑问请联系ASG招募管理员：235593230（qq）。',
+    '4': '管理员已辞退了您的解说工作，请重新申请或者联系ASG赛事组管理员。',
+    '5': '管理员已经对您的申请发起了流程审批，流程审批结束后便会公布结果，请等待！'
   };
   return mapList[comStatus];
 }
@@ -132,13 +133,14 @@ const computedComType = (comStatus: ComStatus) => {
     '1': 'warning',
     '2': 'success',
     '3': 'error',
-    '4': 'error'
+    '4': 'error',
+    '5': 'warning'
   };
   return mapList[comStatus];
 }
 
 const waitAuth = computed(() => {
-  return ['1', '2'].includes(comStatus.value);
+  return ['1', '2', '5'].includes(comStatus.value);
 })
 const { officium, chinaname, id: userId } = userStore.userInfo;
 const bizTypeOptions = ref([]);
