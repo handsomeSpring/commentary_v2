@@ -6,7 +6,7 @@
     </n-alert>
     <n-card>
       <template #header>
-        <p class="header__text" style="--text:'成为ASG的一份子'"></p>
+        <p class="header__text" style="--text:'申请加入ASG赛事'"></p>
       </template>
       <n-form ref="formRef" :model="model" :rules="rules" size="small" label-placement="top">
         <n-grid :cols="24">
@@ -88,11 +88,6 @@
       <n-button block @click="returnBack">返回</n-button>
     </n-result>
   </div>
-  <div v-if="pageType === 'roles'" class="result__box">
-    <n-result status="404" title="你在干什么？" description="您已经是解说了呀？笨蛋">
-      <n-button block @click="returnBack">返回</n-button>
-    </n-result>
-  </div>
 </template>
 
 <script setup lang='ts'>
@@ -120,7 +115,7 @@ const computedStatus = (comStatus: ComStatus) => {
   const mapList = {
     '0': '待提交',
     '1': '解说招募人审批中，请稍等结果公示。',
-    '2': '申请成功，恭喜您成为ASG赛事解说。',
+    '2': '申请成功，恭喜您成为ASG赛事的一员。',
     '3': '很遗憾，您没有达到ASG赛事的申请要求。若有疑问请联系ASG招募管理员：235593230（qq）。',
     '4': '管理员已辞退了您的解说工作，请重新申请或者联系ASG赛事组管理员。',
     '5': '管理员已经对您的申请发起了流程审批，流程审批结束后便会公布结果，请等待！'
@@ -173,12 +168,8 @@ const getInfo = () => {
 
 }
 getInfo();
-type PageType = 'enroll' | 'success' | 'roles';
+type PageType = 'enroll' | 'success';
 const pageType = ref<PageType>('enroll');
-const initPage = () => {
-  pageType.value = officium === 'Commentator' ? 'roles' : 'enroll';
-}
-initPage();
 const options = ref([]);
 const getOptions = () => {
   getByCode('historyRank').then(res => {

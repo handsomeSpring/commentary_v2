@@ -1,31 +1,37 @@
 <template>
     <nor-header title="职位申请记录" activeMenu="3">
-        <div class="full-screen" v-if="list.length === 0">
-            <n-result status="404" title="未找到申请记录" description="竟然还没有申请我们ASG赛事？快点申请吧！">
-                <template #footer>
-                    <n-button @click="toDetails('add', {})">点击申请</n-button>
-                </template>
-            </n-result>
-        </div>
-        <div class="asg-content">
-            <div class="item-row" v-for="item in list" :key="item.id">
-                <header>
-                    <p>{{ item.bizTypeName }}</p>
-                    <p v-if="['2', '1', '5'].includes(item.status)" class="btn_text" @click="toDetails('view', item)">查询</p>
-                    <p v-else-if="['3', '4'].includes(item.status)" class="btn_text" @click="toDetails('edit', item)">
-                        再次申请
-                    </p>
-                </header>
-                <main>
-                    <p>申请时间：{{ item.createTime }}</p>
-                    <p>
-                        <n-gradient-text :type="computedType(item.status)">
-                            {{ computedStatus(item.status) }}
-                        </n-gradient-text>
-                    </p>
-                </main>
+        <full-screen-loading v-if="loading"></full-screen-loading>
+        <template v-else>
+            <div class="full-screen" v-if="list.length === 0">
+                <n-result status="404" title="未找到申请记录" description="竟然还没有申请我们ASG赛事？快点申请吧！">
+                    <template #footer>
+                        <n-button @click="toDetails('add', {})">点击申请</n-button>
+                    </template>
+                </n-result>
             </div>
-        </div>
+            <div v-else class="asg-content">
+                <div class="item-row" v-for="item in list" :key="item.id">
+                    <header>
+                        <p>{{ item.bizTypeName }}</p>
+                        <p v-if="['2', '1', '5'].includes(item.status)" class="btn_text"
+                            @click="toDetails('view', item)">查询
+                        </p>
+                        <p v-else-if="['3', '4'].includes(item.status)" class="btn_text"
+                            @click="toDetails('edit', item)">
+                            再次申请
+                        </p>
+                    </header>
+                    <main>
+                        <p>申请时间：{{ item.createTime }}</p>
+                        <p>
+                            <n-gradient-text :type="computedType(item.status)">
+                                {{ computedStatus(item.status) }}
+                            </n-gradient-text>
+                        </p>
+                    </main>
+                </div>
+            </div>
+        </template>
     </nor-header>
 </template>
 
@@ -49,6 +55,7 @@ interface Info {
     status?: ComStatus
 };
 type ComStatus = '0' | '1' | '2' | '3' | '4' | '5';
+const loading = ref(false);
 const computedStatus = (comStatus: ComStatus) => {
     const mapList = {
         '0': '待提交',
@@ -74,6 +81,7 @@ const computedType = (comStatus: ComStatus) => {
 const bizTypeOptions = ref([]);
 const list = ref<Info[]>([]);
 const getInfo = () => {
+    loading.value = true;
     getByCode('ruleConfig').then(res => {
         bizTypeOptions.value = (res?.data ?? []).map(item => {
             return {
@@ -97,12 +105,16 @@ const getInfo = () => {
                         bizType: row.biz_type,
                         createTime: row.create_time ? row.create_time.slice(0, 10) : '',
                         bizTypeName: bizTypeOptions.value.find(item => item.value === row.biz_type)?.label ?? '未知业务',
-                        reqRole:row.req_role ?? '',
+                        reqRole: row.req_role ?? '',
                     }
                 });
             }
         })
-    });
+    }).finally(() => {
+        setTimeout(() => {
+            loading.value = false; 
+        }, 800);
+    })
 }
 getInfo();
 const toDetails = (type: string, info: Info) => {
