@@ -129,7 +129,7 @@
               <n-icon size="18" color="#F40">
                 <HelpCircleOutline />
               </n-icon>
-              <span class="main-text">帮助中心</span>
+              <span class="main-text">办赛流程</span>
             </p>
             <n-icon size="18" color="#CAE5D3">
               <ChevronForward />

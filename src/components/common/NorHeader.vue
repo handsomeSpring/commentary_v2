@@ -195,7 +195,7 @@ const routerBack = () => {
 }
 .main-content {
   margin-top: 52px;
-  height: calc(100dvh - 52px - 5em);
+  height: calc(100dvh - 52px - 4em);
   width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
@@ -206,7 +206,7 @@ const routerBack = () => {
   background: #9cc9e5;
   position: fixed;
   bottom: 0;
-  height: 5em;
+  height: 4em;
   width: 100%;
   z-index: 999;
   .menu-container {

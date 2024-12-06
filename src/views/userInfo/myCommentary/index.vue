@@ -7,13 +7,21 @@
     <n-skeleton text style="width: 50%" />
   </template>
   <template v-else>
-    <n-empty style="margin-top:30px" v-if="comList.length === 0" description="太懒惰了吧,一场解说都没有"></n-empty>
+    <n-result style="height: calc(100dvh - 45px);display: flex;flex-direction: column;
+    align-items: center;justify-content: center;" v-if="!isCommentary" status="403" title="无权限"
+      description="您不是解说，无法查看历史解说信息">
+      <template #footer>
+        <n-button @click="handleBack">返回</n-button>
+      </template>
+    </n-result>
+    <n-empty style="margin-top:30px" v-else-if="comList.length === 0" description="太懒惰了吧,一场解说都没有"></n-empty>
+
     <ul class="com-list-conatainer" v-else>
       <li class="item-wrap" v-for="(item, index) in comList" :key="index">
         <header>
           <p>
             <n-gradient-text type="info">
-              {{ item.belong  || '未知赛季'}}
+              {{ item.belong || '未知赛季' }}
             </n-gradient-text>
           </p>
           <n-tag :bordered="false" type="info">
@@ -97,6 +105,11 @@ const uMessage = useMessage();
 const loading = ref(false);
 const comList = ref([]); //我的解说列表
 const triggerAreas = ref(['main', 'arrow']);
+const isCommentary = ref(true); //是否是解说
+const router = useRouter();
+const handleBack = ()=>{
+  router.go(-1);
+}
 async function initMyCommentary() {
   try {
     loading.value = true;
@@ -105,14 +118,15 @@ async function initMyCommentary() {
     comList.value = data.map(item => {
       return {
         ...item,
-        personType:item.person_type ?? 'referee,commentary'
+        personType: item.person_type ?? 'referee,commentary'
       }
     });
   } catch (error) {
-    if(error.response?.data?.code === 400){
-       return uMessage.error('获取选班列表失败，您不是解说。');
+    if (error.response?.data?.code === 400) {
+      isCommentary.value = false;
+      return uMessage.warning('获取选班列表失败，您不是解说。');
     }
-    uMessage.error(error.customMessage ?  error.customMessage : error.response.data.message);
+    uMessage.error(error.customMessage ? error.customMessage : error.response.data.message);
   } finally {
     loading.value = false;
   }
@@ -145,12 +159,12 @@ const onNegativeClick = () => {
 const onPositiveClick = async () => {
   try {
     showModal.value = false;
-    const { status } = await cancelCommentary(cancelId.value,cancelReason.value);
-    if(status !== 200) throw new Error('服务端异常，请联系网站管理员');
+    const { status } = await cancelCommentary(cancelId.value, cancelReason.value);
+    if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
     uMessage.success('取消成功，请及时通知主办方');
     initMyCommentary();
   } catch (error) {
-    uMessage.error(!error.response? error.customMessage : (error.response?.data?.message ?? '未知错误，请联系网站管理员'));
+    uMessage.error(!error.response ? error.customMessage : (error.response?.data?.message ?? '未知错误，请联系网站管理员'));
   }
 }
 </script>

@@ -120,7 +120,9 @@ const initData = async () => {
 }
 initData();
 const handleJump = () => {
-    router.push({ path: '/enroll' })
+    router.push({ path: '/enroll/details', query:{
+        type:'add'
+    } })
 }
 </script>
 <style scoped lang='scss'>

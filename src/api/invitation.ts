@@ -24,6 +24,7 @@ interface Game {
     id:number
     opentime:string
     referee:string
+    judge:string
     tag:string
     team1_name:string
     team1_piaoshu:number

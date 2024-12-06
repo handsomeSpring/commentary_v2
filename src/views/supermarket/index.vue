@@ -420,7 +420,7 @@ footer {
   box-sizing: border-box;
   grid-template-columns: 70% 30%;
   position: fixed;
-  bottom: 5em;
+  bottom: 4em;
   z-index: 999;
 
   .left-container {

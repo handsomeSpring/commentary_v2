@@ -19,7 +19,7 @@
                             <p>
                                 被邀请人：<span class="invite__name">{{ item.inivitePerson }}</span>
                             </p>
-                            <n-button v-if="item.status === 0" strong secondary type="error" @click="handleRevoke(item.id)">
+                            <n-button v-if="item.status === 0" size="small" strong secondary type="error" @click="handleRevoke(item.id)">
                                 撤销邀请
                             </n-button>
                         </div>
@@ -43,6 +43,12 @@
                                     <PersonSharp />
                                 </n-icon>
                                 <P>{{ item.gamePlayer }}</P>
+                            </div>
+                            <div class="asg__tag tag--warning">
+                                <n-icon>
+                                    <PersonSharp />
+                                </n-icon>
+                                <P>{{ item.gameJudge }}</P>
                             </div>
                         </div>
                         <p>赛季：{{ item.gameSeason }}</p>
@@ -92,6 +98,7 @@ interface GameInvitation {
     gameTag: string,
     gameSeason: string,
     gamePlayer: string,
+    gameJudge: string,
     status: Status
     isFill: boolean
     id: number
@@ -125,7 +132,7 @@ const getData = async (page: number, needToReset = false) => {
         list.value = list.value.concat(data.data.rows.map(item => {
             return {
                 inviteTime: item.create_time,
-                inivitePerson: item.invitedChinaname,
+                inivitePerson: item.invitedChinaname ?? '未知',
                 gameId: item.match.id,
                 gameTeamCus: item.match.team1_name,
                 gameTeamHos: item.match.team2_name,
@@ -134,7 +141,8 @@ const getData = async (page: number, needToReset = false) => {
                 gameTime: item.match.opentime,
                 gameTag: item.match.tag,
                 gameSeason: item.match.belong,
-                gamePlayer: item.match.referee,
+                gamePlayer: item.match.referee || '无导播',
+                gameJudge:item.match.judge || '无裁判',
                 isFill: JSON.parse(item.match.commentary).length > 2,
                 status: item.status ?? 0,
                 id: item.id
@@ -196,20 +204,20 @@ const onPositiveClick = async ()=> {
 
 .game__info {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     align-items: center;
-    gap: 48px;
+    gap: 1em;
     margin: 0 0 12px;
 
     .asg__tag {
-        padding: 3px 12px;
+        padding: 0.2em 0.5em;
         border-radius: 2px;
         display: flex;
         align-items: center;
         justify-content: center;
         width: fit-content;
-        font-size: 13px;
-        gap: 12px;
+        font-size:0.8em;
+        gap:0.8em;
 
         &.tag--error {
             border: 1px solid rgba(208, 48, 80, 0.23);

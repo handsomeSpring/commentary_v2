@@ -1,69 +1,142 @@
 <template>
-    <nav-back title="帮助中心" />
-    <div class="header__container">
-        <img src="@/assets/images/zq.png">
-        <div class="radius__white">
-            开发人员：浊泉
-        </div>
+    <nav-back title="ASG办赛流程一览" />
+    <div class="flow-content">
+        <li class="parent_li" v-for="(item, index) in allFlowInfo" :key="index">
+            <div class="title_header">
+                <div class="tag_header">{{ item.parentTitle }}</div>
+                <div class="text_header">
+                    <p class="title">{{ item.parentInfo }}</p>
+                    <p class="time_tag">{{ item.tag }}</p>
+                </div>
+            </div>
+            <div class="child_li" v-for="(child, childI) in item.children" :key="`${childI}-child`">
+                <div class="line">
+                    <div class="circle"></div>
+                </div>
+                <div class="content">
+                    <div class="title">{{ child.tag }}</div>
+                    <div class="main_content">
+                        <p>{{ child.childInfo }}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="parent_li">
+            <div class="title_header">
+                <div class="tag_header">结束</div>
+                <div class="text_header"></div>
+            </div>
+        </li>
     </div>
-    <div class="asg__title">联系方式</div>
-    <div class="br__content"></div>
-    <div class="main__content">
-      <p>前端开发工程师浊泉QQ:793651012</p>
-      <p>后端开发工程师罗澜QQ:2667210109</p>
-      <p>后端开发工程师七千QQ:2307953404</p>
-    </div>
-    <img class="fixed__image" src="@/assets/images/cartoon.png">
 </template>
 
 <script setup lang='ts'>
+import { allFlowInfo } from "./const";
 </script>
 <style scoped lang='scss'>
-.header__container {
-    width: 100%;
-    height: 20vh;
-    background: url('../../../assets/images/helper_bg.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    border-bottom: 1px solid orange;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
+.flow-content {
+    width: 95%;
+    margin:1em auto;
+    .parent_li {
+        .title_header {
+            display: flex;
+            justify-content: flex-start;
+            gap: 12px;
+            margin: 12px 0;
 
-    img {
-        width: 60px;
-        height: 60px;
-        border-radius: 10px;
-        margin-bottom: 12px;
+            .tag_header {
+                width: 38px;
+                height: 38px;
+                background: #188eff;
+                border-radius: 8px;
+                border: 1px solid #1a88ef;
+                font-weight: 500;
+                font-size: 14px;
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .text_header {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+
+                .title {
+                    font-weight: 400;
+                    font-size: 16px;
+                    color: #1f2123;
+                    line-height: 19px;
+                }
+
+                .time_tag {
+                    font-weight: 400;
+                    font-size: 13px;
+                    color: #959595;
+                    line-height: 15px;
+                }
+            }
+        }
     }
 
-    .radius__white {
-        padding: 6px 12px;
-        width: fit-content;
-        border-radius: 15px;
-        background: #fff;
-        color: orange;
-        font-size: 0.8rem;
-    }
-}
+    .child_li {
+        display: flex;
+        justify-content: flex-start;
+        gap: 12px;
+        position: relative;
 
-.asg__title {
-    padding:12px;
-    border-bottom: 1px solid #e7e7e7;
-}
-.br__content{
-    height:5px;
-    background: #e7e7e7;
-}
-.main__content{
-    padding:12px;
-}
-.fixed__image{
-    position: fixed;
-    bottom:0;
-    right:0;
-    width:120px;
-    height:120px;
+        .line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 100%;
+
+            &::after {
+                position: absolute;
+                content: "";
+                width: 2px;
+                height: 90%;
+                background: #e7e7e7;
+                left: 18px;
+                top: 14px;
+            }
+
+            .circle {
+                width: 9px;
+                height: 9px;
+                background: #188eff;
+                border-radius: 100px;
+                border: 1px solid #1a88ef;
+            }
+        }
+
+        .content {
+            width: 80%;
+            .title {
+                font-family: PingFang SC, PingFang SC;
+                font-weight: 400;
+                font-size: 13px;
+                color: #5b5d5f;
+                line-height: 15px;
+            }
+
+            .main_content {
+                width: 100%;
+                background: #f6f6f6;
+                border-radius: 8px;
+                margin: 6px 0;
+                padding: 8px;
+
+                p {
+                    font-weight: 500;
+                    font-size: 12px;
+                    color: #0c80e5;
+                    line-height: 18px;
+                }
+            }
+        }
+    }
 }
 </style>

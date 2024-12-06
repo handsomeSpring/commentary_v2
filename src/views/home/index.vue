@@ -61,10 +61,10 @@
                                     <div style="display: flex; align-items: center;justify-content: space-between;">
                                         <div v-if="item.personType.includes('judge')"><n-tag style="margin-right: 6px;"
                                                 type="error">裁判</n-tag> {{
-                                            item.judge || '无裁判'}}</div>
+                                            item.judge || '暂无裁判'}}</div>
                                         <div v-if="item.personType.includes('referee')"><n-tag
                                                 style="margin-right: 6px;" type="info">导播</n-tag> {{
-                                            item.referee }}</div>
+                                            item.referee || '暂无导播'}}</div>
                                     </div>
                                     <div class="btn-container-footer" v-if="item.personType.includes('commentary')">
                                         <n-button-group size="small">
@@ -193,7 +193,8 @@ const getSeason = async () => {
             value: item.name
         }
     });
-    season.value = window.sessionStorage.getItem('seasonName') || options[0].value;
+    const noOverArr = options.filter(item => !item.is_over);
+    season.value = window.sessionStorage.getItem('seasonName') || noOverArr[0].value || options[0].value;
     getGames();
     const result = await getUsersWithRole();
     await initRoleMap();
@@ -281,7 +282,7 @@ const handleTime = (value: string) => {
     const day = new Date(value).getDate();
     const hour = new Date(value).getHours();
     const min = new Date(value).getMinutes();
-    return year + '-' + month + '-' + day + ' ' + hour + ':' + min;
+    return year + '年' + month + '月' + day + '日 ' + hour + '时' + min + '分';
 };
 // const computedCommentary = (value: string) => {
 //     if (!value) {

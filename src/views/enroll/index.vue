@@ -3,9 +3,9 @@
         <full-screen-loading v-if="loading"></full-screen-loading>
         <template v-else>
             <div class="full-screen" v-if="list.length === 0">
-                <n-result status="404" title="未找到申请记录" description="竟然还没有申请我们ASG赛事？快点申请吧！">
+                <n-result status="404" title="暂无申请记录" description="竟然还没有申请我们ASG赛事？快点申请吧！">
                     <template #footer>
-                        <n-button @click="toDetails('add', {})">点击申请</n-button>
+                        <n-button @click="toDetails('add', {})">前往申请</n-button>
                     </template>
                 </n-result>
             </div>

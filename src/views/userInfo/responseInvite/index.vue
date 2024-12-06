@@ -50,6 +50,12 @@
                                 </n-icon>
                                 <P>{{ item.gamePlayer }}</P>
                             </div>
+                            <div class="asg__tag tag--warning">
+                                <n-icon>
+                                    <PersonSharp />
+                                </n-icon>
+                                <P>{{ item.gameJudge }}</P>
+                            </div>
                         </div>
                         <p>赛季：{{ item.gameSeason }}</p>
                         <p>赛程：{{ item.gameTeamCus }} vs {{ item.gameTeamHos }}</p>
@@ -101,6 +107,7 @@ interface GameInvitation {
     gameTag: string,
     gameSeason: string,
     gamePlayer: string,
+    gameJudge:string,
     status: Status,
     isFill: boolean,
     id: number
@@ -149,10 +156,11 @@ const getData = async (page: number, needToReset = false) => {
                 gameTeamHos: item.match.team2_name,
                 teamCusVote: item.match.team1_piaoshu,
                 teamHosVote: item.match.team2_piaoshu,
-                gameTime: item.match.opentime.split('T')[0] + ' ' + item.match.opentime.split('T')[1].slice(0, 8),
+                gameTime: item.match.opentime,
                 gameTag: item.match.tag,
                 gameSeason: item.match.belong,
-                gamePlayer: item.match.referee,
+                gamePlayer: item.match.referee || '无导播',
+                gameJudge:item.match.judge || '无裁判',
                 isFill: JSON.parse(item.match.commentary).length > 2,
                 status: item.status ?? 0,
                 id: item.id
@@ -192,7 +200,7 @@ const onPositiveClick = async () => {
             const response = await selectCom(reqData.value.gameId);
             if (response.status !== 200) throw new Error('选班失败，服务端异常，请联系网站管理员');
         }
-        message.success('响应成功！');
+        message.success('操作成功！');
         getData(1, true);
     } catch (error) {
         message.error(error.message);
@@ -226,20 +234,20 @@ const onPositiveClick = async () => {
 
 .game__info {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     align-items: center;
-    gap: 48px;
+    gap: 1em;
     margin: 0 0 12px;
 
     .asg__tag {
-        padding: 3px 12px;
+        padding: 0.2em 0.5em;
         border-radius: 2px;
         display: flex;
         align-items: center;
         justify-content: center;
         width: fit-content;
-        font-size: 13px;
-        gap: 12px;
+        font-size:0.8em;
+        gap:0.8em;
 
         &.tag--error {
             border: 1px solid rgba(208, 48, 80, 0.23);
