@@ -23,7 +23,7 @@
       </n-collapse>
     </n-card>
     <div class="no__empty" v-else>
-      <n-empty description="无商品"></n-empty>
+      <n-empty description="暂无购物信息"></n-empty>
     </div>
   </template>
 

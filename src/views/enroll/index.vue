@@ -113,7 +113,7 @@ const getInfo = () => {
     }).finally(() => {
         setTimeout(() => {
             loading.value = false; 
-        }, 800);
+        }, 400);
     })
 }
 getInfo();

@@ -151,7 +151,7 @@
               <n-icon size="18" color="#FF9900">
                 <BodySharp />
               </n-icon>
-              <span class="main-text">团队&系统介绍</span>
+              <span class="main-text">简洁介绍</span>
             </p>
             <n-icon size="18" color="#CAE5D3">
               <ChevronForward />

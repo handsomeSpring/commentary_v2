@@ -5,8 +5,8 @@
       <img  src="/logo/asg.png">
     </div>
     <div class="list-wrap">
-      <li>版本信息：V1.0.3</li>
-      <li>开发人员：浊泉、罗澜、七千</li>
+      <li>版本信息：{{ version }}</li>
+      <li>开发人员：浊泉、罗澜、七千、有雨、二十、雪落鸢飞、会莹的、唯因虚梦、星宇</li>
       <li @click="jumpToOutline">非商用字体：HarmonyOS sans</li>
       <li>ICP备案号：<a href="https://beian.miit.gov.cn/" target="_blank">鄂ICP备2024037646号-1</a></li>
     </div>
@@ -18,6 +18,11 @@
 </template>
 
 <script setup lang='ts'>
+const version = ref('');
+(async function init(){
+   const { data } = await getByCode('versionConfig');
+   version.value = data.find(item => item.system === 'commentary')?.version;
+})();
 const jumpToOutline = ()=> {
   window.open('https://developer.huawei.com/consumer/cn/','_blank');
 }
