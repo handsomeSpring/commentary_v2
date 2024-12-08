@@ -13,7 +13,7 @@
             </n-gradient-text>
             <p v-show="userStore.userInfo.officium !== 'Commentator' && model.status === '2'"
                 style="color:orange;margin: 6px 0;">
-                职位在后台完成更新，请尝试重新登录
+                检测您申请的解说身份已通过，若您的职位不是解说，请联系赛事解说管理人员。
             </p>
             <n-button v-if="model.status === '3'" style="margin-top: 10px;" type="info" size="small"
                 @click="handleToEnroll">前往修改申请</n-button>

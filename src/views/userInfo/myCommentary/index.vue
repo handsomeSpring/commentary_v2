@@ -56,7 +56,7 @@
                 <n-tag size="small" :bordered="false" type="warning">
                   时间
                 </n-tag>
-                {{ item.opentime.slice(0, 16).replace('T', ' ') }}
+                {{ handleTime(item.opentime) }}
               </div>
               <div class="one-line">
                 <n-tag size="small" :bordered="false" type="info">
@@ -68,13 +68,13 @@
                 <n-tag size="small" :bordered="false" type="warning">
                   导播
                 </n-tag>
-                {{ item.referee }}
+                {{ item.referee || '暂无导播'}}
               </div>
               <div class="one-line" v-if="item.personType.includes('judge')">
                 <n-tag size="small" :bordered="false" type="error">
                   裁判
                 </n-tag>
-                {{ item.judge }}
+                {{ item.judge || '暂无裁判'}}
               </div>
             </div>
           </n-collapse-item>
@@ -110,6 +110,14 @@ const router = useRouter();
 const handleBack = ()=>{
   router.go(-1);
 }
+const handleTime = (value: string) => {
+    const year = new Date(value).getFullYear();
+    const month = new Date(value).getMonth() + 1;
+    const day = new Date(value).getDate();
+    const hour = new Date(value).getHours();
+    const min = new Date(value).getMinutes();
+    return year + '年' + month + '月' + day + '日 ' + hour + '时' + min + '分';
+};
 async function initMyCommentary() {
   try {
     loading.value = true;
