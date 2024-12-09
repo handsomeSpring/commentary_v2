@@ -34,3 +34,12 @@ function getRandomInt(min:number, max:number) {
 export function getMathIpv() {
     return `${getRandomInt(0, 255)}.${getRandomInt(0, 255)}.${getRandomInt(0, 255)}.${getRandomInt(0, 255)}`;
 }
+
+export function handleTime(value:string){
+    const year = new Date(value).getFullYear();
+    const month = new Date(value).getMonth() + 1;
+    const day = new Date(value).getDate();
+    const hour = new Date(value).getHours();
+    const min = new Date(value).getMinutes();
+    return year + '年' + month + '月' + day + '日 ' + hour + '时' + min + '分';
+}

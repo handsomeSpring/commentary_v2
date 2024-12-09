@@ -31,8 +31,8 @@ const nMessage = useMessage();
 const comList = ref([]);
 async function getCommentor() {
     try {
-        const { data, message, status } = await getByOpName('Commentator');
-        if (status !== 200) throw new Error(message);
+        const { data, status } = await getByOpName('Commentator');
+        if (status !== 200) throw new Error('服务端异常！');
         comList.value = data;
     } catch (error) {
         nMessage.error(error?.response?.data?.message ?? '未知错误，请联系网站管理员');
@@ -52,7 +52,9 @@ onMounted(async () => {
 
     .card-item {
         margin: 12px 0;
-
+        background:linear-gradient( 173deg, #B3D4FF 0%, rgba(255,255,255,0) 93%);
+        border-radius: 8px 8px 0 0;
+        border:none;
         header {
             display: flex;
             justify-content: flex-start;

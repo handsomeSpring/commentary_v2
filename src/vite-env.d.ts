@@ -8,3 +8,9 @@ declare module '@/components/*';
 declare module '@/store/*';
 declare module '@/utils/*';
 declare module '@/router/*';
+
+declare module 'vue-router' {
+    interface RouteLocationNormalizedLoaded {
+        query: Record<string, string>
+    }
+}

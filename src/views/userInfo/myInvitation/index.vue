@@ -13,7 +13,7 @@
         </div>
         <div class="main__table" v-else>
             <n-timeline :icon-size="20">
-                <n-timeline-item color="#F7A725" line-type="dashed" v-for="(item, index) in list" :key="index">
+                <n-timeline-item color="#4090EF" line-type="dashed" v-for="(item, index) in list" :key="index">
                     <template #header>
                         <div class="flex-header">
                             <p>
@@ -27,7 +27,7 @@
                     </template>
                     <template #icon>
                         <n-icon>
-                            <StopCircle />
+                            <PersonAdd />
                         </n-icon>
                     </template>
                     <n-alert class="n__alert--container" :show-icon="false" :type="computedStatus(item.status)">
@@ -53,7 +53,7 @@
                         </div>
                         <p>赛季：{{ item.gameSeason }}</p>
                         <p>赛程：{{ item.gameTeamCus }} vs {{ item.gameTeamHos }}</p>
-                        <p>时间：{{ item.gameTime }}</p>
+                        <p>时间：{{ handleTime(item.gameTime) }}</p>
                         <img v-if="item.status === 0" src="@/assets/images/waitDoing.svg">
                         <img v-if="item.status === 1" src="@/assets/images/accept.svg">
                         <img v-if="item.status === 2" src="@/assets/images/refuse.svg">
@@ -82,8 +82,9 @@
 </template>
 
 <script setup lang='ts'>
-import { StopCircle, PersonSharp, Time, LogoXbox } from "@vicons/ionicons5";
+import { PersonAdd, PersonSharp, Time, LogoXbox } from "@vicons/ionicons5";
 import { useMessage } from "naive-ui";
+import { handleTime } from "@/utils";
 // 声明类型
 type Status = 0 | 1 | 2;
 interface GameInvitation {
