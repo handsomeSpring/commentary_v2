@@ -24,7 +24,7 @@
               {{ item.belong || '未知赛季' }}
             </n-gradient-text>
           </p>
-          <n-tag :bordered="false" type="info">
+          <n-tag :bordered="false" size="small" type="success">
             {{ item.tag || '未定义' }}
           </n-tag>
         </header>
@@ -193,7 +193,7 @@ const onPositiveClick = async () => {
 
     header {
       width: 95%;
-      margin: 0 auto;
+      margin: 0.5em auto;
       display: flex;
       justify-content: space-between;
       align-items: center;

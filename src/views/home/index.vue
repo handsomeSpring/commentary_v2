@@ -1,94 +1,87 @@
 <template>
     <nor-header title="赛程中心" activeMenu="1">
-        <div class="main-body">
+        <full-screen-loading v-if="loading"></full-screen-loading>
+        <div class="main-body" v-else>
             <div class="header-search-container">
                 <n-select v-model:value="season" :options="options" placeholder="请选择赛季" clearable
                     @update:value="handleSelect" />
             </div>
             <div class="listTable">
-                <template v-if="loading">
-                    <n-skeleton text :repeat="4" />
-                    <n-skeleton text style="width: 87%" :repeat="2" />
-                    <n-skeleton text style="width: 70%" :repeat="2" />
-                    <n-skeleton text style="width: 50%" />
-                </template>
-                <template v-else>
-                    <n-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
-                    </n-empty>
-                    <n-infinite-scroll v-else style="height: 100%" :distance="10" @load="handleLoad">
-                        <n-timeline>
-                            <n-timeline-item v-for="(item, index) in tableData" :key="index"
-                                :type="computedType(item.opentime, item.winteam)">
+                <n-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
+                </n-empty>
+                <n-infinite-scroll v-else style="height: 100%" :distance="10" @load="handleLoad">
+                    <n-timeline>
+                        <n-timeline-item v-for="(item, index) in tableData" :key="index"
+                            :type="computedType(item.opentime, item.winteam)">
+                            <template #header>
+                                {{ item.tag }}
+                                <span class="time__text" :class="[
+                                    item.isOver ? 'over' : 'process'
+                                ]">{{ item.isOver ? '赛程已结束' : '赛程进行中' }}</span>
+                            </template>
+                            <template #footer>
+                                <div class="footer__line">
+                                    <n-icon size="13" style="margin-right: 3px;">
+                                        <Time />
+                                    </n-icon>
+                                    {{ handleTime(item.opentime) }}
+                                </div>
+                            </template>
+                            <n-card style="background-color: #fff;">
                                 <template #header>
-                                    {{ item.tag }}
-                                    <span class="time__text" :class="[
-                                        item.isOver ? 'over' : 'process'
-                                    ]">{{ item.isOver ? '赛程已结束' : '赛程进行中' }}</span>
+                                    <n-gradient-text type="info">
+                                        {{ item.team1_name }}
+                                    </n-gradient-text>
+                                    <span style="margin:0 12px;">
+                                        <n-gradient-text type="warning">
+                                            vs
+                                        </n-gradient-text>
+                                    </span>
+                                    <n-gradient-text type="error">
+                                        {{ item.team2_name }}
+                                    </n-gradient-text>
                                 </template>
-                                <template #footer>
-                                    <div class="footer__line">
-                                        <n-icon size="13" style="margin-right: 3px;">
-                                            <Time />
+                                <div class="between-com" v-if="item.personType.includes('commentary')">
+                                    <div class="asg__tag--p" v-for="(com, index) in item.commentary" :key="index"
+                                        :class="!!com ? 'tag--error' : 'tag--success'">
+                                        <n-icon size="14" style="margin-right: 3px;">
+                                            <PersonSharp v-if="!!com" />
+                                            <ExtensionPuzzle v-else />
                                         </n-icon>
-                                        {{ handleTime(item.opentime) }}
+                                        {{ com || '位置空缺' }}
                                     </div>
-                                </template>
-                                <n-card style="background-color: #fff;">
-                                    <template #header>
-                                        <n-gradient-text type="info">
-                                            {{ item.team1_name }}
-                                        </n-gradient-text>
-                                        <span style="margin:0 12px;">
-                                            <n-gradient-text type="warning">
-                                                vs
-                                            </n-gradient-text>
-                                        </span>
-                                        <n-gradient-text type="error">
-                                            {{ item.team2_name }}
-                                        </n-gradient-text>
-                                    </template>
-                                    <div class="between-com" v-if="item.personType.includes('commentary')">
-                                        <div class="asg__tag--p" v-for="(com, index) in item.commentary" :key="index"
-                                            :class="!!com ? 'tag--error' : 'tag--success'">
-                                            <n-icon size="14" style="margin-right: 3px;">
-                                                <PersonSharp v-if="!!com" />
-                                                <ExtensionPuzzle v-else />
-                                            </n-icon>
-                                            {{ com || '位置空缺' }}
-                                        </div>
-                                    </div>
-                                    <n-divider />
-                                    <div style="display: flex; align-items: center;justify-content: space-between;">
-                                        <div v-if="item.personType.includes('judge')"><n-tag style="margin-right: 6px;"
-                                                type="error">裁判</n-tag> {{
-                                            item.judge || '暂无裁判'}}</div>
-                                        <div v-if="item.personType.includes('referee')"><n-tag
-                                                style="margin-right: 6px;" type="info">导播</n-tag> {{
-                                            item.referee || '暂无导播'}}</div>
-                                    </div>
-                                    <div class="btn-container-footer" v-if="item.personType.includes('commentary')">
-                                        <n-button-group size="small">
-                                            <n-button size="small" type="primary" strong
-                                                @click="selectGames(item)"
-                                                :disabled="computedDisBtn(item.isOver, item.commentary)">
-                                                {{ computedDisBtn(item.isOver, item.commentary) ? '无法报名' :
-                                                    '解说该场' }}
-                                            </n-button>
-                                            <n-button type="default" size="small" @click="inviteCom(item)"
-                                                :disabled="computedDisBtn(item.isOver, item.commentary)">邀请解说</n-button>
-                                        </n-button-group>
-                                    </div>
-                                </n-card>
-                            </n-timeline-item>
-                        </n-timeline>
-                        <div v-if="listLoading" class="text">
-                            加载中...
-                        </div>
-                        <div v-if="noMore" class="text">
-                            没有更多了
-                        </div>
-                    </n-infinite-scroll>
-                </template>
+                                </div>
+                                <n-divider />
+                                <div style="display: flex; align-items: center;justify-content: space-between;">
+                                    <div v-if="item.personType.includes('judge')"><n-tag style="margin-right: 6px;"
+                                            type="error">裁判</n-tag> {{
+                                                item.judge || '暂无裁判' }}</div>
+                                    <div v-if="item.personType.includes('referee')"><n-tag style="margin-right: 6px;"
+                                            type="info">导播</n-tag> {{
+                                                item.referee || '暂无导播' }}</div>
+                                </div>
+                                <div class="btn-container-footer" v-if="item.personType.includes('commentary')">
+                                    <n-button-group size="small">
+                                        <n-button size="small" type="primary" strong @click="selectGames(item)"
+                                            :disabled="computedDisBtn(item.isOver, item.commentary)">
+                                            {{ computedDisBtn(item.isOver, item.commentary) ? '无法报名' :
+                                                '解说该场' }}
+                                        </n-button>
+                                        <n-button type="default" size="small" @click="inviteCom(item)"
+                                            :disabled="computedDisBtn(item.isOver, item.commentary)">邀请解说</n-button>
+                                    </n-button-group>
+                                </div>
+                            </n-card>
+                        </n-timeline-item>
+                    </n-timeline>
+                    <div v-if="listLoading" class="text">
+                        加载中...
+                    </div>
+                    <div v-if="noMore" class="text">
+                        没有更多了
+                    </div>
+                </n-infinite-scroll>
+
             </div>
         </div>
     </nor-header>
@@ -124,9 +117,9 @@ interface GameInterface {
     team1_piaoshu: number
     team2_piaoshu: number
     winteam?: string
-    com_limit:1 | 2 | 3
-    judge?:string
-    person_type?:string
+    com_limit: 1 | 2 | 3
+    judge?: string
+    person_type?: string
 }
 
 // 接口定义结束
@@ -215,7 +208,7 @@ const getGames = async () => {
         tableData.value = data.map(item => {
             return {
                 ...item,
-                personType:item.person_type || 'referee,commentary',
+                personType: item.person_type || 'referee,commentary',
                 isOver: new Date() > new Date(item.opentime),
                 commentary: constructorComs(item.commentary, item.com_limit)
             }
@@ -257,7 +250,7 @@ const handleLoad = async () => {
             tableData.value = [...tableData.value, ...data.map(item => {
                 return {
                     ...item,
-                    personType:item.person_type || 'referee,commentary',
+                    personType: item.person_type || 'referee,commentary',
                     isOver: new Date() > new Date(item.opentime),
                     commentary: constructorComs(item.commentary, item.com_limit)
                 }
@@ -295,7 +288,7 @@ const handleTime = (value: string) => {
 //         }
 //     }
 // }
-const computedDisBtn = (isOver:boolean, commentary:any[]) => {
+const computedDisBtn = (isOver: boolean, commentary: any[]) => {
     if (isOver) {
         return true;
     } else {
@@ -371,25 +364,25 @@ const handleInvite = async (person: number[]) => {
 </script>
 <style scoped lang='scss'>
 .header-search-container {
-    height:58px;
+    height: 58px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: fixed;
-    top:52px;
-    width:calc(100% - 24px);
-    z-index:2;
-    padding:0 12px;
-    background:#e8e8f3;
+    top: 52px;
+    width: calc(100% - 24px);
+    z-index: 2;
+    padding: 0 12px;
+    background: #e8e8f3;
 }
 
 .listTable {
-    padding:84px 12px 12px;
+    padding: 84px 12px 12px;
     min-height: calc(100% - 96px);
-    background:url('../../assets/images/listBg.png');
+    background: url('../../assets/images/listBg.png');
     background-size: cover;
     position: relative;
-    z-index:1;
+    z-index: 1;
 }
 
 
@@ -439,7 +432,7 @@ const handleInvite = async (person: number[]) => {
 
 .main-body {
     background: #f0f4f8;
-    height:100%;
+    height: 100%;
 }
 
 .n-card {
@@ -457,16 +450,19 @@ const handleInvite = async (person: number[]) => {
     display: flex;
     align-items: center;
 }
-.time__text{
+
+.time__text {
     font-size: 1rem;
-    margin-left:12px;
+    margin-left: 12px;
     font-weight: bold;
     font-style: italic;
-    &.over{
-        color:#f40;
+
+    &.over {
+        color: #f40;
     }
-    &.process{
-        color:#429F46;
+
+    &.process {
+        color: #429F46;
     }
 }
 </style>

@@ -50,7 +50,7 @@
           <li class="grid-li-container" @click="routerTo('/userInfo/commentor')">
             <p>
               <n-icon size="18" color="#f02">
-                <Mic />
+                <PeopleSharp />
               </n-icon>
               <span class="main-text">解说成员</span>
             </p>
@@ -127,7 +127,7 @@
           <li class="grid-li-container" @click="routerTo('/userInfo/helpCenter')">
             <p>
               <n-icon size="18" color="#F40">
-                <HelpCircleOutline />
+                <GitBranch />
               </n-icon>
               <span class="main-text">办赛流程</span>
             </p>
@@ -167,7 +167,7 @@
 
 <script setup lang='ts'>
 import { useUserStore } from '@/store/user';
-import { ChevronForward, WarningSharp, Mic, Desktop, BagCheck, PulseSharp, InformationCircle, BodySharp, Easel, FingerPrintOutline, HelpCircleOutline, Grid } from "@vicons/ionicons5"
+import { ChevronForward, WarningSharp, PeopleSharp, Desktop, BagCheck, PulseSharp, InformationCircle, BodySharp, Easel, FingerPrintOutline, GitBranch, Grid } from "@vicons/ionicons5"
 import { useDialog,useMessage } from 'naive-ui';
 import { removeToken } from '@/utils/auth';
 const dialog = useDialog();

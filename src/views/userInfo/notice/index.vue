@@ -1,6 +1,7 @@
 <template>
     <nav-back title="最新通知公告" />
-    <div class="new-content">
+    <full-screen-loading v-if="loading"></full-screen-loading>
+    <div class="new-content" v-else>
         <li v-for="(item, index) in noticeInfo" :key="index" @click="goDetail(item)">
              <p class="title">{{ item.title }}</p>
              <p class="timer">{{ item.time.slice(0,10) }}</p>
@@ -10,11 +11,22 @@
 
 <script setup lang='ts'>
 import { getNews } from "@/api/common";
+import { useMessage } from "naive-ui";
 const router = useRouter();
 const noticeInfo = ref([]);
+const message = useMessage();
+const loading = ref(false);
 const getNewsByApi = async ()=>{
-    const { data } = await getNews('2');
-    noticeInfo.value = data;
+    try {
+        loading.value = true; 
+        const { data, status } = await getNews('2');
+        if(status !== 200) throw new Error('服务端异常！');
+        noticeInfo.value = data;
+    } catch (error) {
+        message.error(error.message)
+    } finally{
+        loading.value = false;
+    }
 }
 const goDetail = (item)=>{
     router.push({path:'/userInfo/notice/details', query:item})
