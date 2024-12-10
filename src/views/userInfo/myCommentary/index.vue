@@ -166,6 +166,10 @@ const onNegativeClick = () => {
 
 const onPositiveClick = async () => {
   try {
+    if(!cancelReason.value){
+      uMessage.warning('请填写原因！');
+      return;
+    }
     showModal.value = false;
     const { status } = await cancelCommentary(cancelId.value, cancelReason.value);
     if (status !== 200) throw new Error('服务端异常，请联系网站管理员');

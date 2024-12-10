@@ -8,19 +8,6 @@
   </template>
   <template v-else>
     <div class="div-content" v-if="myStoreList.length > 0">
-      <!-- <n-collapse>
-        <n-collapse-item :title="item.name" name="1">
-          <div>
-            <p class="goods__info">商品描述：{{ item.description }}</p>
-            <p class="goods__info">商品介绍：{{ item.information }}</p>
-            <n-steps size="small" :current="item.isVerification ? 2 : 1"
-              :status="item.isVerification ? 'finish' : 'process'">
-              <n-step title="待核销" />
-              <n-step title="已结单" />
-            </n-steps>
-          </div>
-        </n-collapse-item>
-      </n-collapse> -->
       <li v-for="(item, index) in myStoreList" :key="index" :class="item.isVerification ? 'success' : 'warning'">
         <div class="left-part" :class="item.isVerification ? 'success' : 'warning'">
           <n-icon size="36" v-if="item.isVerification" color="#fff">
@@ -80,6 +67,7 @@ getShopping();
     align-items: stretch;
     height: auto;
     box-sizing: border-box;
+    margin:1em 0;
 
     &.success {
       border: 2px solid#0BC473;
