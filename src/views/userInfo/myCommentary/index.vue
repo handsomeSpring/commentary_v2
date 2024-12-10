@@ -31,7 +31,8 @@
         <main>
           <div class="team-info">
             <n-badge :value="`赞${item.team1_piaoshu || 0}`">
-              <n-avatar round>主场</n-avatar>
+              <n-avatar round :src="item.customLogo"
+                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
             </n-badge>
             <p class="blue-game">{{ item.team1_name }}</p>
           </div>
@@ -40,7 +41,8 @@
           </n-icon>
           <div class="team-info">
             <n-badge :value="`赞${item.team2_piaoshu || 0}`">
-              <n-avatar round>客场</n-avatar>
+              <n-avatar round :src="item.hostLogo"
+                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
             </n-badge>
             <p class="red-game">{{ item.team2_name }}</p>
           </div>
@@ -68,13 +70,13 @@
                 <n-tag size="small" :bordered="false" type="warning">
                   导播
                 </n-tag>
-                {{ item.referee || '暂无导播'}}
+                {{ item.referee || '暂无导播' }}
               </div>
               <div class="one-line" v-if="item.personType.includes('judge')">
                 <n-tag size="small" :bordered="false" type="error">
                   裁判
                 </n-tag>
-                {{ item.judge || '暂无裁判'}}
+                {{ item.judge || '暂无裁判' }}
               </div>
             </div>
           </n-collapse-item>
@@ -107,16 +109,16 @@ const comList = ref([]); //我的解说列表
 const triggerAreas = ref(['main', 'arrow']);
 const isCommentary = ref(true); //是否是解说
 const router = useRouter();
-const handleBack = ()=>{
+const handleBack = () => {
   router.go(-1);
 }
 const handleTime = (value: string) => {
-    const year = new Date(value).getFullYear();
-    const month = new Date(value).getMonth() + 1;
-    const day = new Date(value).getDate();
-    const hour = new Date(value).getHours();
-    const min = new Date(value).getMinutes();
-    return year + '年' + month + '月' + day + '日 ' + hour + '时' + min + '分';
+  const year = new Date(value).getFullYear();
+  const month = new Date(value).getMonth() + 1;
+  const day = new Date(value).getDate();
+  const hour = new Date(value).getHours();
+  const min = new Date(value).getMinutes();
+  return year + '年' + month + '月' + day + '日 ' + hour + '时' + min + '分';
 };
 async function initMyCommentary() {
   try {
@@ -126,7 +128,9 @@ async function initMyCommentary() {
     comList.value = data.map(item => {
       return {
         ...item,
-        personType: item.person_type ?? 'referee,commentary'
+        personType: item.person_type ?? 'referee,commentary',
+        customLogo: `https://api.idvasg.cn/loge/${item.belong}/${item.team1_name}.png`,
+        hostLogo: `https://api.idvasg.cn/loge/${item.belong}/${item.team2_name}.png`,
       }
     });
   } catch (error) {
@@ -166,7 +170,7 @@ const onNegativeClick = () => {
 
 const onPositiveClick = async () => {
   try {
-    if(!cancelReason.value){
+    if (!cancelReason.value) {
       uMessage.warning('请填写原因！');
       return;
     }

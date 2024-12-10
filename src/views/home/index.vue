@@ -27,38 +27,66 @@
                                     {{ handleTime(item.opentime) }}
                                 </div>
                             </template>
-                            <n-card style="background-color: #fff;">
+                            <n-card>
                                 <template #header>
-                                    <n-gradient-text type="info">
-                                        {{ item.team1_name }}
-                                    </n-gradient-text>
-                                    <span style="margin:0 12px;">
-                                        <n-gradient-text type="warning">
-                                            vs
-                                        </n-gradient-text>
-                                    </span>
-                                    <n-gradient-text type="error">
-                                        {{ item.team2_name }}
-                                    </n-gradient-text>
+                                    <div class="header_info">
+                                        <div class="team-info">
+                                            <n-avatar round :src="item.customLogo"
+                                                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
+                                            <p>
+                                                <n-gradient-text :size="16" type="info">{{ item.team1_name }}</n-gradient-text>
+                                            </p>
+                                        </div>
+                                        <p class="verse"> 
+                                            <n-gradient-text type="warning">
+                                                vs
+                                            </n-gradient-text>
+                                        </p>
+                                        <div class="team-info">
+                                            <n-avatar round :src="item.hostLogo"
+                                                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
+                                            <p>
+                                                <n-gradient-text :size="16" type="error">{{ item.team2_name }}</n-gradient-text>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </template>
-                                <div class="between-com" v-if="item.personType.includes('commentary')">
-                                    <div class="asg__tag--p" v-for="(com, index) in item.commentary" :key="index"
-                                        :class="!!com ? 'tag--error' : 'tag--success'">
-                                        <n-icon size="14" style="margin-right: 3px;">
-                                            <PersonSharp v-if="!!com" />
-                                            <ExtensionPuzzle v-else />
-                                        </n-icon>
-                                        {{ com || '位置空缺' }}
+                                <div class="divider"></div>
+                                <div class="grid-line" v-if="item.personType.includes('commentary')">
+                                    <div class="one_tag" v-for="(com, index) in item.commentary" :key="index">
+                                        <n-tag :type="!com ? 'success' : 'error'" size="small">
+                                            <n-icon size="12" style="margin-right: 1px;">
+                                                <ExtensionPuzzle v-if="!com" />
+                                                <PersonSharp v-else />
+                                            </n-icon>
+                                            解说
+                                        </n-tag>
+                                        <p class="name_info" :class="!com ? 'no-person' : 'fill-person'">
+                                            {{ com || '位置空缺' }}
+                                        </p>
                                     </div>
                                 </div>
-                                <n-divider />
-                                <div style="display: flex; align-items: center;justify-content: space-between;">
-                                    <div v-if="item.personType.includes('judge')"><n-tag style="margin-right: 6px;"
-                                            type="error">裁判</n-tag> {{
-                                                item.judge || '暂无裁判' }}</div>
-                                    <div v-if="item.personType.includes('referee')"><n-tag style="margin-right: 6px;"
-                                            type="info">导播</n-tag> {{
-                                                item.referee || '暂无导播' }}</div>
+                                <div class="grid-line">
+                                    <div class="one_tag" v-if="item.personType.includes('judge')">
+                                        <n-tag type="error" size="small">
+                                            <n-icon size="12" style="margin-right: 1px;">
+                                                <PersonSharp />
+                                            </n-icon>
+                                            裁判
+                                        </n-tag>
+                                        <p class="name_info">{{ item.judge || '暂无裁判' }}</p>
+                                    </div>
+                                    <div class="one_tag" v-if="item.personType.includes('referee')">
+                                        <n-tag type="info" size="small">
+                                            <n-icon size="12" style="margin-right: 1px;">
+                                                <PersonSharp />
+                                            </n-icon>
+                                            导播
+                                        </n-tag>
+                                        <p class="name_info">
+                                            {{ item.referee || '暂无导播' }}
+                                        </p>
+                                    </div>
                                 </div>
                                 <div class="btn-container-footer" v-if="item.personType.includes('commentary')">
                                     <n-button-group size="small">
@@ -120,6 +148,9 @@ interface GameInterface {
     com_limit: 1 | 2 | 3
     judge?: string
     person_type?: string
+    commentaryIds: number[]
+    customLogo:string
+    hostLogo:string
 }
 
 // 接口定义结束
@@ -210,7 +241,10 @@ const getGames = async () => {
                 ...item,
                 personType: item.person_type || 'referee,commentary',
                 isOver: new Date() > new Date(item.opentime),
-                commentary: constructorComs(item.commentary, item.com_limit)
+                commentary: constructorComs(item.commentary, item.com_limit),
+                commentaryIds: constructorComsId(item.commentary),
+                customLogo: `https://api.idvasg.cn/loge/${item.belong}/${item.team1_name}.png`,
+                hostLogo: `https://api.idvasg.cn/loge/${item.belong}/${item.team2_name}.png`,
             }
         });
     } catch (error) {
@@ -219,7 +253,10 @@ const getGames = async () => {
         loading.value = false;
     }
 }
-
+const constructorComsId = (commentary: string) => {
+    const comArr = JSON.parse(commentary);
+    return Array.isArray(comArr) ? comArr.map(item => item.id) : [];
+}
 const constructorComs = (commentary: string, number: number) => {
     const comArr = JSON.parse(commentary);
     let result = [];
@@ -330,7 +367,7 @@ const onPositiveClick = async () => {
 }
 // selectGames 
 const selectGames = (item: GameInterface) => {
-    if (item.commentary.includes(userStore.userInfo.chinaname)) return nMessage.warning('您已经报名解说这场比赛了，请勿重复操作');
+    if (item.commentaryIds.includes(userStore.userInfo.id)) return nMessage.warning('您已经报名解说这场比赛了，请勿重复操作');
     confirmInfo.value = `您是否确认解说${item.belong}${item.tag || ''}的${item.team1_name}对战${item.team2_name}的比赛？`;
     showModal.value = true;
     gameId.value = item.id;
@@ -385,49 +422,47 @@ const handleInvite = async (person: number[]) => {
     z-index: 1;
 }
 
+.divider {
+    height: 3px;
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+    background: linear-gradient(173deg, #B3D4FF 0%, rgba(255, 255, 255, 0) 93%);
+}
 
-.between-com {
+.grid-line {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px 36px;
-    align-items: center;
+    margin: 1em 0;
 
-    .asg__tag--p {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        width: calc(100% - 24px);
-        font-size: 14px;
-        padding: 3px 12px;
-        border-radius: 4px;
+    .one_tag {
         display: flex;
         align-items: center;
-        justify-content: flex-start;
 
-        &.tag--error {
-            background: #F9E7E5;
-            color: #FF3C00;
-        }
+        .name_info {
+            width: 6em;
+            margin-left: 0.4em;
+            font-size: 0.9em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
 
-        &.tag--success {
-            color: #429F46;
-            background: #E6F3E7
+            &.no-person {
+                color: #429F46
+            }
+
+            &.fill-person {
+                color: #f40;
+            }
         }
     }
 
-    // .name {
-    //     display: inline-block;
-    //     width: 21vw;
-    //     white-space: nowrap;
-    //     text-overflow: ellipsis;
-    //     overflow: hidden;
-    // }
 }
 
 .btn-container-footer {
     display: flex;
     justify-content: flex-end;
-    margin-top: 24px;
+    margin-top: 1em;
+    gap: 0.7em;
 }
 
 .main-body {
@@ -438,6 +473,7 @@ const handleInvite = async (person: number[]) => {
 .n-card {
     background: transparent;
     border-color: #e8e8f3;
+    background-color: #fff;
 }
 
 .text {
@@ -463,6 +499,29 @@ const handleInvite = async (person: number[]) => {
 
     &.process {
         color: #429F46;
+    }
+}
+
+.header_info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    .verse{
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+    .team-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap:0.6em;
+        width: 30%;
+
+        img {
+            width: 4em;
+            height: 4em;
+        }
     }
 }
 </style>
