@@ -13,6 +13,8 @@ interface Result {
   base64?: string;
   id?:number
   qqnumber?:string
+  roleListCode:string | null
+  roleListName:string | null
 }
 export const useUserStore = defineStore('User', () => {
   // 定义 state
@@ -25,7 +27,9 @@ export const useUserStore = defineStore('User', () => {
     money:null,
     base64: "",
     id:undefined,
-    qqnumber:null
+    qqnumber:null,
+    roleListCode:null,
+    roleListName:null
   })
   // 清空userInfo
   function clearInfo() {
@@ -37,7 +41,10 @@ export const useUserStore = defineStore('User', () => {
       officium:"",
       money:null,
       base64: "",
-      id:undefined
+      id:undefined,
+      qqnumber:'',
+      roleListCode:null,
+      roleListName:null
     };
   };
   // 定义 action

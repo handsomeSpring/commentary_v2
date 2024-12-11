@@ -14,17 +14,20 @@
                         <n-timeline-item v-for="(item, index) in tableData" :key="index"
                             :type="computedType(item.opentime, item.winteam)">
                             <template #header>
-                                {{ item.tag }}
+                                {{ handleTime(item.opentime) }}
                                 <span class="time__text" :class="[
                                     item.isOver ? 'over' : 'process'
-                                ]">{{ item.isOver ? '赛程已结束' : '赛程进行中' }}</span>
+                                ]"> <n-gradient-text :size="16" :type="item.isOver ? 'error' : 'success'">{{
+                                        item.isOver ? '赛程已结束' : '赛程进行中' }}</n-gradient-text></span>
                             </template>
                             <template #footer>
                                 <div class="footer__line">
-                                    <n-icon size="13" style="margin-right: 3px;">
-                                        <Time />
-                                    </n-icon>
-                                    {{ handleTime(item.opentime) }}
+                                    <n-tag type="warning" size="small">
+                                        <n-icon size="11" style="margin-right: 0.5em;">
+                                            <PricetagsSharp />
+                                        </n-icon>
+                                        {{ item.tag }}
+                                    </n-tag>
                                 </div>
                             </template>
                             <n-card>
@@ -34,10 +37,11 @@
                                             <n-avatar round :src="item.customLogo"
                                                 fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
                                             <p>
-                                                <n-gradient-text :size="16" type="info">{{ item.team1_name }}</n-gradient-text>
+                                                <n-gradient-text :size="16" type="info">{{ item.team1_name
+                                                    }}</n-gradient-text>
                                             </p>
                                         </div>
-                                        <p class="verse"> 
+                                        <p class="verse">
                                             <n-gradient-text type="warning">
                                                 vs
                                             </n-gradient-text>
@@ -46,7 +50,8 @@
                                             <n-avatar round :src="item.hostLogo"
                                                 fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
                                             <p>
-                                                <n-gradient-text :size="16" type="error">{{ item.team2_name }}</n-gradient-text>
+                                                <n-gradient-text :size="16" type="error">{{ item.team2_name
+                                                    }}</n-gradient-text>
                                             </p>
                                         </div>
                                     </div>
@@ -68,7 +73,7 @@
                                 </div>
                                 <div class="grid-line">
                                     <div class="one_tag" v-if="item.personType.includes('judge')">
-                                        <n-tag type="error" size="small">
+                                        <n-tag type="info" size="small">
                                             <n-icon size="12" style="margin-right: 1px;">
                                                 <PersonSharp />
                                             </n-icon>
@@ -124,7 +129,7 @@
 <script setup lang='ts'>
 import InviteChoose from '@/components/home/InviteChoose.vue';
 import { useMessage } from 'naive-ui';
-import { PersonSharp, Time, ExtensionPuzzle } from "@vicons/ionicons5";
+import { PersonSharp, PricetagsSharp, ExtensionPuzzle } from "@vicons/ionicons5";
 import { selectCom } from "@/api/commentary"
 import { getUsersWithRole } from '@/api/common';
 import { getByCode } from "@/api/common";
@@ -149,8 +154,8 @@ interface GameInterface {
     judge?: string
     person_type?: string
     commentaryIds: number[]
-    customLogo:string
-    hostLogo:string
+    customLogo: string
+    hostLogo: string
 }
 
 // 接口定义结束
@@ -289,10 +294,13 @@ const handleLoad = async () => {
                     ...item,
                     personType: item.person_type || 'referee,commentary',
                     isOver: new Date() > new Date(item.opentime),
-                    commentary: constructorComs(item.commentary, item.com_limit)
+                    commentary: constructorComs(item.commentary, item.com_limit),
+                    commentaryIds: constructorComsId(item.commentary),
+                    customLogo: `https://api.idvasg.cn/loge/${item.belong}/${item.team1_name}.png`,
+                    hostLogo: `https://api.idvasg.cn/loge/${item.belong}/${item.team2_name}.png`,
                 }
             })];
-        }, 1000);
+        }, 800);
     } catch (error) {
         nMessage.error(error.message);
     }
@@ -334,9 +342,9 @@ const computedDisBtn = (isOver: boolean, commentary: any[]) => {
 }
 const computedType = (time: string, winteam: string | null) => {
     if (new Date() < new Date(time)) {
-        return 'info';
+        return 'success';
     } else {
-        return !!winteam ? 'error' : 'success';
+        return !!winteam ? 'error' : 'warning';
     }
 }
 
@@ -474,6 +482,7 @@ const handleInvite = async (person: number[]) => {
     background: transparent;
     border-color: #e8e8f3;
     background-color: #fff;
+    border-radius: 8px !important;
 }
 
 .text {
@@ -506,16 +515,18 @@ const handleInvite = async (person: number[]) => {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    .verse{
+
+    .verse {
         font-size: 1.5em;
         font-weight: bold;
     }
+
     .team-info {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap:0.6em;
+        gap: 0.6em;
         width: 30%;
 
         img {

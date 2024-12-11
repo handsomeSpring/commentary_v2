@@ -36,7 +36,7 @@
     <n-card v-if="!skeletonLoading" title="账号信息">
         <p class="info__p">用户：<span style="color:#4090EF;font-weight: bold">{{ me.name }}</span></p>
         <p class="info__p">职位：{{ computedOfficium(me.officium) }}</p>
-        <p class="info__p">邮箱：{{ me.email || '-' }}</p>
+        <p class="info__p">权限：{{ me.roleListName || '普通用户' }}</p>
         <p class="info__p">qq号：{{ me.qqnumber || '未绑定' }} <span v-show="!readOnly" class="upd_text" @click="openDialog">修改</span></p>
         <p class="info__p">身份：{{ computedAdmin(me.roles) }}</p>
         <p class="info__p">积分：{{ me.money || 0 }}</p>
@@ -70,6 +70,7 @@ const skeletonLoading = ref(true);
 const isNameEditing = ref(false);
 const nameModel = ref('');
 const roleMap = ref([]);
+
 const getRolesMap = () => {
     getByCode('roleList').then(res => {
         roleMap.value = res.data;

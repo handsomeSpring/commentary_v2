@@ -323,7 +323,7 @@ const handleBuy = async () => {
 </script>
 <style scoped lang="scss">
 .super-container {
-  height: 100%;
+  height: calc(100dvh - 52px - 4em);
   box-sizing: border-box;
   width: 100%;
   display: grid;
