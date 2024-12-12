@@ -289,14 +289,14 @@ const active = ref(false);
 const handleBuy = async () => {
   try {
     if (!car.isExceedLowerPrice()) return;
-    if (
-      !(
-        userStore.userInfo.officium &&
-        userStore.userInfo.officium === "Commentator"
-      )
-    ) {
-      return nMessage.error("兑换失败，您不是解说，无法购物兑换");
-    }
+    // if (
+    //   !(
+    //     userStore.userInfo.officium &&
+    //     userStore.userInfo.officium === "Commentator"
+    //   )
+    // ) {
+    //   return nMessage.error("兑换失败，您不是解说，无法购物兑换");
+    // }
     if (Number(userStore.userInfo.money) < car.totalPrice)
       return nMessage.error("兑换失败，积分不足");
     const goodsId = car.getGoodsIds();
