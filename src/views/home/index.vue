@@ -440,6 +440,7 @@ const handleInvite = async (person: number[]) => {
 .grid-line {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    gap:1em;
     margin: 1em 0;
 
     .one_tag {
