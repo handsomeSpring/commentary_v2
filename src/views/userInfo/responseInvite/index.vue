@@ -92,9 +92,14 @@
 </template>
 
 <script setup lang='ts'>
-import { StopCircle, PersonSharp, Time, LogoXbox, Alarm } from "@vicons/ionicons5";
+import { StopCircle, PersonSharp, Time, LogoXbox } from "@vicons/ionicons5";
 import { useMessage } from 'naive-ui';
+import { useUserStore } from "@/store/user";
 type Status = 0 | 1 | 2;
+interface Coms {
+    id:number,
+    chinaname:string
+}
 interface GameInvitation {
     inviteTime: string,
     inivitePerson: string,
@@ -110,7 +115,8 @@ interface GameInvitation {
     gameJudge:string,
     status: Status,
     isFill: boolean,
-    id: number
+    id: number,
+    commentary: Coms[]
 }
 const message = useMessage();
 const loading = ref(false);
@@ -119,11 +125,14 @@ const confirmInfo = ref('');
 const reqData = ref({
     id: null,
     status: null,
-    gameId: null
+    gameId: null,
+    commentary:[]
 });
 const list = ref<GameInvitation[]>([]);
 const total = ref(0);
 const showMore = ref(false);
+
+const userStore = useUserStore();
 const computedStatus = (status: Status) => {
     const mapList = {
         '0': 'info',
@@ -162,6 +171,7 @@ const getData = async (page: number, needToReset = false) => {
                 gamePlayer: item.match.referee || '无导播',
                 gameJudge:item.match.judge || '无裁判',
                 isFill: JSON.parse(item.match.commentary).length > 2,
+                commentary:item?.match?.commentary && typeof item.match.commentary === 'string' ? JSON.parse(item.match.commentary) : [],
                 status: item.status ?? 0,
                 id: item.id
             }
@@ -185,6 +195,7 @@ const handleMore = () => {
 }
 type ResponseType = 1 | 2;
 const handleResponse = (item: GameInvitation, type: ResponseType) => {
+    reqData.value.commentary = (item?.commentary ?? []).map(item => item.id) ?? [];
     reqData.value.id = item.id;
     reqData.value.status = type;
     reqData.value.gameId = item.gameId;
@@ -196,11 +207,15 @@ const onPositiveClick = async () => {
         const { data, status } = await refuseOrAgreeInv(reqData.value);
         if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
         if (data.code && data.code !== 200) throw new Error(data.message);
+        if(!reqData.value.commentary.includes(userStore.userInfo.id)) 
+           throw new Error('响应成功，由于您已经选了该场比赛，该赛程不会再重复添加您的名单!');
         if (reqData.value.status === 1) {
             const response = await selectCom(reqData.value.gameId);
             if (response.status !== 200) throw new Error('选班失败，服务端异常，请联系网站管理员');
+            message.success('响应成功，并选取了该班次！');
+        }else{
+            message.success('操响应成功，已拒绝该用户的邀请！');
         }
-        message.success('操作成功！');
         getData(1, true);
     } catch (error) {
         message.error(error.message);
