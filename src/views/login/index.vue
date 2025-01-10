@@ -85,7 +85,6 @@ const login = async () => {
         nMessage.success("登录成功！");
         router.push({ path: '/home' })
     } catch (error) {
-        console.log(error);
         if (error instanceof Object
             && 'response' in error
             && error.response instanceof Object
@@ -146,7 +145,7 @@ eventEmitter.on('API:UN_AUTH',()=>{
     background: radial-gradient(#cae5d3, #9cc9e5, #ebedf3);
     height: 100dvh;
     width: 100%;
-    overflow: auto;
+    overflow-x:hidden;
 
     .login-header {
         position: relative;
