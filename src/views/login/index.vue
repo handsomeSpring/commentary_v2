@@ -7,7 +7,7 @@
         <div class="login-form">
             <div class="form-body">
                 <p class="title-text">
-                    <n-gradient-text type="info" size="24" :gradient="{
+                    <n-gradient-text type="info" size="28" :gradient="{
                         from: '#CAE5D3',
                         to: '#9CC9E5',
                     }">
@@ -16,11 +16,11 @@
                 </p>
                 <n-form ref="formRef" :model="loginForm" :rules="rules" label-placement="top">
                     <n-form-item label="用户名" path="userName">
-                        <n-input type="primary" v-model:value="loginForm.userName" placeholder="请输入用户名"
+                        <n-input size="large"  type="primary" v-model:value="loginForm.userName" placeholder="请输入用户名"
                             clearable></n-input>
                     </n-form-item>
                     <n-form-item label="密码" path="password">
-                        <n-input v-model:value="loginForm.password" type="password" show-password-on="click"
+                        <n-input size="large" v-model:value="loginForm.password" type="password" show-password-on="click"
                             placeholder="请输入密码" clearable>
                             <template #password-visible-icon>
                                 <n-icon :size="16" :component="GlassesOutline" />
@@ -34,7 +34,7 @@
                         <a @click="routerToEnroll">成为解说</a>
                         <a @click="routerToRegister('/register')">没有账号？立即注册</a>
                     </p>
-                    <n-button type="primary" block @click="handleLogin">
+                    <n-button size="large"  type="primary" block @click="handleLogin">
                         <span style="margin-right:12px;color:#fff;font-weight: bold">登录</span><n-spin v-show="loading"
                             stroke="#fff" :size="14" />
                     </n-button>
@@ -146,10 +146,13 @@ eventEmitter.on('API:UN_AUTH',()=>{
     height: 100dvh;
     width: 100%;
     overflow-x:hidden;
+    display: flex;
+    flex-direction: column;
 
     .login-header {
         position: relative;
-        height: 30%;
+        // height: 30%;
+        margin: auto 0;
         width: 100%;
         display: flex;
         justify-content: center;
@@ -172,7 +175,8 @@ eventEmitter.on('API:UN_AUTH',()=>{
         position: relative;
         border-radius: 30px 30px 0 0;
         width: 100%;
-        min-height:70%;
+        flex-shrink: 0;
+        // min-height:70%;
         background: #fff;
         box-shadow: 1px 1px 10px rgba(255, 255, 255, .3);
         display: flex;
@@ -187,7 +191,7 @@ eventEmitter.on('API:UN_AUTH',()=>{
                 justify-content: space-between;
                 align-items: center;
                 width: 100%;
-                margin: 12px 0;
+                margin: 1em 0;
 
                 a {
                     color: #9CC9E5;
@@ -197,13 +201,13 @@ eventEmitter.on('API:UN_AUTH',()=>{
 
             .title-text {
                 text-align: center;
-                margin: 12px 0;
+                margin: 1em 0;
             }
         }
 
         .tag-body {
             width: 80%;
-            margin: 12px auto;
+            margin: 1em auto;
             color: #9CC9E5;
             display: flex;
             justify-content: center;
@@ -211,7 +215,7 @@ eventEmitter.on('API:UN_AUTH',()=>{
 
         .footer {
             width: 100%;
-            margin-top: 30px;
+            margin: 30px 0;
             display: flex;
             justify-content: center;
             align-items: center;
