@@ -158,7 +158,7 @@
             </n-icon>
           </li>
         </div>
-        <n-button type="error" size="small" block @click="handleLogOut">退出登录</n-button>
+        <n-button type="error" strong block @click="handleLogOut">退出登录</n-button>
       </div>
 
     </div>

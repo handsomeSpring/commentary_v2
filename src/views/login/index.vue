@@ -191,7 +191,7 @@ eventEmitter.on('API:UN_AUTH',()=>{
                 justify-content: space-between;
                 align-items: center;
                 width: 100%;
-                margin: 1em 0;
+                margin-bottom:1em;
 
                 a {
                     color: #9CC9E5;

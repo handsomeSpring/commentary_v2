@@ -1,83 +1,47 @@
 <template>
   <nav-back-fix title="返回登录" />
   <div class="background-content">
-    <div class="layer1"></div>
-    <div class="layer2"></div>
-    <div class="layer3"></div>
-    <div class="layer4"></div>
-    <div class="layer5"></div>
     <div class="form_warp">
       <div class="register_title">
         <p>用户注册</p>
       </div>
-      <n-form
-        class="form__container"
-        ref="formRef"
-        :model="registerForm"
-        :rules="rules"
-        label-placement="top"
-      >
+      <n-form class="form__container" ref="formRef" :model="registerForm" :rules="rules" label-placement="top">
         <n-form-item path="userName">
-          <n-input
-            type="primary"
-            v-model:value="registerForm.userName"
-            placeholder="请输入用户名"
-            clearable
-          ></n-input>
+          <n-input type="primary" v-model:value="registerForm.userName" placeholder="请输入用户名" clearable></n-input>
         </n-form-item>
         <n-form-item path="password">
-          <n-input
-            v-model:value="registerForm.password"
-            type="password"
-            show-password-on="click"
-            placeholder="请输入密码"
-            clearable
-          >
+          <n-input v-model:value="registerForm.password" type="password" show-password-on="click" placeholder="请输入密码"
+            clearable>
           </n-input>
         </n-form-item>
         <n-form-item path="rePassword">
-          <n-input
-            v-model:value="registerForm.rePassword"
-            type="password"
-            show-password-on="click"
-            placeholder="请输入密码"
-            clearable
-          >
+          <n-input v-model:value="registerForm.rePassword" type="password" show-password-on="click"
+            placeholder="请再次输入密码" clearable>
           </n-input>
         </n-form-item>
         <n-form-item path="chinaname">
-          <n-input
-            v-model:value="registerForm.chinaname"
-            maxlength="8"
-            show-count
-            placeholder="请输入中文名"
-            clearable
-          >
+          <n-input v-model:value="registerForm.chinaname" maxlength="8" show-count placeholder="请输入中文名" clearable>
           </n-input>
         </n-form-item>
         <n-form-item path="qqNumber">
-          <n-input
-            v-model:value="registerForm.qqNumber"
-            placeholder="请输入qq号"
-            clearable
-          >
+          <n-input v-model:value="registerForm.qqNumber" placeholder="请输入qq号" clearable>
           </n-input>
         </n-form-item>
         <n-form-item>
           <VaptchaComponent @change="handleGetToken" />
         </n-form-item>
-        <n-button
-          type="primary"
-          block
-          @click="handleRegister"
-          :disabled="!tokenObj.token"
-        >
-          <span style="margin-right: 12px; color: #fff; font-weight: bold"
-            >注册</span
-          ><n-spin v-show="loading" stroke="#fff" :size="14" />
+        <n-button type="primary" block @click="handleRegister" :disabled="!tokenObj.token">
+          <span style="margin-right: 12px; color: #fff; font-weight: bold">注册</span><n-spin v-show="loading"
+            stroke="#fff" :size="14" />
         </n-button>
       </n-form>
     </div>
+    <div class="layer1"></div>
+    <div class="layer2"></div>
+    <div class="layer3"></div>
+    <div class="layer4"></div>
+    <div class="layer5"></div>
+
   </div>
 </template>
 
@@ -198,9 +162,10 @@ const register = async () => {
 };
 </script>
 <style lang="scss" scoped>
-::v-deep.n-form-item{
+::v-deep.n-form-item {
   display: block !important;
 }
+
 .form__container {
   padding: 12px;
 }
@@ -209,23 +174,40 @@ const register = async () => {
   margin: 12px auto;
   width: 90%;
 }
+
 @function getShadows($n) {
   $shadows: "#{random(100)}vw #{random(100)}vh #fff";
+
   @for $i from 2 through $n {
     $shadows: "#{$shadows}, #{random(100)}vw #{random(100)}vh #fff";
   }
+
   @return unquote($shadows);
 }
+
+@keyframes showBox {
+  0% {
+    max-height: 0%;
+  }
+
+  100% {
+    max-height: 80%;
+  }
+}
+
 $duration: 400s;
+
 .background-content {
   background: linear-gradient(to bottom, #000, #444, rgb(44, 51, 54));
   width: 100vw;
   min-height: 100dvh;
   $count: 1000;
-  overflow: hidden;
+  overflow: hidden auto;
+
   @for $i from 1 through 5 {
     $duration: $duration / 2;
     $count: floor($count / 2);
+
     .layer#{$i} {
       z-index: 1;
       $size: #{$i}px;
@@ -237,6 +219,7 @@ $duration: 400s;
       top: 0;
       box-shadow: getShadows($count);
       animation: moveUp $duration linear infinite;
+
       &::after {
         content: "";
         position: fixed;
@@ -250,29 +233,33 @@ $duration: 400s;
     }
   }
 }
+
 .form_warp {
-  padding: 24px 0;
-  width: 90%;
-  left:5%;
-  top:90px;
-  position: sticky;
-  z-index: 2;
-  background: rgba(240,240,240,0.95);
-  border-radius: 10px;
+  padding: 1.5em 0;
+  bottom: 0;
+  position: fixed;
+  animation: showBox 400ms linear forwards;
+  overflow-y: auto;
+  width: 100%;
+  background: rgba(240, 240, 240, 0.95);
+  border-radius: 1.5em 1.5em 0 0;
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-sizing: border-box;
-  .register_title{
+
+  .register_title {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding:12px;
-    p{
-      font-size: 24px;
+    padding: 1em;
+
+    p {
+      font-size: 1.8em;
       font-weight: bold;
-      color:#9cc9e5;
+      color: #9cc9e5;
     }
   }
 }
+
 @keyframes moveUp {
   to {
     transform: translateY(-100vh);
