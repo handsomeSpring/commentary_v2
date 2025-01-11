@@ -3,7 +3,7 @@
         <full-screen-loading v-if="loading"></full-screen-loading>
         <div class="main-body" v-else>
             <div class="header-search-container">
-                <n-select v-model:value="season" :options="options" placeholder="请选择赛季" clearable
+                <n-select v-model:value="season" :options="options" placeholder="请选择赛季"
                     @update:value="handleSelect" />
             </div>
             <div class="listTable">
@@ -18,17 +18,7 @@
                                 <span class="time__text" :class="[
                                     item.isOver ? 'over' : 'process'
                                 ]"> <n-gradient-text :size="16" :type="item.isOver ? 'error' : 'success'">{{
-                                        item.isOver ? '赛程已结束' : '赛程进行中' }}</n-gradient-text></span>
-                            </template>
-                            <template #footer>
-                                <div class="footer__line">
-                                    <n-tag type="warning" size="small">
-                                        <n-icon size="11" style="margin-right: 0.5em;">
-                                            <PricetagsSharp />
-                                        </n-icon>
-                                        {{ item.tag }}
-                                    </n-tag>
-                                </div>
+                                    item.isOver ? '赛程已结束' : '赛程进行中' }}</n-gradient-text></span>
                             </template>
                             <n-card>
                                 <template #header>
@@ -94,6 +84,14 @@
                                     </div>
                                 </div>
                                 <div class="btn-container-footer" v-if="item.personType.includes('commentary')">
+                                    <div class="footer__line">
+                                        <n-tag type="warning" size="small">
+                                            <n-icon size="11" style="margin-right: 0.5em;">
+                                                <PricetagsSharp />
+                                            </n-icon>
+                                            {{ item.tag }}
+                                        </n-tag>
+                                    </div>
                                     <n-button-group size="small">
                                         <n-button size="small" type="primary" strong @click="selectGames(item)"
                                             :disabled="computedDisBtn(item.isOver, item.commentary)">
@@ -440,7 +438,7 @@ const handleInvite = async (person: number[]) => {
 .grid-line {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap:1em;
+    gap: 1em;
     margin: 1em 0;
 
     .one_tag {
@@ -469,7 +467,8 @@ const handleInvite = async (person: number[]) => {
 
 .btn-container-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 1em;
     gap: 0.7em;
 }

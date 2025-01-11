@@ -184,7 +184,7 @@ eventEmitter.on('API:UN_AUTH',()=>{
         flex-direction: column;
 
         .form-body {
-            margin: 36px auto;
+            margin: 1em auto;
             width: 80%;
             .mark-tip {
                 display: flex;
@@ -215,7 +215,7 @@ eventEmitter.on('API:UN_AUTH',()=>{
 
         .footer {
             width: 100%;
-            margin: 30px 0;
+            margin: 1em 0;
             display: flex;
             justify-content: center;
             align-items: center;
