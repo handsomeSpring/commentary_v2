@@ -189,7 +189,12 @@ const register = async () => {
   0% {
     max-height: 0%;
   }
-
+  20%{
+    max-height: 0%;
+  }
+  50%{
+    max-height: 30%;
+  }
   100% {
     max-height: 80%;
   }
@@ -238,7 +243,8 @@ $duration: 400s;
   padding: 1.5em 0;
   bottom: 0;
   position: fixed;
-  animation: showBox 400ms linear forwards;
+  min-height: 0%;
+  animation: showBox 800ms linear forwards;
   overflow-y: auto;
   width: 100%;
   background: rgba(240, 240, 240, 0.95);
