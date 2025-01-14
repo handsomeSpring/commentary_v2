@@ -11,12 +11,13 @@
       <n-form ref="formRef" :model="model" :rules="rules" size="small" label-placement="top">
         <n-grid :cols="24">
           <n-form-item-gi :span="24" label="申请业务" path="historyRank">
-            <n-select v-model:value="model.bizType" disabled :options="bizTypeOptions" placeholder="请选择申请业务" />
+            <n-select size="large" v-model:value="model.bizType" disabled :options="bizTypeOptions" placeholder="请选择申请业务" />
           </n-form-item-gi>
         </n-grid>
         <n-grid :cols="24">
           <n-form-item-gi :span="24" label="申请职位" path="reqRole">
             <n-select 
+            size="large"
             v-model:value="model.reqRole" 
             :disabled="model.bizType !== 'adminAuth' || waitAuth"
             :options="roleOptions" placeholder="请选择申请业务" />
@@ -24,23 +25,23 @@
         </n-grid>
         <n-grid :cols="24">
           <n-form-item-gi :span="24" label="圈名" path="chinaname">
-            <n-input v-model:value="chinaname" readonly placeholder="圈名" />
+            <n-input v-model:value="chinaname" size="large" readonly placeholder="圈名" />
           </n-form-item-gi>
         </n-grid>
         <n-grid :cols="24">
           <n-form-item-gi :span="24" label="第五人格Id" path="gameId">
-            <n-input v-model:value="model.gameId" :readonly="waitAuth" placeholder="请输入第五人格Id" clearable />
+            <n-input v-model:value="model.gameId" size="large" :readonly="waitAuth" placeholder="请输入第五人格Id" clearable />
           </n-form-item-gi>
         </n-grid>
         <n-grid :cols="24">
           <n-form-item-gi :span="24" label="历史段位" path="historyRank">
-            <n-select v-model:value="model.historyRank" :disabled="waitAuth" :options="options" placeholder="请选择历史段位"
+            <n-select v-model:value="model.historyRank" size="large" :disabled="waitAuth" :options="options" placeholder="请选择历史段位"
               clearable />
           </n-form-item-gi>
         </n-grid>
         <n-grid :cols="24">
           <n-form-item-gi :span="24" label="自我介绍" path="introduction">
-            <n-input v-model:value="model.introduction" :readonly="waitAuth" placeholder="请输入自我介绍" type="textarea"
+            <n-input v-model:value="model.introduction" size="large" :readonly="waitAuth" placeholder="请输入自我介绍" type="textarea"
               :autosize="{
                 minRows: 3,
                 maxRows: 5,
@@ -49,13 +50,13 @@
         </n-grid>
         <n-grid :cols="24">
           <n-form-item-gi :span="24" label="请输入联系方式" path="contactNumber">
-            <n-input v-model:value="model.contactNumber" :readonly="waitAuth" placeholder="请输入联系方式" />
+            <n-input v-model:value="model.contactNumber" size="large" :readonly="waitAuth" placeholder="请输入联系方式" />
           </n-form-item-gi>
         </n-grid>
         <n-grid :cols="24">
           <n-form-item-gi :span="24" label="性别" path="sex">
-            <n-radio-group v-model:value="model.sex" :disabled="waitAuth">
-              <n-radio-button value="1">
+            <n-radio-group v-model:value="model.sex" size="large" :disabled="waitAuth">
+              <n-radio-button  value="1">
                 男
               </n-radio-button>
               <n-radio-button value="2">
@@ -69,9 +70,9 @@
             <div class="btn-group">
               <n-button :style="{
                 width: waitAuth ? '100%' : '50%'
-              }" block @click="returnBack">返回</n-button>
+              }" size="large" block @click="returnBack">返回</n-button>
               <n-spin :show="diabledShow" v-if="!waitAuth">
-                <n-button block type="info" @click="handleSubmit">{{ ['3', '4'].includes(comStatus) ?
+                <n-button size="large" block type="info" @click="handleSubmit">{{ ['3', '4'].includes(comStatus) ?
                   '再次申请'
                   : '提 交'
                   }}</n-button>

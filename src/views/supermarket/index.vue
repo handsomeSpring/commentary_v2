@@ -1,5 +1,6 @@
 <template>
   <nor-header title="兑换中心" activeMenu="2">
+    <full-screen-loading v-if="loading"></full-screen-loading>
     <div class="super-container">
       <aside>
         <li
@@ -175,17 +176,19 @@ import { buyGoods, getStore } from "@/api/supermarket";
 import { getByCode } from "@/api/common";
 import { useMessage } from "naive-ui/es/message";
 import { useUserStore } from "@/store/user";
+const loading = ref(false);
 const userStore = useUserStore();
-console.log(userStore.userInfo.officium, "userStore");
 const nMessage = useMessage();
 const goodsList = ref([]); // 所有的goodsList
 const activeGoodsList = ref([]); //激活菜单的goodsList
 const menuList = ref([]);
 const activeValue = ref("");
 (function doGetByCode() {
+  loading.value = true;
   getByCode("goodsType").then((res) => {
     menuList.value = res.data.filter((item) => item.value !== "teamLead");
     activeValue.value = menuList.value[0].value;
+    loading.value = false;
   });
 })();
 const myChooseGoodsList = computed(() => {
@@ -212,6 +215,7 @@ const initGoodsList = async () => {
   }
 };
 const car = new Car(goodsList.value, 10);
+const totalPriceRef = ref(0);
 watch(
   () => goodsList.value,
   () => {
@@ -297,7 +301,7 @@ const handleBuy = async () => {
     // ) {
     //   return nMessage.error("兑换失败，您不是解说，无法购物兑换");
     // }
-    if (Number(userStore.userInfo.money) < car.totalPrice)
+    if (Number(userStore.userInfo.money) < car.totalPrice.value)
       return nMessage.error("兑换失败，积分不足");
     const goodsId = car.getGoodsIds();
     const { status } = await buyGoods(goodsId);

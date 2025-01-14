@@ -13,7 +13,7 @@
           <p>
             {{ userStore.userInfo.chinaname.length > 7 ? (userStore.userInfo.chinaname.slice(0,7) + '...') : userStore.userInfo.chinaname }}
           </p>
-          <p>积分：{{ userStore.userInfo.money || 0 }}</p>
+          <p class="money-point">积分：{{ userStore.userInfo.money || 0 }}</p>
         </div>
         <div class="r-p">
           <n-icon size="18" color="#fff">
@@ -241,6 +241,14 @@ const routerTo = (path:string,query={},outline = false) =>{
         font-size: 0.8rem;
         font-weight: 500;
         color: #ebebeb;
+      }
+      .money-point{
+        margin-top: 0.2em;
+        font-size: 0.65em;
+        border-radius: 0.8em;
+        padding:0.1em 1em;
+        background: #7497e3;
+
       }
     }
 
