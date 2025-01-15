@@ -121,16 +121,16 @@
         negative-text="算了" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
         {{ confirmInfo }}
     </n-modal>
-    <invite-choose v-model:visible="inviteShow" :treeList="roleList" @finishChoose="handleInvite"></invite-choose>
+    <comPersonChoose v-model:visible="inviteShow"  @finishChoose="handleInvite"></comPersonChoose>
+    <!-- <invite-choose v-model:visible="inviteShow"  @finishChoose="handleInvite"></invite-choose> -->
 </template>
 
 <script setup lang='ts'>
-import InviteChoose from '@/components/home/InviteChoose.vue';
+import comPersonChoose from '@/components/common/comPersonChoose.vue';
 import { useMessage } from 'naive-ui';
 import { PersonSharp, PricetagsSharp, ExtensionPuzzle } from "@vicons/ionicons5";
 import { selectCom } from "@/api/commentary"
-import { getUsersWithRole } from '@/api/common';
-import { getByCode } from "@/api/common";
+
 import { useUserStore } from '@/store/user';
 
 const userStore = useUserStore();
@@ -170,45 +170,8 @@ const tableData = ref([]);
 let options = [];
 const listLoading = ref(false);
 const noMore = ref(false);
-const roleList = ref([]);
 
-const roleMap = ref([]);
-const initRoleMap = async () => {
-    const { data } = await getByCode('roleList');
-    roleMap.value = data;
-}
 
-interface Role {
-    chinaname: string
-    email?: string
-    id: number
-    officium: string
-    userName: string
-}
-const createTreeData = (arr) => {
-    if (!arr) {
-        roleList.value = [];
-        return;
-    }
-    arr.forEach((parent) => {
-        const obj = {
-            label: roleMap.value.find(item => item.value === parent[0].officium)?.label ?? '未知职位',
-            key: parent[0].officium,
-            checkboxDisabled: true,
-            children: []
-        };
-        const child = parent.map((child: Role) => {
-            return {
-                label: child.chinaname,
-                key: child.id,
-                disabled: child.officium !== 'Commentator',
-            }
-        })
-        obj.children = child;
-        roleList.value.push(obj);
-    });
-
-}
 const getSeason = async () => {
     loading.value = true;
     const { data, status } = await getAllEvents();
@@ -223,9 +186,6 @@ const getSeason = async () => {
     const noOverArr = options.filter(item => !item.is_over);
     season.value = window.sessionStorage.getItem('seasonName') || noOverArr[0].value || options[0].value;
     getGames();
-    const result = await getUsersWithRole();
-    await initRoleMap();
-    createTreeData(result.data);
 };
 getSeason();
 const getGames = async () => {
@@ -386,13 +346,12 @@ const inviteCom = (item: GameInterface) => {
     inviteGame.value = item.id;
     inviteShow.value = true;
 }
-const handleInvite = async (person: number[]) => {
+const handleInvite = async (userId: number) => {
     try {
-        if (!Array.isArray(person) || person.length === 0) throw new Error('邀请数据错误');
-        const invitedId = person.at(-1);
-        if (invitedId === userStore.userInfo.id) throw new Error('您不能邀请自己。');
+        loading.value = true;
+        if (userId === userStore.userInfo.id) throw new Error('您不能邀请自己。');
         const req = {
-            invitedId,
+            invitedId:userId,
             matchId: inviteGame.value
         }
         const { status, data } = await inviteUser(req);
@@ -401,8 +360,9 @@ const handleInvite = async (person: number[]) => {
         nMessage.success('邀请成功，请前往我的邀请查看。');
     } catch (error) {
         nMessage.error(error.message)
+    } finally{
+        loading.value = false;
     }
-
 }
 </script>
 <style scoped lang='scss'>
