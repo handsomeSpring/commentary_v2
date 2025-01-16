@@ -1,7 +1,7 @@
 <template>
     <n-modal v-model:show="modelShow" :mask-closable="false" preset="dialog" title="选择人员" positive-text="确认" @positive-click="onPositiveClick" @after-leave="closeDialog">
         <n-scrollbar style="max-height: 60vh">
-            <n-table :bordered="false" :single-line="false">
+            <n-table :bordered="true" :single-line="false" striped>
                 <thead>
                     <tr>
                         <th></th>

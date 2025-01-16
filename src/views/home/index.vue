@@ -89,7 +89,7 @@
                                             <n-icon size="11" style="margin-right: 0.5em;">
                                                 <PricetagsSharp />
                                             </n-icon>
-                                            {{ item.tag }}
+                                            {{ item.tag || '未定义'}}
                                         </n-tag>
                                     </div>
                                     <n-button-group size="small">
