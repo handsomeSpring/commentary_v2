@@ -20,6 +20,12 @@
 </template>
 
 <script setup lang='ts'>
+import myCat from '@/api/Cat';
+
+myCat.startMeeting();
+myCat.endMeeting();
+console.log(myCat.accompany('FYN & LSR', 1));
+
 </script>
 <style scoped lang='scss'>
 .bg-bubbles {
