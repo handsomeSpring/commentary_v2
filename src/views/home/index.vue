@@ -3,8 +3,7 @@
         <full-screen-loading v-if="loading"></full-screen-loading>
         <div class="main-body" v-else>
             <div class="header-search-container">
-                <n-select v-model:value="season" :options="options" placeholder="请选择赛季"
-                    @update:value="handleSelect" />
+                <n-select v-model:value="season" :options="options" placeholder="请选择赛季" @update:value="handleSelect" />
             </div>
             <div class="listTable">
                 <n-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
@@ -89,10 +88,10 @@
                                             <n-icon size="11" style="margin-right: 0.5em;">
                                                 <PricetagsSharp />
                                             </n-icon>
-                                            {{ item.tag || '未定义'}}
+                                            {{ item.tag || '未定义' }}
                                         </n-tag>
                                     </div>
-                                    <n-button-group size="small">
+                                    <n-button-group size="small" v-if="item.isAllowChoose === 1">
                                         <n-button size="small" type="primary" strong @click="selectGames(item)"
                                             :disabled="computedDisBtn(item.isOver, item.commentary)">
                                             {{ computedDisBtn(item.isOver, item.commentary) ? '无法报名' :
@@ -103,6 +102,14 @@
                                     </n-button-group>
                                 </div>
                             </n-card>
+                            <template #footer>
+                                <div class="for-bid" v-if="item.isAllowChoose === 0">
+                                    <n-icon size="16" color="#f40">
+                                        <BanSharp></BanSharp>
+                                    </n-icon>
+                                    <span class="forbid-choose-text">该场赛程，主办方设置了不可选班模式!</span>
+                                </div>
+                            </template>
                         </n-timeline-item>
                     </n-timeline>
                     <div v-if="listLoading" class="text">
@@ -121,14 +128,14 @@
         negative-text="算了" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
         {{ confirmInfo }}
     </n-modal>
-    <comPersonChoose v-model:visible="inviteShow"  @finishChoose="handleInvite"></comPersonChoose>
+    <comPersonChoose v-model:visible="inviteShow" @finishChoose="handleInvite"></comPersonChoose>
     <!-- <invite-choose v-model:visible="inviteShow"  @finishChoose="handleInvite"></invite-choose> -->
 </template>
 
 <script setup lang='ts'>
 import comPersonChoose from '@/components/common/comPersonChoose.vue';
 import { useMessage } from 'naive-ui';
-import { PersonSharp, PricetagsSharp, ExtensionPuzzle } from "@vicons/ionicons5";
+import { PersonSharp, PricetagsSharp, ExtensionPuzzle, BanSharp } from "@vicons/ionicons5";
 import { selectCom } from "@/api/commentary"
 
 import { useUserStore } from '@/store/user';
@@ -154,6 +161,7 @@ interface GameInterface {
     commentaryIds: number[]
     customLogo: string
     hostLogo: string
+    isAllowChoose: 0 | 1
 }
 
 // 接口定义结束
@@ -351,7 +359,7 @@ const handleInvite = async (userId: number) => {
         loading.value = true;
         if (userId === userStore.userInfo.id) throw new Error('您不能邀请自己。');
         const req = {
-            invitedId:userId,
+            invitedId: userId,
             matchId: inviteGame.value
         }
         const { status, data } = await inviteUser(req);
@@ -360,12 +368,24 @@ const handleInvite = async (userId: number) => {
         nMessage.success('邀请成功，请前往我的邀请查看。');
     } catch (error) {
         nMessage.error(error.message)
-    } finally{
+    } finally {
         loading.value = false;
     }
 }
 </script>
 <style scoped lang='scss'>
+.for-bid {
+    display: flex;
+    align-items: center;
+    gap:0.5em;
+    margin:0.5em;
+    .forbid-choose-text {
+        font-size: 1em;
+        color: #f40;
+    }
+}
+
+
 .header-search-container {
     height: 58px;
     display: flex;
