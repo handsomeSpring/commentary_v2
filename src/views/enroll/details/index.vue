@@ -49,8 +49,8 @@
           </n-form-item-gi>
         </n-grid>
         <n-grid :cols="24">
-          <n-form-item-gi :span="24" label="请输入联系方式" path="contactNumber">
-            <n-input v-model:value="model.contactNumber" size="large" :readonly="waitAuth" placeholder="请输入联系方式" />
+          <n-form-item-gi :span="24" label="qq联系方式" path="contactNumber">
+            <n-input v-model:value="model.contactNumber" size="large" :readonly="waitAuth" placeholder="请输入qq联系方式" />
           </n-form-item-gi>
         </n-grid>
         <n-grid :cols="24">
@@ -202,7 +202,7 @@ const rules = {
   contactNumber: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '请输入联系方式'
+    message: '请输入qq联系方式'
   },
   reqRole: {
     required: true,
