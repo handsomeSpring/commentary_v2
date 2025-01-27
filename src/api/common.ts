@@ -40,3 +40,11 @@ export function getNews(type:string){
         }
     })
 }
+
+// 解说排名
+export function getRankForCommentary(){
+    return request({
+        url:'/api/v1/com/Integral/ranking',
+        method:'POST'
+    })
+}

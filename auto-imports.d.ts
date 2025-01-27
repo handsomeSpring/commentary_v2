@@ -35,6 +35,8 @@ declare global {
   const getMyInvite: typeof import('./src/api/invitation')['getMyInvite']
   const getMyShopping: typeof import('./src/api/commentary')['getMyShopping']
   const getNews: typeof import('./src/api/common')['getNews']
+  const getRankForCommentary: typeof import('./src/api/common')['getRankForCommentary']
+  const getRankingForCommentary: typeof import('./src/api/common')['getRankingForCommentary']
   const getStore: typeof import('./src/api/supermarket')['getStore']
   const getTask: typeof import('./src/api/task')['getTask']
   const getUserInfo: typeof import('./src/api/login')['getUserInfo']

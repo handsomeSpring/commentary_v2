@@ -50,9 +50,9 @@
           <li class="grid-li-container" @click="routerTo('/userInfo/commentor')">
             <p>
               <n-icon size="18" color="#f02">
-                <PeopleSharp />
+                <BarChart />
               </n-icon>
-              <span class="main-text">解说成员</span>
+              <span class="main-text">解说排名</span>
             </p>
             <n-icon size="18" color="#CAE5D3">
               <ChevronForward />
@@ -167,7 +167,7 @@
 
 <script setup lang='ts'>
 import { useUserStore } from '@/store/user';
-import { ChevronForward, WarningSharp, PeopleSharp, Desktop, BagCheck, PulseSharp, InformationCircle, BodySharp, Easel, FingerPrintOutline, GitBranch, Grid } from "@vicons/ionicons5"
+import { ChevronForward, WarningSharp, BarChart, Desktop, BagCheck, PulseSharp, InformationCircle, BodySharp, Easel, FingerPrintOutline, GitBranch, Grid } from "@vicons/ionicons5"
 import { useDialog,useMessage } from 'naive-ui';
 import { removeToken } from '@/utils/auth';
 const dialog = useDialog();

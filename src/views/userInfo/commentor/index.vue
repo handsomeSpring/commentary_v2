@@ -1,37 +1,40 @@
 <template>
-    <nav-back title="解说成员" />
-    <template v-if="loading">
-        <n-skeleton text :repeat="4" />
-        <n-skeleton text style="width: 87%" :repeat="2" />
-        <n-skeleton text style="width: 70%" :repeat="2" />
-        <n-skeleton text style="width: 50%" />
-    </template>
+    <nav-back title="解说排名" />
+    <full-screen-loading v-if="loading"></full-screen-loading>
     <template v-else>
         <div class="container-comlist">
-            <n-card class="card-item" v-for="item in comList">
-                <header>
-                    <n-avatar :size="24" :src="item.base64 ?? `empty.png`" fallback-src="/logo/asg.png" />
-                    <n-gradient-text type="info">
-                        <p class="line-text-clip">{{ item.chinaname }}</p>
-                    </n-gradient-text>
-                    <n-gradient-text type="error">
-                        {{ item.isadmin ? '（赛事组）' : '' }}
-                    </n-gradient-text>
-                </header>
-            </n-card>
+            <header>
+                <h1>排名榜</h1>
+                <p>-解说场次排名前十-</p>
+            </header>
+            <div class="main-body">
+                <div class="list-table-header">
+                    <h4>排名</h4>
+                    <h4>解说</h4>
+                    <h4>场次</h4>
+                </div>
+                <div class="list-table-body" v-for="(item, index) in comList" :key="index">
+                    <!-- TODO -1，2，3使用svg图片。后面用序号 -->
+                    <div>
+                        <img v-if="[0,1,2].includes(index)">
+                        <p v-else>{{ index + 1 }}</p>
+                    </div>
+                    <p>{{ item.name }}</p>
+                    <p>{{ item.count }}</p>
+                </div>
+            </div>
         </div>
     </template>
 </template>
 
 <script setup lang='ts'>
-import { getByOpName } from "@/api/common";
 import { useMessage } from "naive-ui";
 const loading = ref(true);
 const nMessage = useMessage();
 const comList = ref([]);
 async function getCommentor() {
     try {
-        const { data, status } = await getByOpName('Commentator');
+        const { data, status } = await getRankForCommentary();
         if (status !== 200) throw new Error('服务端异常！');
         comList.value = data;
     } catch (error) {
@@ -47,26 +50,46 @@ onMounted(async () => {
 </script>
 <style scoped lang='scss'>
 .container-comlist {
-    width: calc(100% - 36px);
-    padding: 12px 18px;
+    height: calc(100dvh - 45px);
+    background: linear-gradient(173deg, #B3D4FF 0%, rgba(255, 255, 255, 0) 93%);
+    header {
+        height: 25%;
+        width: 100%;
+        //TODO-二十；排名榜 和 解说场次排名前十
+        h1{
 
-    .card-item {
-        margin: 12px 0;
-        background:linear-gradient( 173deg, #B3D4FF 0%, rgba(255,255,255,0) 93%);
-        border-radius: 8px 8px 0 0;
-        border:none;
-        header {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 20px;
+        }
+        p{
+
+        }
+    }
+    .main-body {
+        height: 75%;
+        border-radius: 1em 1em 0 0;
+        background:#fff;
+        overflow: scroll;
+        .list-table-header{
+            margin:1em 0;
+
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+        }
+        .list-table-body {
+            // TODO-二十：建议用flex或者grid布局，可以查一下这俩。
+            // 一、让文字居中；二、让文字颜色适合；三、产生一定padding和margin，产生间隔。
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
         }
     }
 }
-.line-text-clip{
+
+// TODO-二十-class加上这个类，文字就会自动有省略号了
+.line-text-clip {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width:40vw;
+    width: 100%;
 }
 </style>
