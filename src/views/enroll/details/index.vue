@@ -65,6 +65,11 @@
             </n-radio-group>
           </n-form-item-gi>
         </n-grid>
+        <n-grid :clos="24">
+          <n-form-item-gi :span="24" label="申请视频链接" path="introUrl">
+            <n-input v-model:value="model.introUrl" size="large" :disabled="waitAuth" placeholder="请输入申请视频链接" />
+          </n-form-item-gi>
+        </n-grid>
         <n-grid :cols="24">
           <n-form-item-gi :span="24">
             <div class="btn-group">
@@ -108,7 +113,8 @@ const model = ref({
   contactNumber: '',
   bizType: 'comAuth',
   historyRank: '0',
-  reqRole:'Commentator'
+  reqRole:'Commentator',
+  introUrl:''
 });
 type ComStatus = '0' | '1' | '2' | '3';
 const comStatus = ref<ComStatus>('0');
@@ -163,7 +169,8 @@ const getInfo = () => {
       contactNumber: route?.query?.contactNumber ?? '',
       id: Number(route?.query?.id) ?? 0,
       bizType: route?.query?.bizType ?? '',
-      reqRole: route?.query?.reqRole ?? ''
+      reqRole: route?.query?.reqRole ?? '',
+      introUrl: route?.query?.introUrl ?? ''
     })
   }
 
@@ -208,6 +215,11 @@ const rules = {
     required: true,
     trigger: ['change'],
     message: '请选择职位'
+  },
+  introUrl: {
+    required :true,
+    trigger :['blur', 'input'],
+    message: '请输入视频申请链接'
   }
 }
 const diabledShow = ref(false);
