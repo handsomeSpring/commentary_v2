@@ -106,6 +106,7 @@ const getInfo = () => {
                         createTime: row.create_time ? row.create_time.slice(0, 10) : '',
                         bizTypeName: bizTypeOptions.value.find(item => item.value === row.biz_type)?.label ?? '未知业务',
                         reqRole: row.req_role ?? '',
+                        introUrl:row.intro_url
                     }
                 });
             }
