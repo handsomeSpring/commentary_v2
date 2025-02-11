@@ -5,113 +5,84 @@
             <div class="header-search-container">
                 <n-select v-model:value="season" :options="options" placeholder="请选择赛季" @update:value="handleSelect" />
             </div>
-            <div class="listTable">
-                <n-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
-                </n-empty>
-                <n-infinite-scroll v-else style="height: 100%" :distance="10" @load="handleLoad">
-                    <n-timeline>
-                        <n-timeline-item v-for="(item, index) in tableData" :key="index"
-                            :type="computedType(item.opentime, item.winteam)">
-                            <template #header>
-                                {{ handleTime(item.opentime) }}
-                                <span class="time__text" :class="[
-                                    item.isOver ? 'over' : 'process'
-                                ]"> <n-gradient-text :size="16" :type="item.isOver ? 'error' : 'success'">{{
-                                    item.isOver ? '赛程已结束' : '赛程进行中' }}</n-gradient-text></span>
-                            </template>
-                            <n-card>
-                                <template #header>
-                                    <div class="header_info">
-                                        <div class="team-info">
-                                            <n-avatar round :src="item.customLogo"
-                                                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
-                                            <p>
-                                                <n-gradient-text :size="16" type="info">{{ item.team1_name
-                                                    }}</n-gradient-text>
-                                            </p>
-                                        </div>
-                                        <p class="verse">
-                                            <n-gradient-text type="warning">
-                                                vs
-                                            </n-gradient-text>
-                                        </p>
-                                        <div class="team-info">
-                                            <n-avatar round :src="item.hostLogo"
-                                                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
-                                            <p>
-                                                <n-gradient-text :size="16" type="error">{{ item.team2_name
-                                                    }}</n-gradient-text>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </template>
-                                <div class="divider"></div>
-                                <div class="grid-line" v-if="item.personType.includes('commentary')">
-                                    <div class="one_tag" v-for="(com, index) in item.commentary" :key="index">
-                                        <n-tag :type="!com ? 'success' : 'error'" size="small">
-                                            <n-icon size="12" style="margin-right: 1px;">
-                                                <ExtensionPuzzle v-if="!com" />
-                                                <PersonSharp v-else />
-                                            </n-icon>
-                                            解说
-                                        </n-tag>
-                                        <p class="name_info" :class="!com ? 'no-person' : 'fill-person'">
-                                            {{ com || '位置空缺' }}
-                                        </p>
+            <asg-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
+            </asg-empty>
+            <div v-else  class="listTable">
+                <n-infinite-scroll style="height: 100%" :distance="10" @load="handleLoad">
+                    <div class="card-container" v-for="(item, index) in tableData" :key="index">
+                        <div class="card-header">
+                            <p class="time-text" :class="item.isOver ? 'time-over' : 'time-process'">{{ item.isOver ?
+                                '赛程已结束' : '赛程进行中' }}
+                            </p>
+                            <div class="game-tag">
+                                <img src="../../assets/images/gametag.png">
+                                <p>{{ item.tag || '未定义' }}</p>
+                            </div>
+                        </div>
+                        <div class="card-main">
+                            <div class="team-info">
+                                <n-avatar round :src="item.customLogo"
+                                    fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
+                                <p>{{ item.team1_name }}</p>
+                            </div>
+                            <img class="verse" src="../../assets/images/VS.png">
+                            <div class="team-info">
+                                <n-avatar round :src="item.hostLogo"
+                                    fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
+                                <p>{{ item.team2_name }}</p>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <li>
+                                <div class="left-icon">
+                                    <img src="../../assets/images/micro.png">
+                                    <p>解说</p>
+                                </div>
+                                <div class="commentary-wrap">
+                                    <div v-for="(com, index) in item.commentary" :key="index" class="com-tag"
+                                        :class="!com ? 'no-person' : 'fill-person'">
+                                        {{ setName(com) }}
                                     </div>
                                 </div>
-                                <div class="grid-line">
-                                    <div class="one_tag" v-if="item.personType.includes('judge')">
-                                        <n-tag type="info" size="small">
-                                            <n-icon size="12" style="margin-right: 1px;">
-                                                <PersonSharp />
-                                            </n-icon>
-                                            裁判
-                                        </n-tag>
-                                        <p class="name_info">{{ item.judge || '暂无裁判' }}</p>
-                                    </div>
-                                    <div class="one_tag" v-if="item.personType.includes('referee')">
-                                        <n-tag type="info" size="small">
-                                            <n-icon size="12" style="margin-right: 1px;">
-                                                <PersonSharp />
-                                            </n-icon>
-                                            导播
-                                        </n-tag>
-                                        <p class="name_info">
-                                            {{ item.referee || '暂无导播' }}
-                                        </p>
-                                    </div>
+                            </li>
+                            <li>
+                                <div class="left-icon">
+                                    <img src="../../assets/images/judge.png">
+                                    <p>裁判</p>
                                 </div>
-                                <div class="btn-container-footer" v-if="item.personType.includes('commentary')">
-                                    <div class="footer__line">
-                                        <n-tag type="warning" size="small">
-                                            <n-icon size="11" style="margin-right: 0.5em;">
-                                                <PricetagsSharp />
-                                            </n-icon>
-                                            {{ item.tag || '未定义' }}
-                                        </n-tag>
-                                    </div>
-                                    <n-button-group size="small" v-if="item.isAllowChoose === 1">
-                                        <n-button size="small" type="primary" strong @click="selectGames(item)"
-                                            :disabled="computedDisBtn(item.isOver, item.commentary)">
-                                            {{ computedDisBtn(item.isOver, item.commentary) ? '无法报名' :
-                                                '解说该场' }}
-                                        </n-button>
-                                        <n-button type="default" size="small" @click="inviteCom(item)"
-                                            :disabled="computedDisBtn(item.isOver, item.commentary)">邀请解说</n-button>
-                                    </n-button-group>
+                                <p class="physize-text" :class="!item.judge ? 'none-info' : ''">{{ item.judge || '暂无裁判'
+                                    }}</p>
+                            </li>
+                            <li>
+                                <div class="left-icon">
+                                    <img src="../../assets/images/referee.png">
+                                    <p>导播</p>
                                 </div>
-                            </n-card>
-                            <template #footer>
-                                <div class="for-bid" v-if="item.isAllowChoose === 0">
-                                    <n-icon size="16" color="#f40">
-                                        <BanSharp></BanSharp>
-                                    </n-icon>
-                                    <span class="forbid-choose-text">该场赛程，主办方设置了不可选班模式!</span>
+                                <p class="physize-text" :class="!item.referee ? 'none-info' : ''">{{ item.referee ||
+                                    '暂无导播' }}</p>
+                            </li>
+                            <li>
+                                <div class="left-icon">
+                                    <img src="../../assets/images/time.png">
+                                    <p>时间</p>
                                 </div>
-                            </template>
-                        </n-timeline-item>
-                    </n-timeline>
+                                <p class="physize-text">{{ handleTime(item.opentime) }}</p>
+                            </li>
+                        </div>
+                        <div class="btn-list-wrap" v-if="item.isAllowChoose === 1">
+                            <div class="my-button" @click="selectGames(item)"
+                                :class="computedDisBtn(item.isOver, item.commentary) ? 'disabled' : ''">
+                                {{ computedDisBtn(item.isOver, item.commentary) ? '无法报名' :
+                                    '解说该场' }}
+                            </div>
+                            <div class="my-button" @click="inviteCom(item)"
+                                :class="computedDisBtn(item.isOver, item.commentary) ? 'disabled' : ''"
+                                :disabled="computedDisBtn(item.isOver, item.commentary)">{{
+                                    computedDisBtn(item.isOver, item.commentary) ? '无法邀请' : '邀请解说' }}
+                            </div>
+                        </div>
+                        <div v-else class="forbid-choose-text">该场赛程，主办方设置了不可选班模式!</div>
+                    </div>
                     <div v-if="listLoading" class="text">
                         加载中...
                     </div>
@@ -119,7 +90,6 @@
                         没有更多了
                     </div>
                 </n-infinite-scroll>
-
             </div>
         </div>
     </nor-header>
@@ -129,15 +99,12 @@
         {{ confirmInfo }}
     </n-modal>
     <comPersonChoose v-model:visible="inviteShow" @finishChoose="handleInvite"></comPersonChoose>
-    <!-- <invite-choose v-model:visible="inviteShow"  @finishChoose="handleInvite"></invite-choose> -->
 </template>
 
 <script setup lang='ts'>
 import comPersonChoose from '@/components/common/comPersonChoose.vue';
 import { useMessage } from 'naive-ui';
-import { PersonSharp, PricetagsSharp, ExtensionPuzzle, BanSharp } from "@vicons/ionicons5";
 import { selectCom } from "@/api/commentary"
-
 import { useUserStore } from '@/store/user';
 
 const userStore = useUserStore();
@@ -145,7 +112,7 @@ const userStore = useUserStore();
 interface GameInterface {
     belong: string
     bilibiliurl?: string
-    commentary: string
+    commentary: string | any[]
     id: number
     opentime: string
     referee?: string
@@ -163,7 +130,10 @@ interface GameInterface {
     hostLogo: string
     isAllowChoose: 0 | 1
 }
-
+interface GameTable extends GameInterface {
+    isOver: boolean
+    commentary: any[]
+}
 // 接口定义结束
 const nMessage = useMessage();
 const season = ref("");
@@ -179,7 +149,11 @@ let options = [];
 const listLoading = ref(false);
 const noMore = ref(false);
 
-
+const setName = (com:(string | undefined)) => {
+    if(!com) return '虚位以待';
+    if(com.length > 5) return `${com.slice(0,5)}..`;
+    return com;
+}
 const getSeason = async () => {
     loading.value = true;
     const { data, status } = await getAllEvents();
@@ -288,17 +262,6 @@ const handleTime = (value: string) => {
     const min = new Date(value).getMinutes();
     return year + '年' + month + '月' + day + '日 ' + hour + '时' + min + '分';
 };
-// const computedCommentary = (value: string) => {
-//     if (!value) {
-//         return []
-//     } else {
-//         if (isJSON(value)) {
-//             return JSON.parse(value).map(item => item.chinaname);
-//         } else {
-//             return ['无法解析JSON', '无法解析JSON'];
-//         }
-//     }
-// }
 const computedDisBtn = (isOver: boolean, commentary: any[]) => {
     if (isOver) {
         return true;
@@ -306,13 +269,7 @@ const computedDisBtn = (isOver: boolean, commentary: any[]) => {
         return commentary.every(item => Boolean(item));
     }
 }
-const computedType = (time: string, winteam: string | null) => {
-    if (new Date() < new Date(time)) {
-        return 'success';
-    } else {
-        return !!winteam ? 'error' : 'warning';
-    }
-}
+
 
 const gameId = ref(null);
 // 模态窗取消方法
@@ -324,8 +281,9 @@ const onPositiveClick = async () => {
     showModal.value = false;
     try {
         loading.value = true;
-        const { status } = await selectCom(gameId.value);
+        const { status,data } = await selectCom(gameId.value);
         if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
+        if(data.code && data.code !== 200) throw new Error(data.message ?? '服务端错误！');
         nMessage.success('选班成功,请前往个人主页查看');
         getGames();
     } catch (error) {
@@ -333,14 +291,15 @@ const onPositiveClick = async () => {
             nMessage.error('选班失败，您不是解说');
             return;
         }
-        nMessage.error(error instanceof Error ? error?.response?.data?.message : error.customMessage);
+        nMessage.error(error instanceof Error ? error.message : '未知错误，请联系网站管理员！');
     } finally {
         loading.value = false;
     }
 
 }
 // selectGames 
-const selectGames = (item: GameInterface) => {
+const selectGames = (item: GameTable) => {
+    if (computedDisBtn(item.isOver, item.commentary)) return;
     if (item.commentaryIds.includes(userStore.userInfo.id)) return nMessage.warning('您已经报名解说这场比赛了，请勿重复操作');
     confirmInfo.value = `您是否确认解说${item.belong}${item.tag || ''}的${item.team1_name}对战${item.team2_name}的比赛？`;
     showModal.value = true;
@@ -350,7 +309,8 @@ const selectGames = (item: GameInterface) => {
 // 邀请解说功能
 const inviteShow = ref(false);
 const inviteGame = ref<number | null>(null)
-const inviteCom = (item: GameInterface) => {
+const inviteCom = (item: GameTable) => {
+    if (computedDisBtn(item.isOver, item.commentary)) return;
     inviteGame.value = item.id;
     inviteShow.value = true;
 }
@@ -374,18 +334,6 @@ const handleInvite = async (userId: number) => {
 }
 </script>
 <style scoped lang='scss'>
-.for-bid {
-    display: flex;
-    align-items: center;
-    gap:0.5em;
-    margin:0.5em;
-    .forbid-choose-text {
-        font-size: 1em;
-        color: #f40;
-    }
-}
-
-
 .header-search-container {
     height: 58px;
     display: flex;
@@ -399,119 +347,175 @@ const handleInvite = async (userId: number) => {
     background: #e8e8f3;
 }
 
-.listTable {
-    padding: 84px 12px 12px;
-    min-height: calc(100% - 96px);
-    background: url('../../assets/images/listBg.png');
-    background-size: cover;
-    position: relative;
-    z-index: 1;
-}
-
-.divider {
-    height: 3px;
-    width: 100%;
-    border-radius: 5px 5px 0 0;
-    background: linear-gradient(173deg, #B3D4FF 0%, rgba(255, 255, 255, 0) 93%);
-}
-
-.grid-line {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1em;
-    margin: 1em 0;
-
-    .one_tag {
-        display: flex;
-        align-items: center;
-
-        .name_info {
-            width: 6em;
-            margin-left: 0.4em;
-            font-size: 0.9em;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-
-            &.no-person {
-                color: #429F46
-            }
-
-            &.fill-person {
-                color: #f40;
-            }
-        }
-    }
-
-}
-
-.btn-container-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1em;
-    gap: 0.7em;
-}
-
 .main-body {
     background: #f0f4f8;
     height: 100%;
 }
 
-.n-card {
-    background: transparent;
-    border-color: #e8e8f3;
-    background-color: #fff;
-    border-radius: 8px !important;
-}
+.listTable {
+    padding: 58px 12px 12px;
+    min-height: calc(100% - 96px);
+    background: url('../../assets/images/listBg.png');
+    background-size: cover;
+    position: relative;
+    z-index: 1;
 
-.text {
-    text-align: center;
-    margin: 24px 0;
-    color: #a7a7a7;
-}
+    //卡片开始
+    .card-container {
+        border-radius: 16pt;
+        padding: 12px 12px 23px;
+        margin: 12px auto;
+        background: #fff;
 
-.footer__line {
-    display: flex;
-    align-items: center;
-}
+        .card-header {
+            height: 32px;
+            border-bottom: 1px solid #D3E8DA;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-.time__text {
-    font-size: 1rem;
-    margin-left: 12px;
-    font-weight: bold;
-    font-style: italic;
+            .time-text {
+                font-size: 14px;
 
-    &.over {
-        color: #f40;
-    }
+                &.time-process {
+                    color: #2b8248;
+                }
 
-    &.process {
-        color: #429F46;
-    }
-}
+                &.time-over {
+                    color: #EF2D2D;
+                }
+            }
 
-.header_info {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+            .game-tag {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                padding: 1px 4px;
+                border-radius: 8px;
+                background: #CAE5D3;
 
-    .verse {
-        font-size: 1.5em;
-        font-weight: bold;
-    }
+                p {
+                    font-size: 13px;
+                    color: #105126;
+                }
+            }
+        }
 
-    .team-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.6em;
-        width: 30%;
+        // 主体战队部分
+        .card-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 5em;
+            gap: 55pt;
+            padding: 12pt 0 17pt;
 
-        img {
-            width: 4em;
-            height: 4em;
+            .team-info {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 8pt;
+
+                p {
+                    color: #1A1A1A;
+                    font-size: 14px;
+                }
+
+                img {
+                    width: 36pt;
+                    height: 36pt;
+                }
+            }
+        }
+
+        // 底部
+        .card-footer {
+            margin-bottom: 17px;
+
+            li {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 5pt 0;
+                border-bottom: 1px solid #D3E8DA;
+
+                .left-icon {
+                    display: flex;
+                    align-items: center;
+                    gap: 4pt;
+
+                    p {
+                        font-size: 12px;
+                        color: #004671;
+                        font-weight: 500;
+                    }
+                }
+
+                .physize-text {
+                    color: #000000;
+                    font-size: 14px;
+
+                    &.none-info {
+                        color: #9CC9E5;
+                    }
+                }
+
+                // 解说
+                .commentary-wrap {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    gap: 12px;
+
+                    .com-tag {
+                        padding: 2px 6px;
+                        font-size: 14px;
+                        border-radius: 6px;
+
+                        &.no-person {
+                            color: #1070AB;
+                            background: #BCD9EB;
+                        }
+
+                        &.fill-person {
+                            color: #EF2D2D;
+                            background: #FFC8C8;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 操作区域
+
+        .btn-list-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12pt;
+
+            .my-button {
+                padding: 8px 32px;
+                border-radius: 16pt;
+                font-size: 16px;
+                background: #AED2E8;
+                cursor: pointer;
+
+                &.disabled {
+                    background: #E4E4E4;
+                    color: #161513;
+                }
+            }
+        }
+
+        // 提示词
+        .forbid-choose-text {
+            text-align: center;
+            font-size: 1em;
+            color: #FF4949;
+            width: 100%;
         }
     }
 }

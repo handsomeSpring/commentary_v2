@@ -15,12 +15,14 @@ import NorHeader from "@/components/common/NorHeader.vue"
 import navBack from '@/components/common/navBack.vue'
 import navBackFix from '@/components/common/navBackFix.vue'
 import FullScreenLoading from '@/components/common/FullScreenLoading.vue'
+import AsgEmpty from './components/common/AsgEmpty.vue'
 const app = createApp(App);
 app.component('nor-footer',NorFooter);
 app.component('nor-header',NorHeader);
 app.component('nav-back',navBack);
 app.component('nav-back-fix',navBackFix);
 app.component('full-screen-loading',FullScreenLoading);
+app.component('asg-empty',AsgEmpty)
 app.use(pinia)
 app.use(router)
 app.use(naive)
