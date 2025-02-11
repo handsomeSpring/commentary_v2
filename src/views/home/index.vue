@@ -81,12 +81,12 @@
                                     computedDisBtn(item.isOver, item.commentary) ? '无法邀请' : '邀请解说' }}
                             </div>
                         </div>
-                        <div v-else class="forbid-choose-text">该场赛程，主办方设置了不可选班模式!</div>
+                        <div v-else class="forbid-choose-text">该赛程，主办方设置为不可选班模式！</div>
                     </div>
-                    <div v-if="listLoading" class="text">
+                    <div v-if="listLoading" class="scroll-text">
                         加载中...
                     </div>
-                    <div v-if="noMore" class="text">
+                    <div v-if="noMore" class="scroll-text">
                         没有更多了
                     </div>
                 </n-infinite-scroll>
@@ -359,7 +359,12 @@ const handleInvite = async (userId: number) => {
     background-size: cover;
     position: relative;
     z-index: 1;
-
+    // 滚动文字提醒
+    .scroll-text{
+        font-size: 14px;
+        text-align: center;
+        color:#9CC9E5;
+    }
     //卡片开始
     .card-container {
         border-radius: 16pt;
