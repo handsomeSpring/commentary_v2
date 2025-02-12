@@ -198,7 +198,7 @@ const routerTo = (path:string,query={},outline = false) =>{
     nMessage.warning('功能正在开发中...请稍等');
   }
   if(outline){
-    window.open(path,'_self');
+    window.open(path,'_blank');
     return;
   }
   router.push({ path,query })

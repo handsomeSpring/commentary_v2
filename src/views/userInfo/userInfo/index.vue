@@ -34,16 +34,18 @@
         </div>
     </n-card>
     <n-card v-if="!skeletonLoading" title="账号信息">
-        <p class="info__p">用户：<span style="color:#4090EF;font-weight: bold">{{ me.name }}</span></p>
+        <p class="info__p">用户：<span class="user-name-text">{{ me.name }}</span></p>
         <p class="info__p">职位：{{ computedOfficium(me.officium) }}</p>
         <p class="info__p">权限：{{ me.roleListName || '普通用户' }}</p>
-        <p class="info__p">qq号：{{ me.qqnumber || '未绑定' }} <span v-show="!readOnly" class="upd_text" @click="openDialog">修改</span></p>
+        <p class="info__p">qq号：{{ me.qqnumber || '未绑定' }} <span v-show="!readOnly" class="upd_text"
+                @click="openDialog">修改</span></p>
         <p class="info__p">身份：{{ computedAdmin(me.roles) }}</p>
         <p class="info__p">积分：{{ me.money || 0 }}</p>
     </n-card>
     <n-modal v-model:show="dialog">
         <n-card title="修改QQ" :bordered="false" size="huge" role="dialog" aria-modal="true">
-            <n-input v-model:value="qqnumber" show-count :maxlength="11" type="text" :allow-input="onlyAllowNumber" placeholder="请输入qq号" />
+            <n-input v-model:value="qqnumber" show-count :maxlength="11" type="text" :allow-input="onlyAllowNumber"
+                placeholder="请输入qq号" />
             <template #footer>
                 <n-button type="info" @click="changeQQ">更改</n-button>
             </template>
@@ -72,9 +74,19 @@ const nameModel = ref('');
 const roleMap = ref([]);
 
 const getRolesMap = () => {
-    getByCode('roleList').then(res => {
-        roleMap.value = res.data;
-    })
+    try {
+        if (sessionStorage.getItem('asg-roleList')) {
+            roleMap.value = JSON.parse(sessionStorage.getItem('asg-roleList'));
+        } else {
+            getByCode('roleList').then(res => {
+                sessionStorage.setItem('asg-roleList', JSON.stringify(res?.data ?? []))
+                roleMap.value = res.data;
+            })
+        }
+    } catch (error) {
+        console.log(error.message,'roleList获取全局参数异常---');
+        roleMap.value = [];
+    }
 }
 getRolesMap();
 const customRequest = ({ file }: UploadCustomRequestOptions) => {
@@ -181,10 +193,10 @@ const openDialog = () => {
     dialog.value = true;
     qqnumber.value = me.value.qqnumber ?? '';
 }
-const changeQQ = async () =>{
+const changeQQ = async () => {
     try {
-        const { status } = await updateQQ(qqnumber.value);  
-        if(status !== 200) throw new Error('服务端异常，请联系网站管理员');
+        const { status } = await updateQQ(qqnumber.value);
+        if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
         userStore.updateFiled('qqnumber', qqnumber.value);
         nMessage.success('修改成功！');
         dialog.value = false;
@@ -235,6 +247,12 @@ const changeQQ = async () =>{
 .info__p {
     font-size: 1rem;
     margin: 6px 0;
+
+    .user-name-text {
+        font-weight: 600;
+        font-family: 'HarmonyOS_Regular';
+        color: #AED2E8;
+    }
 
     .upd_text {
         margin-left: 12px;

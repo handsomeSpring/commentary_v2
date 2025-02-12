@@ -20,8 +20,13 @@
 <script setup lang='ts'>
 const version = ref('');
 (async function init(){
-   const { data } = await getByCode('versionConfig');
-   version.value = data.find(item => item.system === 'commentary')?.version;
+  if(sessionStorage.getItem('asg-commentary-version')){
+    version.value = sessionStorage.getItem('asg-commentary-version');
+  }else{
+    const { data } = await getByCode('versionConfig');
+    const versionValue = data.find(item => item.system === 'commentary')?.version;
+    sessionStorage.setItem('asg-commentary-version',versionValue);
+  }
 })();
 const jumpToOutline = ()=> {
   window.open('https://developer.huawei.com/consumer/cn/','_blank');

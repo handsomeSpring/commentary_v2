@@ -47,9 +47,9 @@ import { allFlowInfo } from "./const";
             .tag_header {
                 width: 38px;
                 height: 38px;
-                background: #188eff;
+                background: #AED2E8;
                 border-radius: 8px;
-                border: 1px solid #1a88ef;
+                border: 1px solid #AED2E8;
                 font-weight: 500;
                 font-size: 14px;
                 color: #ffffff;
@@ -106,9 +106,9 @@ import { allFlowInfo } from "./const";
             .circle {
                 width: 9px;
                 height: 9px;
-                background: #188eff;
+                background: #CAE5D3;
                 border-radius: 100px;
-                border: 1px solid #1a88ef;
+                border: 1px solid #CAE5D3;
             }
         }
 
@@ -132,7 +132,7 @@ import { allFlowInfo } from "./const";
                 p {
                     font-weight: 500;
                     font-size: 12px;
-                    color: #0c80e5;
+                    color: #AED2E8;
                     line-height: 18px;
                 }
             }
