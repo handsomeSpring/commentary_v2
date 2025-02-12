@@ -1,12 +1,7 @@
 <template>
   <nav-back title="我的解说场次" />
-  <template v-if="loading">
-    <n-skeleton text :repeat="4" />
-    <n-skeleton text style="width: 87%" :repeat="2" />
-    <n-skeleton text style="width: 70%" :repeat="2" />
-    <n-skeleton text style="width: 50%" />
-  </template>
-  <template v-else>
+  <full-screen-loading v-if="loading"></full-screen-loading>
+  <div class="main-body" v-else>
     <n-result style="height: calc(100dvh - 45px);display: flex;flex-direction: column;
     align-items: center;justify-content: center;" v-if="!isCommentary" status="403" title="无权限"
       description="您不是解说，无法查看历史解说信息">
@@ -14,78 +9,76 @@
         <n-button @click="handleBack">返回</n-button>
       </template>
     </n-result>
-    <n-empty style="margin-top:30px" v-else-if="comList.length === 0" description="太懒惰了吧,一场解说都没有"></n-empty>
-
-    <ul class="com-list-conatainer" v-else>
-      <li class="item-wrap" v-for="(item, index) in comList" :key="index">
-        <header>
-          <p>
-            <n-gradient-text type="info">
-              {{ item.belong || '未知赛季' }}
-            </n-gradient-text>
+    <asg-empty v-else-if="comList.length === 0" description="太懒惰了吧,一场解说都没有">
+    </asg-empty>
+    <div v-else class="listTable">
+      <div class="card-container" v-for="(item, index) in comList" :key="index">
+        <div class="card-header">
+          <p class="time-text" :class="item.isOver ? 'time-over' : 'time-process'">{{ item.isOver ?
+            '赛程已结束' : '赛程进行中' }}
           </p>
-          <n-tag :bordered="false" size="small" type="success">
-            {{ item.tag || '未定义' }}
-          </n-tag>
-        </header>
-        <main>
-          <div class="team-info">
-            <n-badge :value="`赞${item.team1_piaoshu || 0}`">
-              <n-avatar round :src="item.customLogo"
-                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
-            </n-badge>
-            <p class="blue-game">{{ item.team1_name }}</p>
+          <div class="game-tag">
+            <img src="../../../assets/images/gametag.png">
+            <p>{{ item.tag || '未定义' }}</p>
           </div>
-          <n-icon size="24" color="#9CC9E5">
-            <GameControllerSharp />
-          </n-icon>
+        </div>
+        <div class="card-main">
           <div class="team-info">
-            <n-badge :value="`赞${item.team2_piaoshu || 0}`">
-              <n-avatar round :src="item.hostLogo"
-                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
-            </n-badge>
-            <p class="red-game">{{ item.team2_name }}</p>
+            <n-avatar round :src="item.customLogo"
+              fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
+            <p>{{ item.team1_name }}</p>
           </div>
-        </main>
-        <n-collapse :trigger-areas="triggerAreas">
-          <n-collapse-item style="margin:0 12px" title="详细信息">
-            <template #header-extra>
-              <n-button v-show="new Date(item.opentime) > new Date()" size="tiny" type="error"
-                @click="handleCancel(item)">取消选班</n-button>
-            </template>
-            <div class="info-list">
-              <div class="one-line">
-                <n-tag size="small" :bordered="false" type="warning">
-                  时间
-                </n-tag>
-                {{ handleTime(item.opentime) }}
-              </div>
-              <div class="one-line">
-                <n-tag size="small" :bordered="false" type="info">
-                  解说
-                </n-tag>
-                {{ computedCommentary(item.commentary) || '无' }}
-              </div>
-              <div class="one-line" v-if="item.personType.includes('referee')">
-                <n-tag size="small" :bordered="false" type="warning">
-                  导播
-                </n-tag>
-                {{ item.referee || '暂无导播' }}
-              </div>
-              <div class="one-line" v-if="item.personType.includes('judge')">
-                <n-tag size="small" :bordered="false" type="error">
-                  裁判
-                </n-tag>
-                {{ item.judge || '暂无裁判' }}
+          <img class="verse" src="../../../assets/images/VS.png">
+          <div class="team-info">
+            <n-avatar round :src="item.hostLogo"
+              fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
+            <p>{{ item.team2_name }}</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <li>
+            <div class="left-icon">
+              <img src="../../../assets/images/micro.png">
+              <p>解说</p>
+            </div>
+            <div class="commentary-wrap">
+              <div class="fill-person" v-for="(com, index) in computedCommentary(item.commentary)" :key="index" >
+                {{ limitText(com,5,'虚位以待') }}
               </div>
             </div>
-          </n-collapse-item>
-        </n-collapse>
-      </li>
-    </ul>
-  </template>
-
-  <!-- 弹窗部分 -->
+          </li>
+          <li v-if="item.personType.includes('judge')">
+            <div class="left-icon">
+              <img src="../../../assets/images/judge.png">
+              <p>裁判</p>
+            </div>
+            <p class="physize-text" :class="!item.judge ? 'none-info' : ''">{{ item.judge || '暂无裁判'
+              }}</p>
+          </li>
+          <li v-if="item.personType.includes('referee')">
+            <div class="left-icon">
+              <img src="../../../assets/images/referee.png">
+              <p>导播</p>
+            </div>
+            <p class="physize-text" :class="!item.referee ? 'none-info' : ''">{{ item.referee ||
+              '暂无导播' }}</p>
+          </li>
+          <li>
+            <div class="left-icon">
+              <img src="../../../assets/images/time.png">
+              <p>时间</p>
+            </div>
+            <p class="physize-text">{{ handleTime(item.opentime) }}</p>
+          </li>
+        </div>
+        <div class="btn-list-wrap">
+          <div class="my-button" :class="new Date >= new Date(item.opentime) ? 'disabled' : ''"
+            @click="handleCancel(item)">
+            {{ new Date >= new Date(item.opentime) ? '无法取消' : '取消选班' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- 挂在在body的弹窗部分 -->
   <n-modal v-model:show="showModal" :mask-closable="false" preset="dialog" title="取消该班次的原因" positive-text="提交"
     negative-text="算了" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
@@ -94,10 +87,9 @@
 </template>
 
 <script setup lang='ts'>
-import { GameControllerSharp } from "@vicons/ionicons5";
 import { getMyCommentary, cancelCommentary } from "@/api/commentary";
 import { useMessage } from "naive-ui";
-import { isJSON } from "@/utils";
+import { isJSON,limitText } from "@/utils";
 
 
 const showModal = ref(false);
@@ -106,7 +98,6 @@ const cancelId = ref(0);
 const uMessage = useMessage();
 const loading = ref(false);
 const comList = ref([]); //我的解说列表
-const triggerAreas = ref(['main', 'arrow']);
 const isCommentary = ref(true); //是否是解说
 const router = useRouter();
 const handleBack = () => {
@@ -150,15 +141,16 @@ const computedCommentary = (value: string) => {
     return []
   } else {
     if (isJSON(value)) {
-      return JSON.parse(value).map(item => item.chinaname).join(' ');
+      return JSON.parse(value).map(item => item.chinaname);
     } else {
-      return ['无法解析解说名', '无法解析解说名'];
+      return ['无法解析解说名'];
     }
   }
 }
 
 // 取消选班
 const handleCancel = (item) => {
+  if (new Date >= new Date(item.opentime)) return;
   showModal.value = true;
   cancelId.value = item.id;
 }
@@ -185,72 +177,159 @@ const onPositiveClick = async () => {
 }
 </script>
 <style scoped lang='scss'>
-.com-list-conatainer {
-  width: 100%;
-  padding-top: 12px;
-  background-color: #e7e7e7;
-  min-height: calc(100dvh - 57px);
-  overflow: auto;
-
-  .item-wrap {
-    margin: 0 auto 12px;
-    width: 90%;
-    border-radius: 7px;
+.listTable {
+  padding:12px;
+  min-height: calc(100dvh - 84px);
+  background: #F5F6F7;
+  position: relative;
+  //卡片开始
+  .card-container {
+    border-radius: 16pt;
+    padding: 12px 12px 23px;
+    margin: 12px auto;
     background: #fff;
-    padding: 12px 0;
 
-    header {
-      width: 95%;
-      margin: 0.5em auto;
+    .card-header {
+      height: 32px;
+      border-bottom: 1px solid #D3E8DA;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+
+      .time-text {
+        font-size: 14px;
+
+        &.time-process {
+          color: #2b8248;
+        }
+
+        &.time-over {
+          color: #EF2D2D;
+        }
+      }
+
+      .game-tag {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 1px 4px;
+        border-radius: 8px;
+        background: #CAE5D3;
+
+        p {
+          font-size: 13px;
+          color: #105126;
+        }
+      }
     }
 
-    main {
+    // 主体战队部分
+    .card-main {
       display: flex;
-      justify-content: space-around;
       align-items: center;
-      margin: 12px 0;
+      justify-content: center;
+      height: 5em;
+      gap: 55pt;
+      padding: 12pt 0 17pt;
 
       .team-info {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 30%;
+        gap: 8pt;
 
-        .red-game {
-          font-weight: 600;
-          color: rgb(255, 108, 82);
-          margin-top: 2px;
-        }
-
-        .blue-game {
-          font-weight: 600;
-          color: #9CC9E5;
-          margin-top: 2px;
+        p {
+          color: #1A1A1A;
+          font-size: 14px;
         }
 
         img {
-          width: 4em;
-          height: 4em;
+          width: 36pt;
+          height: 36pt;
         }
       }
     }
 
-    .info-list {
-      display: flex;
-      flex-direction: column;
-      width: 95%;
-      margin: 0 auto;
+    // 底部
+    .card-footer {
+      margin-bottom: 17px;
 
-      .one-line {
+      li {
         display: flex;
         align-items: center;
-        gap: 1em;
-        margin: 0.2em 0;
+        justify-content: space-between;
+        padding: 5pt 0;
+        border-bottom: 1px solid #D3E8DA;
+
+        .left-icon {
+          display: flex;
+          align-items: center;
+          gap: 4pt;
+
+          p {
+            font-size: 12px;
+            color: #004671;
+            font-weight: 500;
+          }
+        }
+
+        .physize-text {
+          color: #000000;
+          font-size: 14px;
+
+          &.none-info {
+            color: #9CC9E5;
+          }
+        }
+
+        // 解说
+        .commentary-wrap {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 12px;
+          .fill-person {
+            padding: 2px 6px;
+            font-size: 14px;
+            border-radius: 6px;
+            color: #EF2D2D;
+            background: #FFC8C8;
+          }
+
+        }
       }
+    }
+
+    // 操作区域
+
+    .btn-list-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12pt;
+
+      .my-button {
+        padding: 8px 32px;
+        border-radius: 16pt;
+        font-size: 16px;
+        background: #AED2E8;
+        cursor: pointer;
+
+        &.disabled {
+          background: #E4E4E4;
+          color: #161513;
+        }
+      }
+    }
+
+    // 提示词
+    .forbid-choose-text {
+      text-align: center;
+      font-size: 1em;
+      color: #FF4949;
+      width: 100%;
     }
   }
 }

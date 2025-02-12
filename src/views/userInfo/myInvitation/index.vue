@@ -1,15 +1,11 @@
 <template>
     <nav-back title="我的邀请记录" />
-    <template v-if="loading">
-        <n-skeleton text :repeat="4" />
-        <n-skeleton text style="width: 87%" :repeat="2" />
-        <n-skeleton text style="width: 70%" :repeat="2" />
-        <n-skeleton text style="width: 50%" />
-    </template>
+    <full-screen-loading v-if="loading">
+    </full-screen-loading>
     <template v-else>
         <div class="main__container" v-if="list.length === 0">
-            <n-empty description="没有找到记录">
-            </n-empty>
+            <asg-empty description="没有找到记录">
+            </asg-empty>
         </div>
         <div class="main__table" v-else>
             <n-timeline :icon-size="20">
@@ -187,7 +183,7 @@ const onPositiveClick = async ()=> {
 </script>
 <style scoped lang='scss'>
 .main__container {
-    height: 400px;
+    height: calc(100dvh - 45px);
     display: flex;
     align-items: center;
     justify-content: center;

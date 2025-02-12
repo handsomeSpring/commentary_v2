@@ -29,8 +29,8 @@
         </n-timeline>
     </main>
     <div class="result__main" v-else>
-        <n-result status="404" title="空空如也" description="主办方尚未给您下任务">
-        </n-result>
+        <asg-empty  description="暂时无任务，请咨询主办方">
+        </asg-empty>
     </div>
     <!-- 弹窗组件 -->
     <n-modal v-model:show="showModal" preset="dialog" title="查看任务全流程">

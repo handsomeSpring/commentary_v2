@@ -43,3 +43,11 @@ export function handleTime(value:string){
     const min = new Date(value).getMinutes();
     return year + '年' + month + '月' + day + '日 ' + hour + '时' + min + '分';
 }
+
+// 处理字符串过长，隐藏手段
+export const limitText = (com:(string | undefined),limit:number, undefinedCode:string) => {
+    const limitLength = limit || 5;
+    if(!com) return undefinedCode || '虚位以待';
+    if(com.length > limitLength) return `${com.slice(0,limitLength)}..`;
+    return com;
+}

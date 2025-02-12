@@ -19,7 +19,7 @@
                         <img v-if="[0,1,2].includes(index)">
                         <p v-else>{{ index + 1 }}</p>
                     </div>
-                    <p>{{ item.name }}</p>
+                    <p>{{ limitText(item.name,7,'无名氏') }}</p>
                     <p>{{ item.count }}</p>
                 </div>
             </div>
@@ -28,6 +28,7 @@
 </template>
 
 <script setup lang='ts'>
+import { limitText } from "@/utils";
 import { useMessage } from "naive-ui";
 const loading = ref(true);
 const nMessage = useMessage();

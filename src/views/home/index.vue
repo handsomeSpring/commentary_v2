@@ -41,11 +41,11 @@
                                 <div class="commentary-wrap">
                                     <div v-for="(com, index) in item.commentary" :key="index" class="com-tag"
                                         :class="!com ? 'no-person' : 'fill-person'">
-                                        {{ setName(com) }}
+                                        {{ limitText(com,5,'虚位以待') }}
                                     </div>
                                 </div>
                             </li>
-                            <li>
+                            <li v-if="item.personType.includes('judge')">
                                 <div class="left-icon">
                                     <img src="../../assets/images/judge.png">
                                     <p>裁判</p>
@@ -53,7 +53,7 @@
                                 <p class="physize-text" :class="!item.judge ? 'none-info' : ''">{{ item.judge || '暂无裁判'
                                     }}</p>
                             </li>
-                            <li>
+                            <li v-if="item.personType.includes('referee')">
                                 <div class="left-icon">
                                     <img src="../../assets/images/referee.png">
                                     <p>导播</p>
@@ -106,6 +106,7 @@ import comPersonChoose from '@/components/common/comPersonChoose.vue';
 import { useMessage } from 'naive-ui';
 import { selectCom } from "@/api/commentary"
 import { useUserStore } from '@/store/user';
+import { limitText } from '@/utils';
 
 const userStore = useUserStore();
 // 接口定义开始
@@ -149,11 +150,6 @@ let options = [];
 const listLoading = ref(false);
 const noMore = ref(false);
 
-const setName = (com:(string | undefined)) => {
-    if(!com) return '虚位以待';
-    if(com.length > 5) return `${com.slice(0,5)}..`;
-    return com;
-}
 const getSeason = async () => {
     loading.value = true;
     const { data, status } = await getAllEvents();
@@ -344,7 +340,7 @@ const handleInvite = async (userId: number) => {
     width: calc(100% - 24px);
     z-index: 2;
     padding: 0 12px;
-    background: #e8e8f3;
+    background: #fff;
 }
 
 .main-body {
@@ -355,10 +351,7 @@ const handleInvite = async (userId: number) => {
 .listTable {
     padding: 58px 12px 12px;
     min-height: calc(100% - 96px);
-    background: url('../../assets/images/listBg.png');
-    background-size: cover;
-    position: relative;
-    z-index: 1;
+    background: #F5F6F7;
     // 滚动文字提醒
     .scroll-text{
         font-size: 14px;
