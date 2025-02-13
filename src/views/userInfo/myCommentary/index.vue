@@ -4,7 +4,7 @@
   <div class="main-body" v-else>
     <n-result style="height: calc(100dvh - 45px);display: flex;flex-direction: column;
     align-items: center;justify-content: center;" v-if="!isCommentary" status="403" title="无权限"
-      description="您不是解说，无法查看历史解说信息">
+      description="无法查看，您的职位不是解说，请联系星宇">
       <template #footer>
         <n-button @click="handleBack">返回</n-button>
       </template>

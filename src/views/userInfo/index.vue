@@ -42,7 +42,7 @@
             <p>邀请记录</p>
           </div>
           <div class="grid-item" @click="routerTo('userInfo/responseInvite')">
-            <img src="/icon/解说成员.png" />
+            <img src="/icon/回应邀请.png" />
             <p>回应邀请</p>
           </div>
         </div>
