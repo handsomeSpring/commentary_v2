@@ -25,24 +25,24 @@
         <n-icon>
           <WarningSharp />
         </n-icon>
-        注意：请完善信息后再进行解说选班！
+        提醒：请先成为ASG解说再使用本系统。
       </div>
       <div class="main-container">
         <div class="quick-part">
           <div class="grid-item" @click="routerTo('/userInfo/myCommentary')">
-            <img src="/icon/我的场次.png" />
+            <img src="../../assets/icon/我的场次.png" />
             <p>我的场次</p>
           </div>
           <div class="grid-item" @click="routerTo('/champion')">
-            <img src="/icon/历届冠军.png" />
+            <img src="../../assets/icon/历届冠军.png" />
             <p>历届冠军</p>
           </div>
           <div class="grid-item" @click="routerTo('/userInfo/myInvitation')">
-            <img src="/icon/我的邀请.png" />
+            <img src="../../assets/icon/我的邀请.png" />
             <p>邀请记录</p>
           </div>
           <div class="grid-item" @click="routerTo('userInfo/responseInvite')">
-            <img src="/icon/回应邀请.png" />
+            <img src="../../assets/icon/回应邀请.png" />
             <p>回应邀请</p>
           </div>
         </div>
@@ -263,7 +263,7 @@ const routerTo = (path:string,query={},outline = false) =>{
     padding: 6px 24px;
     display: flex;
     align-items: center;
-    color: #F78235;
+    color: #FF4949;
     font-size: 0.9rem;
     background:linear-gradient( 173deg, #B3D4FF 0%, rgba(255,255,255,0) 93%);
   }
