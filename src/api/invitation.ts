@@ -29,6 +29,8 @@ interface Game {
     team1_name:string
     team1_piaoshu:number
     team2_name:string
+    com_limit:number
+    person_type:string
     team2_piaoshu:number
     winteam?:string
 }

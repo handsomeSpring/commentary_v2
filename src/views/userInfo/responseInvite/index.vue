@@ -1,11 +1,7 @@
 <template>
     <nav-back title="响应邀请" />
-    <template v-if="loading">
-        <n-skeleton text :repeat="4" />
-        <n-skeleton text style="width: 87%" :repeat="2" />
-        <n-skeleton text style="width: 70%" :repeat="2" />
-        <n-skeleton text style="width: 50%" />
-    </template>
+    <full-screen-loading v-if="loading">
+    </full-screen-loading>
     <template v-else>
         <n-alert style="margin:12px" type="warning">
             <template #icon>
@@ -22,8 +18,8 @@
             待处理：有<span class="total__text">{{ total }}</span>名解说邀请您一起参与解说！
         </n-alert>
         <div class="main__container" v-if="list.length === 0">
-            <n-empty description="暂时没有收到邀请">
-            </n-empty>
+            <asg-empty description="暂时没有收到邀请">
+            </asg-empty>
         </div>
         <div class="main__table" v-else>
             <n-timeline :icon-size="20">
