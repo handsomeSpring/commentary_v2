@@ -200,6 +200,7 @@ const handleResponse = (item: GameInvitation, type: ResponseType) => {
 }
 const onPositiveClick = async () => {
     try {
+        loading.value = true;
         const { data, status } = await refuseOrAgreeInv(reqData.value);
         if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
         if (data.code && data.code !== 200) throw new Error(data.message);
@@ -227,6 +228,7 @@ const onPositiveClick = async () => {
         message.error(error.message);
     } finally{
         getData(1, true);
+        loading.value = false;
     }
 }
 </script>

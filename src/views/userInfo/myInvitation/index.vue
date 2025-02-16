@@ -215,13 +215,16 @@ const handleRevoke = (id: number) => {
 }
 const onPositiveClick = async () => {
     try {
+        loading.value = true;
         const { data, status } = await revokeInvite(inviteId.value);
         if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
         if (data.code && data.code !== 200) throw new Error(data?.message ?? '未知错误，请联系网站管理员');
         message.success('撤销成功！');
-        getData(1, true);
     } catch (error) {
         message.error(error.message);
+    } finally{
+        loading.value = false;
+        getData(1, true);
     }
 }
 </script>
@@ -247,7 +250,7 @@ const onPositiveClick = async () => {
 // 新版UI
 .listTable {
     padding: 12px;
-    min-height: calc(100% - 69px);
+    min-height: calc(100dvh - 69px);
     background: #F5F6F7;
 
     // 滚动文字提醒

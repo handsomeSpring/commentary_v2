@@ -162,6 +162,7 @@ const onNegativeClick = () => {
 
 const onPositiveClick = async () => {
   try {
+    loading.value = true;
     if (!cancelReason.value) {
       uMessage.warning('请填写原因！');
       return;
@@ -170,9 +171,11 @@ const onPositiveClick = async () => {
     const { status } = await cancelCommentary(cancelId.value, cancelReason.value);
     if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
     uMessage.success('取消成功，请及时通知主办方');
-    initMyCommentary();
   } catch (error) {
     uMessage.error(!error.response ? error.customMessage : (error.response?.data?.message ?? '未知错误，请联系网站管理员'));
+  } finally {
+    initMyCommentary();
+    loading.value = false;
   }
 }
 </script>
