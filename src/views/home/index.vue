@@ -7,7 +7,7 @@
             </div>
             <asg-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
             </asg-empty>
-            <div v-else  class="listTable">
+            <div v-else class="listTable">
                 <n-infinite-scroll style="height: 100%" :distance="10" @load="handleLoad">
                     <div class="card-container" v-for="(item, index) in tableData" :key="index">
                         <div class="card-header">
@@ -41,7 +41,7 @@
                                 <div class="commentary-wrap">
                                     <div v-for="(com, index) in item.commentary" :key="index" class="com-tag"
                                         :class="!com ? 'no-person' : 'fill-person'">
-                                        {{ limitText(com,5,'虚位以待') }}
+                                        {{ limitText(com, 5, '虚位以待') }}
                                     </div>
                                 </div>
                             </li>
@@ -51,7 +51,7 @@
                                     <p>裁判</p>
                                 </div>
                                 <p class="physize-text" :class="!item.judge ? 'none-info' : ''">{{ item.judge || '暂无裁判'
-                                    }}</p>
+                                }}</p>
                             </li>
                             <li v-if="item.personType.includes('referee')">
                                 <div class="left-icon">
@@ -277,18 +277,27 @@ const onPositiveClick = async () => {
     showModal.value = false;
     try {
         loading.value = true;
-        const { status,data } = await selectCom(gameId.value);
+        const { status, data } = await selectCom(gameId.value);
         if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
-        if(data.code && data.code !== 200) throw new Error(data.message ?? '服务端错误！');
+        if (data.code && data.code !== 200) throw new Error(data.message ?? '服务端错误！');
         nMessage.success('选班成功,请前往个人主页查看');
-        getGames();
     } catch (error) {
+        if (
+            error instanceof Object
+            && 'response' in error
+            && error.response instanceof Object
+            && 'data' in error.response
+            && !!error.response.data
+        ) {
+            return nMessage.error(`预估可能机器人通知报错：${error.response.data.message}`);
+        }
         if (error.response?.data?.code === 400) {
             nMessage.error('选班失败，您不是解说');
             return;
         }
         nMessage.error(error instanceof Error ? error.message : '未知错误，请联系网站管理员！');
     } finally {
+        getGames();
         loading.value = false;
     }
 
@@ -323,6 +332,15 @@ const handleInvite = async (userId: number) => {
         if (data.code && data.code !== 200) throw new Error(data.message);
         nMessage.success('邀请成功，请前往我的邀请查看。');
     } catch (error) {
+        if (
+            error instanceof Object
+            && 'response' in error
+            && error.response instanceof Object
+            && 'data' in error.response
+            && !!error.response.data
+        ) {
+            return nMessage.error(`预估可能机器人通知报错：${error.response.data.message}`);
+        }
         nMessage.error(error.message)
     } finally {
         loading.value = false;
@@ -352,12 +370,14 @@ const handleInvite = async (userId: number) => {
     padding: 58px 12px 12px;
     min-height: calc(100% - 96px);
     background: #F5F6F7;
+
     // 滚动文字提醒
-    .scroll-text{
+    .scroll-text {
         font-size: 14px;
         text-align: center;
-        color:#9CC9E5;
+        color: #9CC9E5;
     }
+
     //卡片开始
     .card-container {
         border-radius: 16pt;

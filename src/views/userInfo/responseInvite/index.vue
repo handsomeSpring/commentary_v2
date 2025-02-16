@@ -203,18 +203,30 @@ const onPositiveClick = async () => {
         const { data, status } = await refuseOrAgreeInv(reqData.value);
         if (status !== 200) throw new Error('服务端异常，请联系网站管理员');
         if (data.code && data.code !== 200) throw new Error(data.message);
-        if(!reqData.value.commentary.includes(userStore.userInfo.id)) 
-           throw new Error('响应成功，由于您已经选了该场比赛，该赛程不会再重复添加您的名单!');
+        if(reqData.value.commentary.includes(userStore.userInfo.id)){
+            message.success('响应成功，由于您已经选了该场比赛，该赛程不会再重复添加您的名单!');
+            return;
+        }
         if (reqData.value.status === 1) {
             const response = await selectCom(reqData.value.gameId);
             if (response.status !== 200) throw new Error('选班失败，服务端异常，请联系网站管理员');
-            message.success('响应成功，并选取了该班次！');
+            message.success('响应成功，并成功选定了班次，请注意比赛开始时间！');
         }else{
-            message.success('操响应成功，已拒绝该用户的邀请！');
+            message.success('响应成功，已拒绝该用户的解说邀请！');
         }
-        getData(1, true);
     } catch (error) {
+        if (
+            error instanceof Object
+            && 'response' in error
+            && error.response instanceof Object
+            && 'data' in error.response
+            && !!error.response.data
+        ) {
+            return message.error(`服务端错误：${error.response.data.message}`);
+        }
         message.error(error.message);
+    } finally{
+        getData(1, true);
     }
 }
 </script>
