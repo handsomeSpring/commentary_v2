@@ -257,7 +257,7 @@ const returnBack = () => {
 <style scoped lang='scss'>
 $lightenColor: #d2e0f1;
 $lightenPrimaryColor: #83aee2;
-$primaryColor: #4090EF;
+$primaryColor:var(--main-theme-text);
 
 .card__box {
   margin: 16px auto;

@@ -63,7 +63,7 @@ const jumpToOutline = ()=> {
 .container{
   height: 100dvh;
   position: relative;
-  background-color:#d9d9d9;
+  background-color:var(--main-bg-color);
   .footer-text{
     display: flex;
     justify-content: center;

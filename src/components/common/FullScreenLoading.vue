@@ -25,7 +25,7 @@
 
 p {
     font-size: 14px;
-    color: #979797;
+    color: var(--main-theme-text);
 }
 
 /* HTML: <div class="loader"></div> */
@@ -37,10 +37,10 @@ p {
     font-weight: bold;
     text-transform: uppercase;
     color: #0000;
-    -webkit-text-stroke: 1px #000;
+    -webkit-text-stroke: 1px #9CC9E5;
     background:
-        radial-gradient(1.13em at 50% 1.6em, #000 99%, #0000 101%) calc(50% - 1.6em) 0/3.2em 100% text,
-        radial-gradient(1.13em at 50% -0.8em, #0000 99%, #000 101%) 50% .8em/3.2em 100% repeat-x text;
+        radial-gradient(1.13em at 50% 1.6em, #9CC9E5 99%, #0000 101%) calc(50% - 1.6em) 0/3.2em 100% text,
+        radial-gradient(1.13em at 50% -0.8em, #9CC9E5 99%, #9CC9E5 101%) 50% .8em/3.2em 100% repeat-x text;
     animation: l9 2s linear infinite;
 }
 

@@ -1,11 +1,7 @@
 <template>
     <nav-back title="ASG历届冠军" />
-    <template v-if="loading">
-        <n-skeleton text :repeat="4" />
-        <n-skeleton text style="width: 87%" :repeat="2" />
-        <n-skeleton text style="width: 70%" :repeat="2" />
-        <n-skeleton text style="width: 50%" />
-    </template>
+    <full-screen-loading v-if="loading">
+    </full-screen-loading>
     <div class="main" v-else>
         <n-result v-if="teamList.length === 0" style="margin-top: 30vh;" status="404" title="暂无冠军"
             description="该比赛还没有冠军诞生">

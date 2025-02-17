@@ -1,11 +1,7 @@
 <template>
   <nav-back title="我的兑换" />
-  <template v-if="loading">
-    <n-skeleton text :repeat="4" />
-    <n-skeleton text style="width: 87%" :repeat="2" />
-    <n-skeleton text style="width: 70%" :repeat="2" />
-    <n-skeleton text style="width: 50%" />
-  </template>
+  <full-screen-loading v-if="loading">
+  </full-screen-loading>
   <template v-else>
     <div class="div-content" v-if="myStoreList.length > 0">
       <li v-for="(item, index) in myStoreList" :key="index" :class="item.isVerification ? 'success' : 'warning'">
@@ -26,7 +22,7 @@
       </li>
     </div>
     <div class="no__empty" v-else>
-      <n-empty description="暂无购物信息"></n-empty>
+      <asg-empty description="暂无购物信息"></asg-empty>
     </div>
   </template>
 
@@ -122,7 +118,7 @@ getShopping();
 }
 
 .no__empty {
-  height: 60vh;
+  height: calc(100dvh - 45px);
   width: 100%;
   display: flex;
   justify-content: center;

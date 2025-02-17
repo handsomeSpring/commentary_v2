@@ -41,7 +41,9 @@ export function handleTime(value:string){
     const day = new Date(value).getDate();
     const hour = new Date(value).getHours();
     const min = new Date(value).getMinutes();
-    return year + '年' + month + '月' + day + '日 ' + hour + '时' + min + '分';
+    const stringHour = hour.toString().length === 2 ? hour : `0${hour}`;
+    const stringMin = min.toString().length === 2 ? min : `0${min}`;
+    return year + '年' + month + '月' + day + '日 ' + stringHour + '时' + stringMin + '分';
 }
 
 // 处理字符串过长，隐藏手段

@@ -1,37 +1,40 @@
 <template>
     <nav-back title="我的任务" />
-    <main v-if="tasks.length > 0">
-        <n-timeline>
-            <n-timeline-item v-for="(task, index) in tasks" :key="index" :title="task.taskName"
-                :type="computedType(task.status)">
-                <n-card>
-                    <p>
-                        <n-gradient-text size="16" :type="computedGradientType(task.status)">
-                            {{ computedText(task.status) }}
-                        </n-gradient-text>
-                    </p>
-                    <n-ellipsis expand-trigger="click" line-clamp="2" :tooltip="false">
-                        <p>{{ task.taskDescription }}</p>
-                    </n-ellipsis>
-                    <footer class="card__footer">
-                        <n-button-group size="small">
-                            <n-button v-show="['0', '3'].includes(task.status)" type="primary" strong secondary
-                                @click="handleTaskDone(task)">
-                                完成任务
-                            </n-button>
-                            <n-button type="default" @click="showAllFlow(task)">
-                                查看流程
-                            </n-button>
-                        </n-button-group>
-                    </footer>
-                </n-card>
-            </n-timeline-item>
-        </n-timeline>
-    </main>
-    <div class="result__main" v-else>
-        <asg-empty  description="暂时无任务，请咨询主办方">
-        </asg-empty>
-    </div>
+    <full-screen-loading v-if="loading"></full-screen-loading>
+    <template v-else>
+        <main v-if="tasks.length > 0">
+            <n-timeline>
+                <n-timeline-item v-for="(task, index) in tasks" :key="index" :title="task.taskName"
+                    :type="computedType(task.status)">
+                    <n-card>
+                        <p>
+                            <n-gradient-text size="16" :type="computedGradientType(task.status)">
+                                {{ computedText(task.status) }}
+                            </n-gradient-text>
+                        </p>
+                        <n-ellipsis expand-trigger="click" line-clamp="2" :tooltip="false">
+                            <p>{{ task.taskDescription }}</p>
+                        </n-ellipsis>
+                        <footer class="card__footer">
+                            <n-button-group size="small">
+                                <n-button v-show="['0', '3'].includes(task.status)" type="primary" strong secondary
+                                    @click="handleTaskDone(task)">
+                                    完成任务
+                                </n-button>
+                                <n-button type="default" @click="showAllFlow(task)">
+                                    查看流程
+                                </n-button>
+                            </n-button-group>
+                        </footer>
+                    </n-card>
+                </n-timeline-item>
+            </n-timeline>
+        </main>
+        <div class="result__main" v-else>
+            <asg-empty description="暂时无任务，请咨询主办方">
+            </asg-empty>
+        </div>
+    </template>
     <!-- 弹窗组件 -->
     <n-modal v-model:show="showModal" preset="dialog" title="查看任务全流程">
         <n-steps vertical>
@@ -90,7 +93,8 @@
 <script setup lang='ts'>
 import { useUserStore } from '@/store/user';
 import { useDialog, useMessage } from 'naive-ui';
-import { Time } from '@vicons/ionicons5'
+import { Time } from '@vicons/ionicons5';
+const loading = ref(false);
 const userStore = useUserStore();
 const nMessage = useMessage();
 const dialog = useDialog();
@@ -110,12 +114,16 @@ interface Task {
 }
 const tasks = ref<Task[]>([]);
 const initTask = () => {
+    loading.value = true;
     getTask(userStore.userInfo.id)
         .then(({ data }) => {
             tasks.value = data;
         })
         .catch((error: Error) => {
             nMessage.error(error.message);
+        })
+        .finally(()=>{
+            loading.value = false;
         })
 }
 const computedType = (status: Status) => {
@@ -215,7 +223,7 @@ main {
     align-items: center;
     font-size: 13px;
     margin-top: 8px;
-    color: #4090EF;
+    color: var(--main-theme-text);
 }
 
 .result__main {

@@ -154,7 +154,7 @@ const toDetails = (type: string, info: Info) => {
             .btn_text {
                 font-size: 1em;
                 font-weight: 500;
-                color: #4090EF;
+                color: #004671;
             }
         }
 

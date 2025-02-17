@@ -47,11 +47,11 @@
             </div>
           </div>
         </div>
-        <n-empty
+        <asg-empty
           style="margin-top: 24px"
           v-else
           description="暂无商品，请联系主办方"
-        ></n-empty>
+        ></asg-empty>
       </main>
     </div>
     <footer>
@@ -148,11 +148,11 @@
         </li>
       </ul>
       <div v-else>
-        <n-empty description="购物车空空的">
+        <asg-empty description="购物车空空的">
           <template #extra>
             <n-button size="small" @click="active = false"> 去购物吧 </n-button>
           </template>
-        </n-empty>
+        </asg-empty>
       </div>
     </n-drawer-content>
   </n-drawer>

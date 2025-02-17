@@ -1,7 +1,7 @@
 <template>
     <nav-back title="我的信息" />
-    <n-skeleton v-if="skeletonLoading" style="width: 6rem;height: 6rem;" :sharp="false">
-    </n-skeleton>
+    <full-screen-loading v-if="skeletonLoading" style="width: 6rem;height: 6rem;" :sharp="false">
+    </full-screen-loading>
     <n-card v-if="!skeletonLoading && !readOnly" title="我的信息">
         <template #header-extra>
             <n-button disabled size="small" tertiary>
@@ -256,7 +256,7 @@ const changeQQ = async () => {
 
     .upd_text {
         margin-left: 12px;
-        color: #4090EF;
+        color: var(--main-theme-text);
         cursor: pointer;
     }
 }

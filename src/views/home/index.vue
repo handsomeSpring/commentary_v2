@@ -87,7 +87,7 @@
                         加载中...
                     </div>
                     <div v-if="noMore" class="scroll-text">
-                        没有更多了
+                        没有更多了~(●'◡'●)
                     </div>
                 </n-infinite-scroll>
             </div>
@@ -369,13 +369,14 @@ const handleInvite = async (userId: number) => {
 .listTable {
     padding: 58px 12px 12px;
     min-height: calc(100% - 96px);
-    background: #F5F6F7;
+    background: var(--main-bg-color);
 
     // 滚动文字提醒
     .scroll-text {
         font-size: 14px;
         text-align: center;
-        color: #9CC9E5;
+        color: var(--main-theme-text);
+        
     }
 
     //卡片开始

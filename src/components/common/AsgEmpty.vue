@@ -25,7 +25,7 @@ const props = defineProps({
     flex-direction: column;
     gap:23pt;
     p{
-        color:#1A1A1A;
+        color:var(--main-theme-text);
         font-size: 14px;
     }
 }

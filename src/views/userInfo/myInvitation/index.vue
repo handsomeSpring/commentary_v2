@@ -107,7 +107,7 @@
             <div class="more__btn">
                 <n-button v-if="showMore" type="primary" @click="handleMore" :disabled="moreLoading">
                     <span>查看更多</span><n-spin v-show="moreLoading" stroke="#fff" :size="14" /></n-button>
-                <p v-else>到底了！</p>
+                <p v-else>没有更多了~(●'◡'●)</p>
             </div>
         </div>
     </template>
@@ -243,7 +243,7 @@ const onPositiveClick = async () => {
     margin: 22px;
 
     p {
-        color: #78CCFF;
+        color: var(--main-theme-text);
     }
 }
 
@@ -251,7 +251,7 @@ const onPositiveClick = async () => {
 .listTable {
     padding: 12px;
     min-height: calc(100dvh - 69px);
-    background: #F5F6F7;
+    background: var(--main-bg-color);
 
     // 滚动文字提醒
     .scroll-text {

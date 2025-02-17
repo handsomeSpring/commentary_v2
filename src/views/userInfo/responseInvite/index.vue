@@ -18,17 +18,11 @@
                         <img src="../../../assets/images/person.png">
                         <p class="person-text">邀请人:<span class="invite-person">{{ item.inivitePerson }}</span></p>
                     </div>
-                    <div class="game-tag wait" v-if="item.status === 0">
-                        <img src="../../../assets/images/waitIcon.png">
+                    <div class="game-tag wait">
+                        <n-icon  size="16" color="#DD7D17">
+                            <InfiniteSharp />
+                        </n-icon>
                         <p>待回应</p>
-                    </div>
-                    <div class="game-tag success" v-if="item.status === 1">
-                        <img src="../../../assets/images/rightIcon.png">
-                        <p>已接受</p>
-                    </div>
-                    <div class="game-tag error" v-if="item.status === 2">
-                        <img src="../../../assets/images/errorIcon.png">
-                        <p>已拒绝</p>
                     </div>
                 </div>
                 <div class="tag-card-title">
@@ -114,7 +108,7 @@
             <div class="more__btn">
                 <n-button v-if="showMore" type="primary" @click="handleMore" :disabled="moreLoading">
                     <span>查看更多</span><n-spin v-show="moreLoading" stroke="#fff" :size="14" /></n-button>
-                <p v-else>到底了！</p>
+                <p v-else>没有更多了~(●'◡'●)</p>
             </div>
         </div>
     </div>
@@ -128,6 +122,7 @@
 import { useMessage } from 'naive-ui';
 import { useUserStore } from "@/store/user";
 import { handleTime, limitText } from '@/utils';
+import { InfiniteSharp } from "@vicons/ionicons5"
 type Status = 0 | 1 | 2;
 interface Coms {
     id: number,
@@ -283,7 +278,7 @@ const onPositiveClick = async () => {
 .listTable {
     padding: 12px;
     min-height: calc(100dvh - 69px);
-    background: #F5F6F7;
+    background: var(--main-bg-color);
 
     .main__container {
         height: 100%;
@@ -356,10 +351,10 @@ const onPositiveClick = async () => {
                     }
 
                     &.wait {
-                        background: #CAEBFF;
+                        background: #FFDCB7;
 
                         p {
-                            color: #1070AB
+                            color: #DD7D17
                         }
                     }
 
@@ -515,7 +510,7 @@ const onPositiveClick = async () => {
         margin: 22px;
 
         p {
-            color: #78CCFF;
+            color: var(--main-theme-text);
         }
     }
 }

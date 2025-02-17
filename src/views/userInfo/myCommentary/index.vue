@@ -183,7 +183,7 @@ const onPositiveClick = async () => {
 .listTable {
   padding:12px;
   min-height: calc(100dvh - 84px);
-  background: #F5F6F7;
+  background: var(--main-bg-color);
   position: relative;
   //卡片开始
   .card-container {
