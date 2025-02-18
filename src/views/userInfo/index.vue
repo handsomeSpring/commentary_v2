@@ -10,8 +10,8 @@
            />
         </div>
         <div class="c-p">
-          <p>
-            {{ userStore.userInfo.chinaname.length > 7 ? (userStore.userInfo.chinaname.slice(0,7) + '...') : userStore.userInfo.chinaname }}
+          <p class="user-name-text">
+            {{ limitText(userStore.userInfo.chinaname,8,'...') }}
           </p>
           <p class="money-point">积分：{{ userStore.userInfo.money || 0 }}</p>
         </div>
@@ -170,6 +170,7 @@ import { useUserStore } from '@/store/user';
 import { ChevronForward, WarningSharp, BarChart, Desktop, BagCheck, PulseSharp, InformationCircle, BodySharp, Easel, FingerPrintOutline, GitBranch, Grid } from "@vicons/ionicons5"
 import { useDialog,useMessage } from 'naive-ui';
 import { removeToken } from '@/utils/auth';
+import { limitText } from '@/utils';
 const dialog = useDialog();
 const nMessage = useMessage();
 const userStore = useUserStore();
@@ -212,7 +213,7 @@ const routerTo = (path:string,query={},outline = false) =>{
   background-size: 100% 100%;
   .user-header {
     display: grid;
-    grid-template-columns: 100px auto 100px;
+    grid-template-columns: 90px auto 100px;
     padding: 12px 0;
     align-items: center;
     width: 100%;
@@ -224,31 +225,29 @@ const routerTo = (path:string,query={},outline = false) =>{
     }
 
     .l-p {
-      padding-left: 12px;
+      padding-left: 1.5em;
+      .n-avatar{
+        border-radius: 8px;
+        border:2px solid var(--main-bg-color)
+      }
     }
 
     .c-p {
       flex-direction: column;
       align-items: flex-start;
-
-      p:first-child {
-        font-size: 1.2rem;
+      .user-name-text{
+      font-size: 1.1rem;
         font-weight: bold;
-        color: #393939;
-      }
-
-      p:last-child {
-        font-size: 0.8rem;
-        font-weight: 500;
-        color: #ebebeb;
+        color: var(--dark-theme-text);
       }
       .money-point{
-        margin-top: 0.2em;
-        font-size: 0.65em;
+        margin-top: 0.32em;
+        font-size: 0.82em;
         border-radius: 0.8em;
         padding:0.1em 1em;
         background: #7497e3;
-
+        font-weight: 500;
+        color: #ebebeb;
       }
     }
 
@@ -327,6 +326,10 @@ const routerTo = (path:string,query={},outline = false) =>{
           margin-left: 0.5rem;
         }
       }
+    }
+
+    .n-button{
+      border-radius: 8px;
     }
   }
 }
