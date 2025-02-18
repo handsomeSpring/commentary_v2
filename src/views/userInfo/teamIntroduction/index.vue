@@ -1,6 +1,7 @@
 <template>
     <nav-back title="ASG团队&系统介绍" />
-    <div class="container__box">
+    <full-screen-loading v-if="loading"></full-screen-loading>
+    <div class="container__box" v-else>
         <n-card title="团队介绍">
             <p>{{ introduction }}</p>
         </n-card>
@@ -18,13 +19,18 @@
 <script setup lang='ts'>
 const introduction = ref('');
 const systemIntro = ref([]);
+const loading = ref(false);
 const initData = ()=>{
+    loading.value = true;
     getByCode('teamIntroduction').then(res=>{
         introduction.value = res.data;
     })
     getByCode('comSystemIntro').then(res=>{
-        console.log(res.data,'res.data');
         systemIntro.value = res.data;
+    }).finally(()=>{
+        nextTick(()=>{
+            loading.value = false;
+        })
     })
 }
 initData();

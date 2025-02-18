@@ -27,7 +27,7 @@ const props = defineProps({
     justify-content: center;
     flex-direction: column;
     gap:23pt;
-    .show-minHeight{
+    &.show-minHeight{
         min-height: calc(100dvh - 52px - 56px);
     }
     p{

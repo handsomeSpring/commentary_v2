@@ -231,7 +231,7 @@ const changeQQ = async () => {
     }
 
     .edit__btn--color {
-        color: #4090EE;
+        color: var(--dark-theme-text);
         margin-left: 12px;
     }
 }
@@ -251,12 +251,13 @@ const changeQQ = async () => {
     .user-name-text {
         font-weight: 600;
         font-family: 'HarmonyOS_Regular';
-        color: #AED2E8;
+        color: var(--dark-theme-text);
     }
 
     .upd_text {
         margin-left: 12px;
-        color: var(--main-theme-text);
+        color: var(--dark-theme-text);
+        font-size:0.9em;
         cursor: pointer;
     }
 }
