@@ -146,6 +146,17 @@
               <ChevronForward />
             </n-icon>
           </li>
+          <li class="grid-li-container" @click="routerTo('/userInfo/componentDoc')">
+            <p>
+              <n-icon size="18" color="#6c928c">
+                <LogoVue />
+              </n-icon>
+              <span class="main-text">前端组件文档</span>
+            </p>
+            <n-icon size="18" color="#CAE5D3">
+              <ChevronForward />
+            </n-icon>
+          </li>
           <li class="grid-li-container" @click="routerTo('/userInfo/teamIntroduction')">
             <p>
               <n-icon size="18" color="#FF9900">
@@ -167,7 +178,7 @@
 
 <script setup lang='ts'>
 import { useUserStore } from '@/store/user';
-import { ChevronForward, WarningSharp, BarChart, Desktop, BagCheck, PulseSharp, InformationCircle, BodySharp, Easel, FingerPrintOutline, GitBranch, Grid } from "@vicons/ionicons5"
+import { ChevronForward, WarningSharp, BarChart, Desktop,LogoVue, BagCheck, PulseSharp, InformationCircle, BodySharp, Easel, FingerPrintOutline, GitBranch, Grid } from "@vicons/ionicons5"
 import { useDialog,useMessage } from 'naive-ui';
 import { removeToken } from '@/utils/auth';
 import { limitText } from '@/utils';

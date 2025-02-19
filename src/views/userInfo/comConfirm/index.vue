@@ -57,7 +57,6 @@
 import { useUserStore } from '@/store/user';
 import { useMessage } from 'naive-ui/es/message';
 const userStore = useUserStore();
-console.log(userStore.userInfo.officium, 'userStore.userInfo.officium');
 const message = useMessage();
 const identify = ref('');
 const options = ref([]);
