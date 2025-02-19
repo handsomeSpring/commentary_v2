@@ -3,7 +3,8 @@
         <full-screen-loading v-if="loading"></full-screen-loading>
         <div class="main-body" v-else>
             <div class="header-search-container">
-                <n-select v-model:value="season" :options="options" placeholder="请选择赛季" @update:value="handleSelect" />
+                <n-select v-model:value="season" :options="options" :render-label="renderLabel" placeholder="请选择赛季"
+                    @update:value="handleSelect" />
             </div>
             <asg-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
             </asg-empty>
@@ -51,7 +52,7 @@
                                     <p>裁判</p>
                                 </div>
                                 <p class="physize-text" :class="!item.judge ? 'none-info' : ''">{{ item.judge || '暂无裁判'
-                                }}</p>
+                                    }}</p>
                             </li>
                             <li v-if="item.personType.includes('referee')">
                                 <div class="left-icon">
@@ -103,10 +104,11 @@
 
 <script setup lang='ts'>
 import comPersonChoose from '@/components/common/comPersonChoose.vue';
-import { useMessage } from 'naive-ui';
+import { useMessage, type SelectOption, NTag } from 'naive-ui';
 import { selectCom } from "@/api/commentary"
 import { useUserStore } from '@/store/user';
 import { limitText } from '@/utils';
+import { VNodeChild } from 'vue';
 
 const userStore = useUserStore();
 // 接口定义开始
@@ -149,7 +151,52 @@ const tableData = ref([]);
 let options = [];
 const listLoading = ref(false);
 const noMore = ref(false);
-
+// 渲染标签
+const renderLabel = (option: SelectOption): VNodeChild => {
+    if (option.type === 'group') {
+        return h('span', `${option.name}(Cool!)`);
+    }
+    const name = h('span', option.name as string);
+    const nTag = h(NTag, {
+        class: 'season-tag',
+        type: `${option.is_over ? 'error' : 'success'}`,
+        size:'small',
+        bordered:false,
+        round:true,
+        style:{
+            marginLeft:'12px'
+        }
+    }, {
+        type: 'success',
+        default: () => {
+            return h('span', null, `${option.is_over ? '已结束' : '进行中'}`)
+        }
+    });
+    const seasonStatusTag = h(NTag, {
+        class: 'season-tag',
+        size:'small',
+        round:true,
+        bordered:false,
+        style:{
+            marginLeft:'12px'
+        }
+    }, {
+        type: 'success',
+        default: () => {
+            return h('span', null, mapSeasonStatus[option.status as string])
+        }
+    });
+    return [ name, nTag, seasonStatusTag];
+};
+// 映射
+const mapSeasonStatus = {
+    '0':'筹备期',
+    '1':'报名期',
+    '2':'建联期',
+    '3':'公示期',
+    '4':'进行期',
+    '5':'结束期'
+};
 const getSeason = async () => {
     loading.value = true;
     const { data, status } = await getAllEvents();
@@ -376,7 +423,7 @@ const handleInvite = async (userId: number) => {
         font-size: 14px;
         text-align: center;
         color: var(--main-theme-text);
-        
+
     }
 
     //卡片开始
