@@ -3,8 +3,23 @@
         <full-screen-loading v-if="loading"></full-screen-loading>
         <div class="main-body" v-else>
             <div class="header-search-container">
-                <n-select v-model:value="season" :options="options" :render-label="renderLabel" placeholder="请选择赛季"
-                    @update:value="handleSelect" />
+                <n-select v-model:value="season" :options="filterOptions" :render-label="renderLabel" placeholder="未选择赛季：全部赛季"
+                    @update:value="handleSelect">
+                    {{ season }}
+                    <template #header>
+                        <div class="select-container">
+                            <p>筛选操作</p>
+                            <n-switch v-model:value="switchFilterBool" @update:value="handleSwitchChange">
+                                <template #checked>
+                                    屏蔽已结束赛季
+                                </template>
+                                <template #unchecked>
+                                    展示全部赛季
+                                </template>
+                            </n-switch>
+                        </div>
+                    </template>
+                </n-select>
             </div>
             <asg-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
             </asg-empty>
@@ -52,7 +67,7 @@
                                     <p>裁判</p>
                                 </div>
                                 <p class="physize-text" :class="!item.judge ? 'none-info' : ''">{{ item.judge || '暂无裁判'
-                                    }}</p>
+                                }}</p>
                             </li>
                             <li v-if="item.personType.includes('referee')">
                                 <div class="left-icon">
@@ -139,7 +154,7 @@ interface GameTable extends GameInterface {
 }
 // 接口定义结束
 const nMessage = useMessage();
-const season = ref("");
+const season = ref(null);
 const loading = ref(false);
 const showModal = ref(false); //showModal 解说提示弹窗
 const confirmInfo = ref('');
@@ -149,8 +164,24 @@ const pageQuery = ref({
 })
 const tableData = ref([]);
 let options = [];
+const filterOptions = ref([]);
 const listLoading = ref(false);
+const switchFilterBool = ref(false);
 const noMore = ref(false);
+// 筛选功能
+const handleSwitchChange = (event:Event) =>{
+    if(event){
+        filterOptions.value = options.filter(item => !item.is_over);
+        const isExist = filterOptions.value.findIndex(item => item.name === season.value) !== -1;
+        if(!isExist){
+          const nowSeason = filterOptions.value.at(-1);
+          season.value = !!nowSeason ? nowSeason.name : null; 
+          getGames();
+        }
+    }else{
+        filterOptions.value = options;
+    }
+}
 // 渲染标签
 const renderLabel = (option: SelectOption): VNodeChild => {
     if (option.type === 'group') {
@@ -160,11 +191,11 @@ const renderLabel = (option: SelectOption): VNodeChild => {
     const nTag = h(NTag, {
         class: 'season-tag',
         type: `${option.is_over ? 'error' : 'success'}`,
-        size:'small',
-        bordered:false,
-        round:true,
-        style:{
-            marginLeft:'12px'
+        size: 'small',
+        bordered: false,
+        round: true,
+        style: {
+            marginLeft: '12px'
         }
     }, {
         type: 'success',
@@ -174,11 +205,11 @@ const renderLabel = (option: SelectOption): VNodeChild => {
     });
     const seasonStatusTag = h(NTag, {
         class: 'season-tag',
-        size:'small',
-        round:true,
-        bordered:false,
-        style:{
-            marginLeft:'12px'
+        size: 'small',
+        round: true,
+        bordered: false,
+        style: {
+            marginLeft: '12px'
         }
     }, {
         type: 'success',
@@ -186,16 +217,16 @@ const renderLabel = (option: SelectOption): VNodeChild => {
             return h('span', null, mapSeasonStatus[option.status as string])
         }
     });
-    return [ name, nTag, seasonStatusTag];
+    return [name, nTag, seasonStatusTag];
 };
 // 映射
 const mapSeasonStatus = {
-    '0':'筹备期',
-    '1':'报名期',
-    '2':'建联期',
-    '3':'公示期',
-    '4':'进行期',
-    '5':'结束期'
+    '0': '筹备期',
+    '1': '报名期',
+    '2': '建联期',
+    '3': '公示期',
+    '4': '进行期',
+    '5': '结束期'
 };
 const getSeason = async () => {
     loading.value = true;
@@ -208,6 +239,7 @@ const getSeason = async () => {
             value: item.name
         }
     });
+    filterOptions.value = options;
     const noOverArr = options.filter(item => !item.is_over);
     season.value = window.sessionStorage.getItem('seasonName') || noOverArr[0].value || options[0].value;
     getGames();
@@ -406,6 +438,13 @@ const handleInvite = async (userId: number) => {
     z-index: 2;
     padding: 0 12px;
     background: #fff;
+}
+
+.select-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding:6px 0;
 }
 
 .main-body {
