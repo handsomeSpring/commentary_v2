@@ -151,7 +151,7 @@
               <n-icon size="18" color="#6c928c">
                 <LogoVue />
               </n-icon>
-              <span class="main-text">前端组件文档</span>
+              <span class="main-text">前端文档</span>
             </p>
             <n-icon size="18" color="#CAE5D3">
               <ChevronForward />

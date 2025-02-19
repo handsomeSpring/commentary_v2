@@ -1,3 +1,3 @@
 export default{
-    title:"前端组件文档"
+    title:"ASG解说端前端文档"
 }
