@@ -17,9 +17,9 @@
                     <h4>场次</h4>
                 </div>
                 <div class="list-table-body" v-for="(item, index) in comList" :key="index">
-                    <!-- TODO -1，2，3使用svg图片。后面用序号 -->
+                    <!-- 插入图片done -->
                     <div>
-                        <img v-if="[0,1,2].includes(index)">
+                        <img v-if="[0,1,2].includes(index)" :src="`src/assets/icon/NO${index+1}.svg`" alt="index+1" width="20px">
                         <p v-else>{{ index + 1 }}</p>
                     </div>
                     <p>{{ limitText(item.name,7,'无名氏') }}</p>
@@ -55,25 +55,20 @@ onMounted(async () => {
 <style scoped lang='scss'>
 .container-comlist {
     height: calc(100dvh - 45px);
-    background: linear-gradient(173deg, #B3D4FF 0%, rgba(255, 255, 255, 0) 93%);
+    background: linear-gradient(to left, #00bfff, #dda0dd);
     header {
         height: 25%;
         width: 100%;
         //TODO-二十；排名榜 和 解说场次排名前十
         h1{
             text-align:center;
-            font-family: '宋体' 'Microsoft Yahei',tahoma,arial,'Hiragin Sans GB';
+            font-family: '楷体' '宋体' 'Microsoft Yahei',tahoma,arial,'Hiragin Sans GB';
             font-size: 40px;
             width: 100%;
-            border: 2px solid #333;
-            box-shadow: 8px 8px 5px #444;
             padding: 20px;
-            background: linear-gradient(to right, #ff0000, #ffff00);
-            mix-blend-mode: difference;
         }
         p{
             text-align:center;
-            mix-blend-mode: difference;
             line-height: 10;
         }
     }
@@ -92,6 +87,8 @@ onMounted(async () => {
         .list-table-body {
             // TODO-二十：建议用flex或者grid布局，可以查一下这俩。
             // 一、让文字居中；二、让文字颜色适合；三、产生一定padding和margin，产生间隔。
+            flex-grow: 200;
+            flex-shrink: 10;
             width: 100%;
             display: grid;
             grid-template-columns: repeat(3,1fr);
