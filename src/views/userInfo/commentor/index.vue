@@ -1,10 +1,13 @@
 <template>
+    <!-- <img class="fit-picture" src="src/assets/icon/第一名.svg" alt="1"> -->
+    <!-- <img class="fit-picture" src="src/assets/icon/第二名.svg" alt="2"> -->
+    <!-- <img class="fit-picture" src="src/assets/icon/第三名.svg" alt="3"> -->
     <nav-back title="解说排名" />
     <full-screen-loading v-if="loading"></full-screen-loading>
     <template v-else>
         <div class="container-comlist">
             <header>
-                <h1>排名榜</h1>
+                <h1>排行榜</h1>
                 <p>-解说场次排名前十-</p>
             </header>
             <div class="main-body">
@@ -58,10 +61,20 @@ onMounted(async () => {
         width: 100%;
         //TODO-二十；排名榜 和 解说场次排名前十
         h1{
-
+            text-align:center;
+            font-family: '宋体' 'Microsoft Yahei',tahoma,arial,'Hiragin Sans GB';
+            font-size: 40px;
+            width: 100%;
+            border: 2px solid #333;
+            box-shadow: 8px 8px 5px #444;
+            padding: 20px;
+            background: linear-gradient(to right, #ff0000, #ffff00);
+            mix-blend-mode: difference;
         }
         p{
-
+            text-align:center;
+            mix-blend-mode: difference;
+            line-height: 10;
         }
     }
     .main-body {
@@ -82,6 +95,9 @@ onMounted(async () => {
             width: 100%;
             display: grid;
             grid-template-columns: repeat(3,1fr);
+            .fit-picture{
+                width:auto;
+            }
         }
     }
 }
