@@ -87,6 +87,7 @@ onMounted(async () => {
         .list-table-body {
             // TODO-二十：建议用flex或者grid布局，可以查一下这俩。
             // 一、让文字居中；二、让文字颜色适合；三、产生一定padding和margin，产生间隔。
+            justify-content: center;//？为什么没居中
             flex-grow: 200;
             flex-shrink: 10;
             width: 100%;
