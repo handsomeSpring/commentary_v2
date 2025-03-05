@@ -26,6 +26,7 @@ const version = ref('');
     const { data } = await getByCode('versionConfig');
     const versionValue = data.find(item => item.system === 'commentary')?.version;
     sessionStorage.setItem('asg-commentary-version',versionValue);
+    version.value = versionValue;
   }
 })();
 const jumpToOutline = ()=> {

@@ -132,7 +132,7 @@ import { allFlowInfo } from "./const";
                 p {
                     font-weight: 500;
                     font-size: 12px;
-                    color: #AED2E8;
+                    color: var(--dark-theme-text);
                     line-height: 18px;
                 }
             }

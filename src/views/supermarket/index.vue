@@ -1,6 +1,5 @@
 <template>
   <nor-header title="兑换中心" activeMenu="2">
-    <full-screen-loading v-if="loading"></full-screen-loading>
     <div class="super-container">
       <aside>
         <li v-for="(item, index) in menuList" :class="activeValue === item.value ? 'active' : ''" :key="index"
@@ -9,29 +8,37 @@
         </li>
       </aside>
       <main>
-        <div v-if="activeGoodsList.length > 0" class="goods-container" v-for="(item, index) in activeGoodsList"
-          :key="index">
-          <div class="img-wrap">
-            <img src="/logo/asg.png" />
-          </div>
-          <div class="introduction">
-            <h4>{{ item.name }}</h4>
-            <p>{{ item.description }}</p>
-            <p>{{ item.information }}</p>
-            <div class="operation">
-              <p class="money">{{ item.price }}</p>
-              <div class="operation-wrap">
-                <n-icon v-show="item.num > 0" :size="22" color="#d4d4d4" :component="RemoveCircle"
-                  @click="handleMinus(item)" />
-                <h4 v-show="item.num > 0">{{ item.num }}</h4>
-                <n-icon :size="22" color="#9cc9e5" :component="AddCircle" @click="handleAdd($event, item)" />
+        <template v-if="loading">
+          <n-skeleton text style="width: 30%" />
+          <n-skeleton text style="width: 60%" />
+          <n-skeleton text :repeat="2" />
+          <n-skeleton text :repeat="2" />
+        </template>
+        <template v-else>
+          <div v-if="activeGoodsList.length > 0" class="goods-container" v-for="(item, index) in activeGoodsList"
+            :key="index">
+            <div class="img-wrap">
+              <img src="/logo/asg.png" />
+            </div>
+            <div class="introduction">
+              <h4>{{ item.name }}</h4>
+              <p>{{ item.description }}</p>
+              <p>{{ item.information }}</p>
+              <div class="operation">
+                <p class="money">{{ item.price }}</p>
+                <div class="operation-wrap">
+                  <n-icon v-show="item.num > 0" :size="22" color="#d4d4d4" :component="RemoveCircle"
+                    @click="handleMinus(item)" />
+                  <h4 v-show="item.num > 0">{{ item.num }}</h4>
+                  <n-icon :size="22" color="#9cc9e5" :component="AddCircle" @click="handleAdd($event, item)" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div v-else class="empty-content">
-          <asg-empty :showMinHeight="false" description="暂无商品，请联系主办方"></asg-empty>
-        </div>
+          <div v-else class="empty-content">
+            <asg-empty :showMinHeight="false" description="暂无商品，请联系主办方"></asg-empty>
+          </div>
+        </template>
       </main>
     </div>
     <footer>
@@ -90,7 +97,7 @@
         </li>
       </ul>
       <div v-else>
-        <asg-empty description="购物车空空的">
+        <asg-empty :showMinHeight="false" description="购物车空空的">
           <template #extra>
             <n-button size="small" @click="active = false"> 去购物吧 </n-button>
           </template>
@@ -297,10 +304,12 @@ const handleBuy = async () => {
 
   main {
     width: 100%;
+
     // 空的
-    .empty-content{
-      height:calc(100% - 50px);
+    .empty-content {
+      height: calc(100% - 50px);
     }
+
     .goods-container {
       display: grid;
       grid-template-columns: 80px calc(100% - 80px);
