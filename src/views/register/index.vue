@@ -28,7 +28,7 @@
           </n-input>
         </n-form-item>
         <n-form-item>
-          <VaptchaComponent @change="handleGetToken" />
+          <VaptchaComponent ref="vaptRef" @change="handleGetToken" />
         </n-form-item>
         <n-button type="primary" block @click="handleRegister" :disabled="!tokenObj.token">
           <span style="margin-right: 12px; color: #fff; font-weight: bold">注册</span><n-spin v-show="loading"
@@ -121,6 +121,7 @@ const rules: FormRules = {
   ],
 };
 const formRef = ref(null);
+const vaptRef = ref(null);
 const loading = ref(false);
 const handleRegister = () => {
   formRef.value?.validate((errors: any) => {
@@ -153,11 +154,16 @@ const register = async () => {
     const { data, status } = await registerApi(req);
     if (status !== 200) throw new Error("服务端异常，请联系网站管理员！");
     if (data.code && data.code !== 200)
-      throw new Error(data?.message ?? "位置错误！");
+      throw new Error(data?.message ?? "未知错误！");
     nMessage.success("注册成功！");
     router.push("/login");
   } catch (error) {
-    nMessage.error(error.message);
+    nMessage.error(error.response?.data?.message || error.message);
+    vaptRef.value?.reset();
+    tokenObj.value = {
+      server: "",
+      token: "",
+    };
   }
 };
 </script>
@@ -189,12 +195,15 @@ const register = async () => {
   0% {
     max-height: 0%;
   }
-  20%{
+
+  20% {
     max-height: 0%;
   }
-  50%{
+
+  50% {
     max-height: 30%;
   }
+
   100% {
     max-height: 80%;
   }

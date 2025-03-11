@@ -62,6 +62,9 @@ const reset = () => {
   window.vaptchaObj.reset();
 };
 
+defineExpose({
+  reset
+});
 watch(token, (serverToken) => {
   console.log(serverToken,'serverToken');
   emit('change',serverToken);
