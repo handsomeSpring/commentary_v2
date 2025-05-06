@@ -12,7 +12,8 @@
                 <div class="list-table-body" v-for="(item, index) in comList" >
                     <p class="ranking">Top.<span>{{ index + 1 }}</span></p>
                     <div class="profile-photo">
-                        <img src="../../../assets/images/commontorphoto.jpg">
+                        <img v-if="item.base64" :src="item.base64"/>
+                        <img v-else src="../../../assets/images/commontorphoto.jpg">
                     </div>
                     <div class="basic-message">
                         <p>{{ item.username }}</p>
@@ -105,8 +106,8 @@ onMounted(async () => {
                 align-items: center;
                 justify-content: center;
                 img{
-                    width: 30px;
-                    height: 30px;
+                    width: 40px;
+                    height: 40px;
                     border-radius: 50%;
                 }
             }
