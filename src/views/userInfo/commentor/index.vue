@@ -1,7 +1,5 @@
 <template>
-    <!-- <img class="fit-picture" src="src/assets/icon/第一名.svg" alt="1"> -->
-    <!-- <img class="fit-picture" src="src/assets/icon/第二名.svg" alt="2"> -->
-    <!-- <img class="fit-picture" src="src/assets/icon/第三名.svg" alt="3"> -->
+
     <nav-back/>
     <full-screen-loading v-if="loading"></full-screen-loading>
     <template v-else>
@@ -11,22 +9,14 @@
                 <h2>场次排名</h2>
             </header>
             <div class="main-body">
-                <!--   v-for="(item, index) in comList>
-                    <div>
-                        <img v-if="[0,1,2].includes(index)" :src="`src/assets/icon/NO${index+1}.svg`" alt="index+1" width="20px">
-                        <p v-else>{{ index + 1 }}</p>
-                    </div>
-                    <p>{{ limitText(item.name,7,'无名氏') }}</p>
-                    <p>{{ item.count }}</p>
-                </div> -->
                 <div class="list-table-body" v-for="(item, index) in comList" >
                     <p class="ranking">Top.<span>{{ index + 1 }}</span></p>
                     <div class="profile-photo">
-                        <img src="../../../assets/images/dateIcon.png">
+                        <img src="../../../assets/images/commontorphoto.jpg">
                     </div>
                     <div class="basic-message">
-                        <p>{{ item.name }}</p>
-                        <p>加入ASG<span class="add-time">{{ item.joinTime }}</span>天</p>
+                        <p>{{ item.username }}</p>
+                        <p>加入ASG<span class="add-time">{{ item.joinCount }}</span>天</p>
                     </div>
                     <div class="count-wrap">
                         <p>{{ item.count }}</p>
@@ -47,23 +37,23 @@ async function getCommentor() {
     try {
         const { data, status } = await getRankForCommentary();
         if (status !== 200) throw new Error('服务端异常！');
-        comList.value = data;
+        comList.value = data.data.rows;
     } catch (error) {
         nMessage.error(error?.response?.data?.message ?? '未知错误，请联系网站管理员');
-        comList.value = [
-            {
-                name:'二十不会写前端',
-                count:'5',
-                joinTime:'100',
-                avator:'null'
-            },
-            {
-                name:'7000大帝',
-                count:'7000',
-                joinTime:'700',
-                avator:'null'
-            }
-        ]
+        // comList.value = [
+        //     {
+        //         name:'二十不会写前端',
+        //         count:'5',
+        //         joinTime:'100',
+        //         avator:'null'
+        //     },
+        //     {
+        //         name:'7000大帝',
+        //         count:'7000',
+        //         joinTime:'700',
+        //         avator:'null'
+        //     }
+        // ]
     }
 }
 onMounted(async () => {
@@ -133,7 +123,7 @@ onMounted(async () => {
                 margin: 0 auto;
                 border: black solid 1px;
                 border-radius: 15px;
-                background: aquamarine;
+                background: #F5F6F7;
                 text-align: center;
             }
         }
