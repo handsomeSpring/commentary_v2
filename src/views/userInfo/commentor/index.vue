@@ -2,28 +2,35 @@
     <!-- <img class="fit-picture" src="src/assets/icon/第一名.svg" alt="1"> -->
     <!-- <img class="fit-picture" src="src/assets/icon/第二名.svg" alt="2"> -->
     <!-- <img class="fit-picture" src="src/assets/icon/第三名.svg" alt="3"> -->
-    <nav-back title="解说排名" />
+    <nav-back/>
     <full-screen-loading v-if="loading"></full-screen-loading>
     <template v-else>
         <div class="container-comlist">
             <header>
-                <h1>排行榜</h1>
-                <p>-解说场次排名前十-</p>
+                <h1>解说</h1>
+                <h2>场次排名</h2>
             </header>
             <div class="main-body">
-                <div class="list-table-header">
-                    <h4>排名</h4>
-                    <h4>解说</h4>
-                    <h4>场次</h4>
-                </div>
-                <div class="list-table-body" v-for="(item, index) in comList" :key="index">
-                    <!-- 插入图片done -->
+                <!--   v-for="(item, index) in comList>
                     <div>
                         <img v-if="[0,1,2].includes(index)" :src="`src/assets/icon/NO${index+1}.svg`" alt="index+1" width="20px">
                         <p v-else>{{ index + 1 }}</p>
                     </div>
                     <p>{{ limitText(item.name,7,'无名氏') }}</p>
                     <p>{{ item.count }}</p>
+                </div> -->
+                <div class="list-table-body" v-for="(item, index) in comList" >
+                    <p class="ranking">Top.<span>{{ index + 1 }}</span></p>
+                    <div class="profile-photo">
+                        <img src="../../../assets/images/dateIcon.png">
+                    </div>
+                    <div class="basic-message">
+                        <p>{{ item.name }}</p>
+                        <p>加入ASG<span class="add-time">{{ item.joinTime }}</span>天</p>
+                    </div>
+                    <div class="count-wrap">
+                        <p>{{ item.count }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,6 +50,20 @@ async function getCommentor() {
         comList.value = data;
     } catch (error) {
         nMessage.error(error?.response?.data?.message ?? '未知错误，请联系网站管理员');
+        comList.value = [
+            {
+                name:'二十不会写前端',
+                count:'5',
+                joinTime:'100',
+                avator:'null'
+            },
+            {
+                name:'7000大帝',
+                count:'7000',
+                joinTime:'700',
+                avator:'null'
+            }
+        ]
     }
 }
 onMounted(async () => {
@@ -55,46 +76,65 @@ onMounted(async () => {
 <style scoped lang='scss'>
 .container-comlist {
     height: calc(100dvh - 45px);
-    background: linear-gradient(to left, #00bfff, #dda0dd);
+    background: #9CC9E5;
     header {
         height: 25%;
         width: 100%;
-        //TODO-二十；排名榜 和 解说场次排名前十
         h1{
-            text-align:center;
-            font-family: '楷体' '宋体' 'Microsoft Yahei',tahoma,arial,'Hiragin Sans GB';
+            text-align:left;
+            font-size: 55px;
+            width: 100%;
+            padding: 5% 0 0 10%;
+        }
+        h2{
+            text-align:left;
             font-size: 40px;
             width: 100%;
-            padding: 20px;
-        }
-        p{
-            text-align:center;
-            line-height: 10;
+            padding: 0 0 0 10%;
         }
     }
     .main-body {
         height: 75%;
-        border-radius: 1em 1em 0 0;
+        border-radius: 2em 2em 0 0;
         background:#fff;
         overflow: scroll;
-        .list-table-header{
-            margin:1em 0;
-
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(3,1fr);
-        }
         .list-table-body {
-            // TODO-二十：建议用flex或者grid布局，可以查一下这俩。
-            // 一、让文字居中；二、让文字颜色适合；三、产生一定padding和margin，产生间隔。
-            justify-content: center;//？为什么没居中
-            flex-grow: 200;
-            flex-shrink: 10;
-            width: 100%;
+            height: 50px;
+            padding: 15px 20px;
             display: grid;
-            grid-template-columns: repeat(3,1fr);
-            .fit-picture{
-                width:auto;
+            align-items: center;
+            grid-template-columns: 10% 20% auto 20%;
+            .ranking{
+                width: 100%;
+                align-items: center;
+            }
+            .profile-photo{
+                height:100%;
+                width:100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                img{
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                }
+            }
+            .basic-message{
+                width: 80%;
+                margin: 0 auto;
+                .add-time{
+                    color: purple;
+                    margin: 0 5px;
+                }
+            }
+            .count-wrap{
+                width: 80%;
+                margin: 0 auto;
+                border: black solid 1px;
+                border-radius: 15px;
+                background: aquamarine;
+                text-align: center;
             }
         }
     }
