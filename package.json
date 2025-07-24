@@ -31,6 +31,7 @@
     "@types/js-cookie": "^3.0.6",
     "@vicons/ionicons5": "^0.12.0",
     "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/babel-plugin-jsx": "^1.4.0",
     "typescript": "^5.2.2",
     "vite": "^5.3.4",
     "vue-tsc": "^2.0.24"

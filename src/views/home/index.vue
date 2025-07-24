@@ -3,8 +3,8 @@
         <full-screen-loading v-if="loading"></full-screen-loading>
         <div class="main-body" v-else>
             <div class="header-search-container">
-                <n-select v-model:value="season" :options="filterOptions" :render-label="renderLabel" placeholder="未选择赛季：全部赛季"
-                    @update:value="handleSelect">
+                <n-select v-model:value="season" :options="filterOptions" :render-label="renderLabel"
+                    placeholder="未选择赛季：全部赛季" @update:value="handleSelect">
                     {{ season }}
                     <template #header>
                         <div class="select-container">
@@ -24,88 +24,89 @@
             <asg-empty v-if="tableData.length === 0" description="该赛季暂无赛程信息，请联系赛事主办方。">
             </asg-empty>
             <div v-else class="listTable">
-                <n-infinite-scroll style="height: 100%" :distance="10" @load="handleLoad">
-                    <div class="card-container" v-for="(item, index) in tableData" :key="index">
-                        <div class="card-header">
-                            <p class="time-text" :class="item.isOver ? 'time-over' : 'time-process'">{{ item.isOver ?
-                                '赛程已结束' : '赛程进行中' }}
-                            </p>
-                            <div class="game-tag">
-                                <img src="../../assets/images/gametag.png">
-                                <p>{{ item.tag || '未定义' }}</p>
-                            </div>
+                <div class="card-container" v-for="(item, index) in tableData" :key="index">
+                    <div class="card-header">
+                        <p class="time-text" :class="item.isOver ? 'time-over' : 'time-process'">{{ item.isOver ?
+                            '赛程已结束' : '赛程进行中' }}
+                        </p>
+                        <div class="game-tag">
+                            <img src="../../assets/images/gametag.png">
+                            <p>{{ item.tag || '未定义' }}</p>
                         </div>
-                        <div class="card-main">
-                            <div class="team-info">
-                                <n-avatar round :src="item.customLogo"
-                                    fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
-                                <p>{{ item.team1_name }}</p>
-                            </div>
-                            <img class="verse" src="../../assets/images/VS.png">
-                            <div class="team-info">
-                                <n-avatar round :src="item.hostLogo"
-                                    fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
-                                <p>{{ item.team2_name }}</p>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <li>
-                                <div class="left-icon">
-                                    <img src="../../assets/images/micro.png">
-                                    <p>解说</p>
-                                </div>
-                                <div class="commentary-wrap">
-                                    <div v-for="(com, index) in item.commentary" :key="index" class="com-tag"
-                                        :class="!com ? 'no-person' : 'fill-person'">
-                                        {{ limitText(com, 5, '虚位以待') }}
-                                    </div>
-                                </div>
-                            </li>
-                            <li v-if="item.personType.includes('judge')">
-                                <div class="left-icon">
-                                    <img src="../../assets/images/judge.png">
-                                    <p>裁判</p>
-                                </div>
-                                <p class="physize-text" :class="!item.judge ? 'none-info' : ''">{{ item.judge || '暂无裁判'
-                                }}</p>
-                            </li>
-                            <li v-if="item.personType.includes('referee')">
-                                <div class="left-icon">
-                                    <img src="../../assets/images/referee.png">
-                                    <p>导播</p>
-                                </div>
-                                <p class="physize-text" :class="!item.referee ? 'none-info' : ''">{{ item.referee ||
-                                    '暂无导播' }}</p>
-                            </li>
-                            <li>
-                                <div class="left-icon">
-                                    <img src="../../assets/images/time.png">
-                                    <p>时间</p>
-                                </div>
-                                <p class="physize-text">{{ handleTime(item.opentime) }}</p>
-                            </li>
-                        </div>
-                        <div class="btn-list-wrap" v-if="item.isAllowChoose === 1">
-                            <div class="my-button" @click="selectGames(item)"
-                                :class="computedDisBtn(item.isOver, item.commentary) ? 'disabled' : ''">
-                                {{ computedDisBtn(item.isOver, item.commentary) ? '无法报名' :
-                                    '解说该场' }}
-                            </div>
-                            <div class="my-button" @click="inviteCom(item)"
-                                :class="computedDisBtn(item.isOver, item.commentary) ? 'disabled' : ''"
-                                :disabled="computedDisBtn(item.isOver, item.commentary)">{{
-                                    computedDisBtn(item.isOver, item.commentary) ? '无法邀请' : '邀请解说' }}
-                            </div>
-                        </div>
-                        <div v-else class="forbid-choose-text">该赛程，主办方设置为不可选班模式！</div>
                     </div>
-                    <div v-if="listLoading" class="scroll-text">
+                    <div class="card-main">
+                        <div class="team-info">
+                            <n-avatar round :src="item.customLogo"
+                                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
+                            <p>{{ item.team1_name }}</p>
+                        </div>
+                        <img class="verse" src="../../assets/images/VS.png">
+                        <div class="team-info">
+                            <n-avatar round :src="item.hostLogo"
+                                fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"></n-avatar>
+                            <p>{{ item.team2_name }}</p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <li>
+                            <div class="left-icon">
+                                <img src="../../assets/images/micro.png">
+                                <p>解说</p>
+                            </div>
+                            <div class="commentary-wrap">
+                                <div v-for="(com, index) in item.commentary" :key="index" class="com-tag"
+                                    :class="!com ? 'no-person' : 'fill-person'">
+                                    {{ limitText(com, 5, '虚位以待') }}
+                                </div>
+                            </div>
+                        </li>
+                        <li v-if="item.personType.includes('judge')">
+                            <div class="left-icon">
+                                <img src="../../assets/images/judge.png">
+                                <p>裁判</p>
+                            </div>
+                            <p class="physize-text" :class="!item.judge ? 'none-info' : ''">{{ item.judge || '暂无裁判'
+                            }}</p>
+                        </li>
+                        <li v-if="item.personType.includes('referee')">
+                            <div class="left-icon">
+                                <img src="../../assets/images/referee.png">
+                                <p>导播</p>
+                            </div>
+                            <p class="physize-text" :class="!item.referee ? 'none-info' : ''">{{ item.referee ||
+                                '暂无导播' }}</p>
+                        </li>
+                        <li>
+                            <div class="left-icon">
+                                <img src="../../assets/images/time.png">
+                                <p>时间</p>
+                            </div>
+                            <p class="physize-text">{{ handleTime(item.opentime) }}</p>
+                        </li>
+                    </div>
+                    <div class="btn-list-wrap" v-if="item.isAllowChoose === 1">
+                        <div class="my-button" @click="selectGames(item)"
+                            :class="computedDisBtn(item.isOver, item.commentary) ? 'disabled' : ''">
+                            {{ computedDisBtn(item.isOver, item.commentary) ? '无法报名' :
+                                '解说该场' }}
+                        </div>
+                        <div class="my-button" @click="inviteCom(item)"
+                            :class="computedDisBtn(item.isOver, item.commentary) ? 'disabled' : ''"
+                            :disabled="computedDisBtn(item.isOver, item.commentary)">{{
+                                computedDisBtn(item.isOver, item.commentary) ? '无法邀请' : '邀请解说' }}
+                        </div>
+                    </div>
+                    <div v-else class="forbid-choose-text">该赛程，主办方设置为不可选班模式！</div>
+                </div>
+                <div v-if="!noMore" class="loader_content">
+                    <div v-show="listLoading" class="scroll-text">
                         加载中...
                     </div>
-                    <div v-if="noMore" class="scroll-text">
-                        没有更多了~(●'◡'●)
-                    </div>
-                </n-infinite-scroll>
+                    <n-button v-show="!listLoading" type="info" @click="handleLoad">加载更多</n-button>
+                </div>
+                <div v-else class="scroll-text">
+                    没有更多了~(●'◡'●)
+                </div>
             </div>
         </div>
     </nor-header>
@@ -169,16 +170,16 @@ const listLoading = ref(false);
 const switchFilterBool = ref(false);
 const noMore = ref(false);
 // 筛选功能
-const handleSwitchChange = (event:Event) =>{
-    if(event){
+const handleSwitchChange = (event: Event) => {
+    if (event) {
         filterOptions.value = options.filter(item => !item.is_over);
         const isExist = filterOptions.value.findIndex(item => item.name === season.value) !== -1;
-        if(!isExist){
-          const nowSeason = filterOptions.value.at(-1);
-          season.value = !!nowSeason ? nowSeason.name : null; 
-          getGames();
+        if (!isExist) {
+            const nowSeason = filterOptions.value.at(-1);
+            season.value = !!nowSeason ? nowSeason.name : null;
+            getGames();
         }
-    }else{
+    } else {
         filterOptions.value = options;
     }
 }
@@ -444,7 +445,7 @@ const handleInvite = async (userId: number) => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding:6px 0;
+    padding: 6px 0;
 }
 
 .main-body {
@@ -457,13 +458,18 @@ const handleInvite = async (userId: number) => {
     min-height: calc(100% - 96px);
     background: var(--main-bg-color);
 
-    // 滚动文字提醒
-    .scroll-text {
-        font-size: 14px;
-        text-align: center;
-        color: var(--main-theme-text);
+    .loader_content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
+        // 滚动文字提醒
+        .scroll-text {
+            font-size: 14px;
+            color: var(--main-theme-text);
+        }
     }
+
 
     //卡片开始
     .card-container {
